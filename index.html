@@ -1,49 +1,763 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gustavo Chanchien</title>
-    <style>
-        h1 {
-            margin-bottom: -10px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gustavo Chanchien - XP Desktop</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Tahoma", "Geneva", sans-serif;
+      overflow: hidden;
+      background-color: #3A6EA5;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/3/31/Bliss_%28location%29.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 100vh;
+      position: relative;
+    }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
+    .desktop {
+      width: 100%;
+      height: calc(100% - 40px);
+      position: relative;
+      padding: 15px;
+      box-sizing: border-box;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+    }
 
-        .button-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-gap: 10px;
-            margin-top: 20px;
-        }
+    .app-icon {
+      width: 80px;
+      height: 100px;
+      text-align: center;
+      margin: 10px;
+      cursor: grab;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: absolute;
+      user-select: none;
+      transition: background-color 0.2s, border 0.2s;
+    }
 
-        button {
-            padding: 10px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-    </style>
+    .app-icon:active {
+        cursor: grabbing;
+    }
+
+    .app-icon img {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 5px;
+      pointer-events: none;
+    }
+
+    .app-icon span {
+      color: white;
+      font-size: 11px;
+      text-shadow: 1px 1px 1px black;
+      padding: 2px 3px;
+      border-radius: 2px;
+      word-wrap: break-word;
+      width: 100%;
+    }
+
+    .app-icon:hover span {
+        background-color: rgba(0, 80, 239, 0.7);
+        border: 1px dotted rgba(255, 255, 255, 0.7);
+    }
+    .app-icon.dragging {
+        opacity: 0.7;
+        z-index: 1500 !important;
+    }
+
+
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: linear-gradient(to bottom, #245DD7 0%, #3F8CF1 10%, #3B84EE 90%, #52A0FE 100%);
+      border-top: 1px solid #67B3FF;
+      display: flex;
+      align-items: center;
+      padding: 0 5px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+
+    .start-button {
+      background: linear-gradient(to bottom, #5CBF49 0%, #50A83E 10%, #489938 90%, #3E822E 100%);
+      border: 1px outset #4CAF50;
+      border-radius: 3px;
+      color: white;
+      padding: 4px 15px 4px 10px;
+      font-size: 16px;
+      font-weight: bold;
+      font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+      margin-right: 10px;
+      height: 30px;
+    }
+
+    .start-button img {
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+        filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.2));
+    }
+
+    .start-button:hover {
+      background: linear-gradient(to bottom, #6CD95A 0%, #5DBF49 10%, #53AC40 90%, #469136 100%);
+    }
+    .start-button:active {
+      background: linear-gradient(to top, #5CBF49 0%, #50A83E 10%, #489938 90%, #3E822E 100%);
+      border-style: inset;
+      padding: 5px 14px 3px 11px;
+    }
+
+    .start-menu {
+      position: fixed;
+      bottom: 40px;
+      left: 0;
+      width: 280px;
+      max-height: 450px;
+      background-color: #EBF4FC;
+      border: 1px solid #082970;
+      border-top-width: 2px;
+      border-left-width: 2px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 2000;
+      flex-direction: column;
+      overflow-y: auto;
+      font-size: 11px;
+    }
+
+    .start-menu-header {
+      background: linear-gradient(to bottom, #0C5BD9 0%, #1D6CF1 100%);
+      padding: 8px 10px;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+    .start-menu-header img {
+        width: 32px;
+        height: 32px;
+        margin-right: 10px;
+        border: 1px solid #7FB4F8;
+        padding: 2px;
+        background-color: #fff;
+        border-radius: 3px;
+    }
+
+    .start-menu-body {
+      flex-grow: 1;
+      display: flex;
+    }
+
+    .start-menu-left, .start-menu-right {
+        display: flex;
+        flex-direction: column;
+        padding: 5px 0;
+    }
+    .start-menu-left {
+        width: 55%;
+    }
+    .start-menu-right {
+        width: 45%;
+        background-color: #D4E6F8;
+        border-left: 1px solid #A0C5E8;
+    }
+
+    .start-menu-item {
+      padding: 6px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      color: #000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .start-menu-item:hover {
+      background-color: #316AC5;
+      color: white;
+    }
+    .start-menu-item img {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+    .start-menu-item.pinned img {
+        width: 24px;
+        height: 24px;
+    }
+    .start-menu-item strong {
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .start-menu-item em {
+        font-style: normal;
+        font-size: 10px;
+        color: #555;
+        margin-left: 28px;
+        margin-top: -18px;
+        display: block;
+    }
+    .start-menu-item:hover em {
+        color: #ddd;
+    }
+
+
+    .start-menu-separator {
+        height: 1px;
+        background-color: #A0C5E8;
+        margin: 5px 10px;
+    }
+
+    .start-menu-footer {
+        background-color: #EBF4FC;
+        border-top: 1px solid #A0C5E8;
+        padding: 5px 8px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    .start-menu-footer button {
+        background: none;
+        border: 1px solid transparent;
+        padding: 3px 6px;
+        margin-left: 5px;
+        cursor: pointer;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        border-radius: 2px;
+    }
+     .start-menu-footer button:hover {
+        background-color: #316AC5;
+        color: white;
+        border: 1px outset #A0C5E8;
+     }
+     .start-menu-footer button img {
+         width: 20px;
+         height: 20px;
+         margin-right: 4px;
+     }
+
+    .window {
+      position: absolute;
+      top: 50px;
+      left: 100px;
+      width: 500px;
+      min-width: 200px;
+      min-height: 150px;
+      max-height: 80vh;
+      background-color: #ECE9D8;
+      border: 1px solid #003B9C;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 500;
+      flex-direction: column;
+      border-radius: 3px 3px 0 0;
+    }
+    .window.active {
+        z-index: 1500;
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to bottom, #005CFD 0%, #0051E6 100%);
+      color: white;
+      padding: 4px 8px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: move;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 22px;
+      border-bottom: 1px solid #003B9C;
+      user-select: none;
+    }
+    .window-titlebar-title {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .window-titlebar-title img {
+        width: 16px;
+        height: 16px;
+        margin-right: 5px;
+    }
+
+    .window-titlebar-buttons button {
+        background-color: #D95043;
+        color: white;
+        border: 1px outset white;
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+        line-height: 10px;
+        font-weight: bold;
+        font-family: "Webdings", "Arial";
+        cursor: pointer;
+        padding: 0;
+        margin-left: 2px;
+    }
+    .window-titlebar-buttons button.minimize,
+    .window-titlebar-buttons button.maximize {
+        background-color: #C0C0C0;
+    }
+    .window-titlebar-buttons button:hover {
+        filter: brightness(1.2);
+    }
+    .window-titlebar-buttons button:active {
+        filter: brightness(0.8);
+        border-style: inset;
+    }
+
+    .window-content {
+      padding: 10px;
+      flex-grow: 1;
+      overflow: auto;
+      font-size: 12px;
+      background-color: #FFFFFF;
+      border: 1px solid #ACA899;
+      margin: 2px;
+    }
+    .window-content iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    #welcomeWindowTitle {
+        font-size: 18px;
+        margin-bottom: 0;
+    }
+    #welcomeWindowPortfolio {
+        margin-top: 5px;
+        font-size: 12px;
+        color: #333;
+    }
+
+  </style>
 </head>
 <body>
-    <h1>Gustavo Chanchien</h1>
-    <p>Portfolio</p>
 
-    <div class="button-grid">
-        <button>Pregunton Survey App</button>
-        <button>GIS and Mapping Projects</button>
-        <button>Understanding Epidemiology</button>
-        <button>Tools</button>
-        <button>Games and Toys</button>
+  <div class="desktop" id="desktop">
+    <div class="app-icon" id="icon-welcome" data-window-id="windowWelcome" data-icon-src="icons/portfolio_icon.png" data-app-name="Welcome" style="top: 20px; left: 20px;">
+      <img src="icons/portfolio_icon.png" alt="Welcome">
+      <span>Welcome</span>
     </div>
+    <div class="app-icon" id="icon-easy-assessment" data-window-id="windowEasyAssessment" data-icon-src="icons/easy_assessment_icon.png" data-app-name="Easy Assessment" style="top: 20px; left: 120px;">
+      <img src="icons/easy_assessment_icon.png" alt="Easy Assessment">
+      <span>Easy Assessment Survey App</span>
+    </div>
+    <div class="app-icon" id="icon-gis" data-window-id="windowGis" data-icon-src="icons/gis_mapping_icon.png" data-app-name="GIS Projects" style="top: 150px; left: 20px;">
+      <img src="icons/gis_mapping_icon.png" alt="GIS">
+      <span>GIS and Mapping Projects</span>
+    </div>
+    <div class="app-icon" id="icon-epidemiology" data-window-id="windowEpidemiology" data-icon-src="icons/epidemiology_icon.png" data-app-name="Epidemiology" style="top: 150px; left: 120px;">
+      <img src="icons/epidemiology_icon.png" alt="Epidemiology">
+      <span>Understanding Epidemiology</span>
+    </div>
+    <div class="app-icon" id="icon-tools" data-window-id="windowTools" data-icon-src="icons/tools_icon.png" data-app-name="Tools" style="top: 280px; left: 20px;">
+      <img src="icons/tools_icon.png" alt="Tools">
+      <span>Tools</span>
+    </div>
+    <div class="app-icon" id="icon-fengshui" data-window-id="windowFengShui" data-icon-src="icons/fengshui_icon.png" data-app-name="Feng Shui Solver" style="top: 280px; left: 120px;">
+      <img src="icons/fengshui_icon.png" alt="Feng Shui">
+      <span>Feng Shui Solver</span>
+    </div>
+    <div class="app-icon" id="icon-games" data-window-id="windowGames" data-icon-src="icons/games_icon.png" data-app-name="Games & Toys" style="top: 20px; left: 220px;">
+      <img src="icons/games_icon.png" alt="Games">
+      <span>Games and Toys</span>
+    </div>
+  </div>
+
+  <div class="taskbar">
+    <button class="start-button" id="startButton">
+        <img src="icons/xp_start_icon.png" alt="Start"> start
+    </button>
+    </div>
+
+  <div class="start-menu" id="startMenu">
+    <div class="start-menu-header">
+        <img src="icons/user_avatar_placeholder.png" alt="User"> Gustavo Chanchien
+    </div>
+    <div class="start-menu-body">
+        <div class="start-menu-left">
+            <div class="start-menu-item pinned" data-window-id="windowEasyAssessment" data-icon-src="icons/easy_assessment_icon.png" data-app-name="Easy Assessment">
+                <img src="icons/easy_assessment_icon.png" alt=""><strong>Easy Assessment</strong>
+            </div>
+            <div class="start-menu-item pinned" data-window-id="windowGis" data-icon-src="icons/gis_mapping_icon.png" data-app-name="GIS Projects">
+                <img src="icons/gis_mapping_icon.png" alt=""><strong>GIS Projects</strong>
+            </div>
+            <div class="start-menu-separator"></div>
+            <div class="start-menu-item" data-window-id="windowWelcome" data-icon-src="icons/portfolio_icon.png" data-app-name="Welcome">
+                <img src="icons/portfolio_icon.png" alt=""> Welcome
+            </div>
+            <div class="start-menu-item" data-window-id="windowEpidemiology" data-icon-src="icons/epidemiology_icon.png" data-app-name="Epidemiology">
+                <img src="icons/epidemiology_icon.png" alt=""> Epidemiology
+            </div>
+             <div class="start-menu-item" data-window-id="windowTools" data-icon-src="icons/tools_icon.png" data-app-name="Tools">
+                <img src="icons/tools_icon.png" alt=""> Tools
+            </div>
+             <div class="start-menu-item" data-window-id="windowFengShui" data-icon-src="icons/fengshui_icon.png" data-app-name="Feng Shui Solver">
+                <img src="icons/fengshui_icon.png" alt=""> Feng Shui Solver
+            </div>
+             <div class="start-menu-item" data-window-id="windowGames" data-icon-src="icons/games_icon.png" data-app-name="Games & Toys">
+                <img src="icons/games_icon.png" alt=""> Games and Toys
+            </div>
+            </div>
+        <div class="start-menu-right">
+            <div class="start-menu-item" onclick="alert('My Documents (placeholder)')">
+                <img src="icons/mydocuments_icon.png" alt=""> My Documents
+            </div>
+            <div class="start-menu-item" onclick="alert('My Recent Documents (placeholder)')">
+                <img src="icons/myrecentdocs_icon.png" alt=""> My Recent Documents
+            </div>
+            <div class="start-menu-item" onclick="alert('My Pictures (placeholder)')">
+                <img src="icons/mypictures_icon.png" alt=""> My Pictures
+            </div>
+             <div class="start-menu-item" onclick="alert('My Music (placeholder)')">
+                <img src="icons/mymusic_icon.png" alt=""> My Music
+            </div>
+            <div class="start-menu-item" onclick="alert('My Computer (placeholder)')">
+                <img src="icons/mycomputer_icon.png" alt=""> My Computer
+            </div>
+            <div class="start-menu-separator"></div>
+            <div class="start-menu-item" onclick="alert('Control Panel (placeholder)')">
+                <img src="icons/controlpanel_icon.png" alt=""> Control Panel
+            </div>
+            <div class="start-menu-item" onclick="alert('Help and Support (placeholder)')">
+                <img src="icons/help_icon.png" alt=""> Help and Support
+            </div>
+            <div class="start-menu-item" onclick="alert('Search (placeholder)')">
+                <img src="icons/search_icon.png" alt=""> Search
+            </div>
+            <div class="start-menu-item" onclick="alert('Run... (placeholder)')">
+                <img src="icons/run_icon.png" alt=""> Run...
+            </div>
+        </div>
+    </div>
+    <div class="start-menu-footer">
+        <button onclick="alert('Log Off clicked. (Placeholder)')">
+            <img src="icons/logoff_icon.png" alt="Log Off"> Log Off
+        </button>
+        <button onclick="alert('Turn Off Computer clicked. (Placeholder)')">
+             <img src="icons/shutdown_icon.png" alt="Turn Off"> Turn Off Computer
+        </button>
+    </div>
+  </div>
+
+  <div class="window" id="windowWelcome">
+    <div class="window-titlebar">
+      <div class="window-titlebar-title"><img src="icons/portfolio_icon.png" alt=""><span>Welcome to Gustavo's Portfolio</span></div>
+      <div class="window-titlebar-buttons">
+        <button class="close-button" data-window-id="windowWelcome">X</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <h1 id="welcomeWindowTitle">Gustavo Chanchien</h1>
+      <p id="welcomeWindowPortfolio">Portfolio</p>
+      <p>Welcome to my interactive portfolio! Click on the icons or use the Start Menu to explore projects.</p>
+      <p>This desktop interface is built with HTML, CSS, and JavaScript.</p>
+    </div>
+  </div>
+
+  <div class="window" id="windowEasyAssessment">
+    <div class="window-titlebar">
+      <div class="window-titlebar-title"><img src="icons/easy_assessment_icon.png" alt=""><span>Easy Assessment Survey App</span></div>
+      <div class="window-titlebar-buttons">
+        <button class="close-button" data-window-id="windowEasyAssessment">X</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <p>Content for <strong>Easy Assessment Survey App</strong> goes here.</p>
+      <p>You could embed the app using an iframe:</p>
+      <p>Or link to it: <a href="#" onclick="alert('Link to Easy Assessment App')">Open App</a></p>
+    </div>
+  </div>
+
+  <div class="window" id="windowGis">
+    <div class="window-titlebar">
+      <div class="window-titlebar-title"><img src="icons/gis_mapping_icon.png" alt=""><span>GIS and Mapping Projects</span></div>
+      <div class="window-titlebar-buttons">
+        <button class="close-button" data-window-id="windowGis">X</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <p>Content for <strong>GIS and Mapping Projects</strong> goes here.</p>
+      <p>Showcase your maps, perhaps with embedded map viewers or links to project pages.</p>
+    </div>
+  </div>
+
+  <div class="window" id="windowEpidemiology">
+    <div class="window-titlebar">
+      <div class="window-titlebar-title"><img src="icons/epidemiology_icon.png" alt=""><span>Understanding Epidemiology</span></div>
+      <div class="window-titlebar-buttons"><button class="close-button" data-window-id="windowEpidemiology">X</button></div>
+    </div>
+    <div class="window-content"><p>Details about <strong>Understanding Epidemiology</strong>...</p></div>
+  </div>
+
+  <div class="window" id="windowTools">
+    <div class="window-titlebar">
+      <div class="window-titlebar-title"><img src="icons/tools_icon.png" alt=""><span>Tools</span></div>
+      <div class="window-titlebar-buttons"><button class="close-button" data-window-id="windowTools">X</button></div>
+    </div>
+    <div class="window-content"><p>Various <strong>Tools</strong> developed or used...</p></div>
+  </div>
+
+  <div class="window" id="windowFengShui">
+    <div class="window-titlebar">
+      <div class="window-titlebar-title"><img src="icons/fengshui_icon.png" alt=""><span>Feng Shui Solver</span></div>
+      <div class="window-titlebar-buttons"><button class="close-button" data-window-id="windowFengShui">X</button></div>
+    </div>
+    <div class="window-content"><p>Information about the <strong>Feng Shui Solver</strong>...</p></div>
+  </div>
+
+  <div class="window" id="windowGames">
+    <div class="window-titlebar">
+      <div class="window-titlebar-title"><img src="icons/games_icon.png" alt=""><span>Games and Toys</span></div>
+      <div class="window-titlebar-buttons"><button class="close-button" data-window-id="windowGames">X</button></div>
+    </div>
+    <div class="window-content"><p>Fun <strong>Games and Toys</strong> projects...</p></div>
+  </div>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const startButton = document.getElementById('startButton');
+      const startMenu = document.getElementById('startMenu');
+      const desktop = document.getElementById('desktop');
+      const appIcons = document.querySelectorAll('.app-icon');
+      const windows = document.querySelectorAll('.window');
+      const startMenuItems = document.querySelectorAll('.start-menu-item[data-window-id]');
+      const closeButtons = document.querySelectorAll('.close-button');
+
+      let highestZIndex = 1000; 
+
+      startButton.addEventListener('click', (event) => {
+        event.stopPropagation(); 
+        const isVisible = startMenu.style.display === 'flex';
+        startMenu.style.display = isVisible ? 'none' : 'flex';
+        if (!isVisible) {
+            startMenu.style.zIndex = highestZIndex + 1; 
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        if (startMenu.style.display === 'flex' && !startMenu.contains(event.target) && event.target !== startButton) {
+          startMenu.style.display = 'none';
+        }
+      });
+
+      function openWindow(windowId, appName, iconSrc) {
+        const windowToOpen = document.getElementById(windowId);
+        if (windowToOpen) {
+          windowToOpen.style.display = 'flex';
+          highestZIndex++;
+          windowToOpen.style.zIndex = highestZIndex;
+          windowToOpen.classList.add('active');
+
+          const titleElement = windowToOpen.querySelector('.window-titlebar-title span');
+          const iconElement = windowToOpen.querySelector('.window-titlebar-title img');
+          if (titleElement && appName) titleElement.textContent = appName;
+          if (iconElement && iconSrc) iconElement.src = iconSrc;
+
+          windows.forEach(win => {
+            if (win !== windowToOpen) win.classList.remove('active');
+          });
+          startMenu.style.display = 'none'; 
+        }
+      }
+
+      appIcons.forEach(icon => {
+        icon.addEventListener('dblclick', () => {
+          const windowId = icon.dataset.windowId;
+          const appName = icon.dataset.appName;
+          const iconSrc = icon.dataset.iconSrc;
+          if (windowId) {
+            openWindow(windowId, appName, iconSrc);
+          }
+        });
+
+        icon.addEventListener('click', (e) => {
+            appIcons.forEach(i => i.classList.remove('selected-icon')); 
+            icon.classList.add('selected-icon');
+            const windowElement = document.getElementById(icon.dataset.windowId);
+            if (windowElement && windowElement.style.display === 'flex') {
+                highestZIndex++;
+                windowElement.style.zIndex = highestZIndex;
+                windows.forEach(win => win.classList.remove('active'));
+                windowElement.classList.add('active');
+            }
+        });
+      });
+
+      startMenuItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const windowId = item.dataset.windowId;
+          const appName = item.dataset.appName;
+          const iconSrc = item.dataset.iconSrc;
+          if (windowId) {
+            openWindow(windowId, appName, iconSrc);
+          }
+        });
+      });
+
+      closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const windowId = button.dataset.windowId;
+          const windowToClose = document.getElementById(windowId);
+          if (windowToClose) {
+            windowToClose.style.display = 'none';
+            windowToClose.classList.remove('active');
+          }
+        });
+      });
+
+      windows.forEach(win => {
+        win.addEventListener('mousedown', () => {
+          highestZIndex++;
+          win.style.zIndex = highestZIndex;
+          windows.forEach(w => w.classList.remove('active'));
+          win.classList.add('active');
+        }, true); 
+      });
+
+
+      appIcons.forEach(icon => {
+        let offsetX, offsetY, isDragging = false;
+
+        icon.addEventListener('mousedown', (e) => {
+          if (e.button !== 0) return;
+
+          isDragging = true;
+          icon.classList.add('dragging');
+          const rect = icon.getBoundingClientRect();
+          offsetX = e.clientX - rect.left;
+          offsetY = e.clientY - rect.top;
+
+          icon.style.zIndex = 2000; 
+
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        });
+
+        function onMouseMove(e) {
+          if (!isDragging) return;
+          e.preventDefault(); 
+
+          let newX = e.clientX - offsetX;
+          let newY = e.clientY - offsetY;
+
+          const desktopRect = desktop.getBoundingClientRect();
+          const iconRect = icon.getBoundingClientRect(); 
+
+          if (newX < 0) newX = 0;
+          if (newY < 0) newY = 0;
+          if (newX + icon.offsetWidth > desktopRect.width) newX = desktopRect.width - icon.offsetWidth;
+          if (newY + icon.offsetHeight > desktopRect.height) newY = desktopRect.height - icon.offsetHeight;
+
+          icon.style.left = newX + 'px';
+          icon.style.top = newY + 'px';
+        }
+
+        function onMouseUp() {
+          if (!isDragging) return;
+          isDragging = false;
+          icon.classList.remove('dragging');
+          icon.style.zIndex = 1; 
+
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        }
+        const img = icon.querySelector('img');
+        if (img) {
+            img.addEventListener('dragstart', (e) => e.preventDefault());
+        }
+      });
+
+
+      windows.forEach(win => {
+        const titlebar = win.querySelector('.window-titlebar');
+        if (!titlebar) return;
+
+        let offsetX, offsetY, isDraggingWindow = false;
+
+        titlebar.addEventListener('mousedown', (e) => {
+          if (e.button !== 0) return; 
+          if (e.target.closest('.window-titlebar-buttons button')) {
+            return;
+          }
+
+          isDraggingWindow = true;
+          win.classList.add('dragging-window'); 
+
+          const rect = win.getBoundingClientRect();
+          offsetX = e.clientX - rect.left;
+          offsetY = e.clientY - rect.top;
+
+          highestZIndex++;
+          win.style.zIndex = highestZIndex;
+          windows.forEach(w => w.classList.remove('active'));
+          win.classList.add('active');
+
+
+          document.addEventListener('mousemove', onWindowMouseMove);
+          document.addEventListener('mouseup', onWindowMouseUp);
+        });
+
+        function onWindowMouseMove(e) {
+          if (!isDraggingWindow) return;
+          e.preventDefault();
+
+          let newX = e.clientX - offsetX;
+          let newY = e.clientY - offsetY;
+
+          const taskbarHeight = 40;
+          if (newX < 0) newX = 0;
+          if (newY < 0) newY = 0; 
+          if (newX + win.offsetWidth > window.innerWidth) newX = window.innerWidth - win.offsetWidth;
+          if (newY + win.offsetHeight > window.innerHeight - taskbarHeight) newY = window.innerHeight - taskbarHeight - win.offsetHeight;
+          if (newY < 0) newY = 0; 
+
+          win.style.left = newX + 'px';
+          win.style.top = newY + 'px';
+        }
+
+        function onWindowMouseUp() {
+          if (!isDraggingWindow) return;
+          isDraggingWindow = false;
+          win.classList.remove('dragging-window');
+          document.removeEventListener('mousemove', onWindowMouseMove);
+          document.removeEventListener('mouseup', onWindowMouseUp);
+        }
+      });
+      openWindow('windowWelcome', "Welcome to Gustavo's Portfolio", "icons/portfolio_icon.png");
+      const welcomeWindow = document.getElementById('windowWelcome');
+      if(welcomeWindow){ 
+          welcomeWindow.style.left = 'calc(50% - 250px)'; 
+          welcomeWindow.style.top = 'calc(50% - 150px)'; 
+      }
+
+
+    });
+  </script>
+
 </body>
 </html>
