@@ -1,763 +1,1811 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gustavo Chanchien - XP Desktop</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Tahoma", "Geneva", sans-serif;
-      overflow: hidden;
-      background-color: #3A6EA5;
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/3/31/Bliss_%28location%29.jpg');
-      background-size: cover;
-      background-repeat: no-repeat;
-      height: 100vh;
-      position: relative;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gustavo Chanchien - XP Portfolio</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* --- General Body and Background Styles --- */
+        body {
+            margin: 0;
+            font-family: "Tahoma", "Geneva", sans-serif;
+            overflow: hidden;
+            background-color: #3A6EA5;
+            background-image: url('images/XP Desktop Primitivista.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            height: 100vh;
+            position: relative;
+        }
 
-    .desktop {
-      width: 100%;
-      height: calc(100% - 40px);
-      position: relative;
-      padding: 15px;
-      box-sizing: border-box;
-      display: flex;
-      flex-wrap: wrap;
-      align-content: flex-start;
-    }
+        /* --- Boot Screen Styles --- */
+        #bootScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: "Tahoma", "Geneva", sans-serif;
+            color: white;
+        }
 
-    .app-icon {
-      width: 80px;
-      height: 100px;
-      text-align: center;
-      margin: 10px;
-      cursor: grab;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      position: absolute;
-      user-select: none;
-      transition: background-color 0.2s, border 0.2s;
-    }
+        .boot-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 60px;
+        }
 
-    .app-icon:active {
-        cursor: grabbing;
-    }
+        #xpBootLogo {
+            width: 280px;
+            height: auto;
+            margin-bottom: 10px;
+        }
 
-    .app-icon img {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 5px;
-      pointer-events: none;
-    }
+        .windows-text-boot {
+            font-size: 38px;
+            font-weight: 300;
+            color: #FFFFFF;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: baseline;
+            line-height: 1;
+        }
 
-    .app-icon span {
-      color: white;
-      font-size: 11px;
-      text-shadow: 1px 1px 1px black;
-      padding: 2px 3px;
-      border-radius: 2px;
-      word-wrap: break-word;
-      width: 100%;
-    }
+        .windows-text-boot .xp-text-boot {
+            font-family: "Franklin Gothic Medium", "Arial Narrow", "Arial", "sans-serif";
+            font-size: 42px;
+            color: #FFFFFF;
+            margin-left: 6px;
+            font-weight: normal;
+            font-style: italic;
+        }
+        .windows-text-boot .edition-text-boot {
+            font-size: 13px;
+            font-weight: normal;
+            color: #F0F0F0;
+            margin-top: 8px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
 
-    .app-icon:hover span {
-        background-color: rgba(0, 80, 239, 0.7);
-        border: 1px dotted rgba(255, 255, 255, 0.7);
-    }
-    .app-icon.dragging {
-        opacity: 0.7;
-        z-index: 1500 !important;
-    }
+        /* --- Boot Screen Loading Bar --- */
+        .loading-bar-container {
+            width: 280px;
+            height: 18px;
+            background-color: #0A2E5A;
+            border: 1px solid #7F7F7F;
+            border-radius: 2px;
+            padding: 2px;
+            box-shadow: inset 0 0 2px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-bar-track {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-bar-sliding-block {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 80%;
+            background-color: #57B939;
+            background: linear-gradient(to bottom, #57B939 0%, #54b337 50%, #4ba430 100%);
+            border-radius: 1px;
+            animation: slideAcrossXP 1.2s linear infinite;
+        }
+
+        /* --- Boot Screen Animations --- */
+        @keyframes loadProgressXP {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        @keyframes slideAcrossXP {
+            0%   { left: -20px; }
+            100% { left: 100%; }
+        }
+
+        .copyright-text-boot {
+            position: absolute;
+            bottom: 20px;
+            font-size: 11px;
+            color: #A0A0A0;
+        }
+
+        /* --- Shutdown Message Style --- */
+        #shutDownMessage {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: black; color: white; display: flex;
+            justify-content: center; align-items: center; font-size: 24px;
+            z-index: 9998;
+        }
+
+        /* --- Desktop Area Styles --- */
+        .desktop-wrapper { width: 100%; height: 100%; position: relative; display: none; }
+        .desktop {
+            width: 100%; height: calc(100% - 40px); position: relative;
+            padding: 15px; box-sizing: border-box;
+        }
+
+        /* --- Desktop Selection Box Style --- */
+        #selectionBox {
+            position: absolute;
+            border: 1px dotted #0078D7;
+            background-color: rgba(43, 107, 197, 0.3); z-index: 100;
+            display: none; pointer-events: none; box-sizing: border-box;
+        }
+
+        /* --- Desktop App Icon Styles --- */
+        .app-icon {
+            text-align: center;
+            cursor: grab; display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-start; position: absolute;
+            user-select: none; transition: background-color 0.2s, border 0.2s;
+            box-sizing: border-box;
+        }
+        .app-icon:active { cursor: grabbing; }
+        .app-icon span {
+            color: white;
+            text-shadow: 1px 1px 1px black;
+            padding: 2px 3px; border-radius: 2px; word-wrap: break-word; width: 100%;
+            box-sizing: border-box;
+        }
+        .app-icon:hover span, .app-icon.selected-icon span {
+            background-color: rgba(0, 80, 239, 0.7);
+            border: 1px dotted rgba(255, 255, 255, 0.7);
+        }
+        .app-icon.dragging { opacity: 0.7; z-index: 1500 !important; }
+
+        /* --- Taskbar Styles --- */
+        .taskbar {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 40px;
+            background: linear-gradient(to bottom, #245DD7 0%, #3F8CF1 50%, #52A0FE 100%);
+            border-top: 1px solid #67B3FF; display: flex; align-items: center;
+            padding: 0 5px; box-sizing: border-box; z-index: 1000;
+        }
+
+        /* --- Start Button Styles --- */
+        .start-button {
+            background: linear-gradient(to bottom, #5CBF49 0%, #50A83E 10%, #489938 90%, #3E822E 100%);
+            border: 1px outset #4CAF50; border-radius: 3px; color: white;
+            padding: 4px 15px 4px 10px; font-size: 16px; font-weight: bold;
+            font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+            cursor: pointer; display: flex; align-items: center;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5); height: 30px;
+            flex-shrink: 0; margin-right: 5px;
+        }
+        .start-button img {
+            width: 20px; height: 20px; margin-right: 5px;
+            filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.2));
+        }
+        .start-button:hover { background: linear-gradient(to bottom, #6CD95A 0%, #5DBF49 10%, #53AC40 90%, #469136 100%); }
+        .start-button:active {
+            background: linear-gradient(to top, #5CBF49 0%, #50A83E 10%, #489938 90%, #3E822E 100%);
+            border-style: inset; padding: 5px 14px 3px 11px;
+        }
+
+        /* --- Taskbar Apps Area Styles --- */
+        .taskbar-apps {
+            display: flex; flex-grow: 1; height: 100%; align-items: center;
+            padding: 0 2px; overflow-x: auto; overflow-y: hidden;
+        }
+        .taskbar-item {
+            display: flex;
+            align-items: center;
+            background-color: #3F8CF1;
+            border: 1px outset #52A0FE;
+            color: white;
+            padding: 2px 6px;
+            margin: 0 2px;
+            border-radius: 3px;
+            font-size: 11px;
+            cursor: pointer;
+            overflow: hidden;
+            max-width: 160px;
+            height: 28px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            transition: background-color 0.2s, border-style 0.2s;
+        }
+
+        .taskbar-item span {
+            flex-grow: 1;
+            flex-shrink: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+        }
+
+        .taskbar-item:hover { background-color: #509BF8; }
+        .taskbar-item.active-task {
+            background-color: #205DCE; border-style: inset; font-weight: normal;
+            background: linear-gradient(to bottom, #7ea4f6 0%, #3f8cf1 50%, #64a3f1 100%);
+            padding: 3px 5px 1px 7px;
+        }
+
+        /* --- Notification Area Styles (Clock, Weather) --- */
+        .notification-area {
+            color: white; font-size: 11px; padding: 0 10px; cursor: pointer;
+            display: flex; align-items: center; text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+            flex-shrink: 0; margin-left: 5px;
+        }
+        .notification-area span { margin: 0 3px; white-space: nowrap; }
+        .notification-area:hover { background-color: rgba(0, 0, 0, 0.1); border-radius: 2px; }
+
+        /* --- Info Popup (Weather/IP Details) Styles --- */
+        .info-popup {
+            display: none; position: fixed; bottom: 45px; right: 5px; width: 280px;
+            background-color: #EBF4FC; border: 1px solid #082970;
+            box-shadow: -2px -2px 5px rgba(0,0,0,0.3); z-index: 2100; font-size: 11px;
+            color: #000; border-radius: 3px; font-family: "Tahoma", "Geneva", sans-serif;
+        }
+        .info-popup-content { padding: 8px 12px; position: relative; }
+        .info-popup-close {
+            position: absolute; top: 3px; right: 5px; font-size: 16px; font-weight: bold;
+            cursor: pointer; color: #555; padding: 2px 4px;
+        }
+        .info-popup-close:hover { color: red; background-color: #FFDCDC; }
+        .info-popup h4 {
+            margin-top: 0; margin-bottom: 8px; font-size: 13px; font-weight: bold;
+            color: #0C5BD9; border-bottom: 1px solid #A0C5E8; padding-bottom: 4px;
+        }
+        .info-popup p { margin: 6px 0; line-height: 1.4; }
+        .info-popup p strong { color: #333; }
+        .info-popup a { color: #005CFD; text-decoration: none; }
+        .info-popup a:hover { text-decoration: underline; }
+
+        /* --- Start Menu Styles --- */
+        .start-menu {
+            position: fixed; bottom: 40px; left: 0; width: 280px; max-height: 450px;
+            background: #EBF4FC;
+            border: 1px solid #082970; border-top-width: 2px;
+            border-left-width: 2px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); display: none;
+            z-index: 2000; flex-direction: column; overflow: hidden; font-size: 11px;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 8px;
+        }
+        .start-menu-header {
+            background: linear-gradient(to bottom, #0C5BD9 0%, #1D6CF1 100%); padding: 8px 10px;
+            color: white; font-size: 14px; font-weight: bold; display: flex;
+            align-items: center; flex-shrink: 0;
+        }
+        .start-menu-header img {
+            width: 32px; height: 32px; margin-right: 10px; border: 1px solid #7FB4F8;
+            padding: 2px; background-color: #fff; border-radius: 3px;
+        }
+        .start-menu-body { flex-grow: 1; display: flex; overflow-y: auto; overflow-x: hidden; }
+        .start-menu-left {
+            display: flex; flex-direction: column; padding: 5px 0; overflow-y: auto;
+            height: auto; width: 100%; flex-shrink: 0;
+        }
+        .start-menu-item {
+            padding: 6px 10px; cursor: pointer; display: flex; align-items: center;
+            color: #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            min-height: 32px; box-sizing: border-box;
+        }
+        .start-menu-item:hover { background-color: #316AC5; color: white; }
+        .start-menu-item strong { font-weight: bold; font-size: 12px; }
+        .start-menu-separator { height: 1px; background-color: #A0C5E8; margin: 5px 10px; flex-shrink: 0; }
+        .start-menu-footer {
+            background-color: #EBF4FC;
+            border-top: 1px solid #A0C5E8; padding: 5px 8px;
+            display: flex; justify-content: flex-end; align-items: center; flex-shrink: 0;
+        }
+        .start-menu-footer button {
+            background: none; border: 1px solid transparent; padding: 3px 6px; margin-left: 5px;
+            cursor: pointer; font-size: 11px; display: flex; align-items: center; border-radius: 2px;
+        }
+        .start-menu-footer button:hover { background-color: #316AC5; color: white; border: 1px outset #A0C5E8; }
+
+        /* --- Window Styles (General Application Window) --- */
+        .window {
+            position: absolute; top: 50px; left: 100px; width: 500px; min-width: 250px; /* Increased min-width for usability */
+            min-height: 200px; /* Increased min-height */
+            max-height: 85vh; /* Adjusted max-height */
+            max-width: 95vw; /* Added max-width */
+            background-color: #ECE9D8;
+            border: 1px solid #003B9C; box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            display: none; z-index: 500; flex-direction: column;
+            border-radius: 3px 3px 0 0;
+            /* overflow: hidden;  Allow resize handles to be slightly outside if needed, content handles overflow */
+        }
+        .window.active { z-index: 1500; } /* z-index is dynamically managed in JS */
+        .window-titlebar {
+            background: linear-gradient(to bottom, #005CFD 0%, #0051E6 100%); color: white;
+            padding: 4px 8px; font-weight: bold; font-size: 13px; cursor: move;
+            display: flex; justify-content: space-between; align-items: center; height: 22px;
+            border-bottom: 1px solid #003B9C; user-select: none; flex-shrink: 0;
+        }
+        .window-titlebar-title {
+            display: flex; align-items: center; white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .window-titlebar-buttons button {
+            background-color: #D95043; color: white; border: 1px outset white;
+            width: 18px; height: 18px; font-size: 10px; line-height: 10px;
+            font-weight: bold; font-family: "Arial"; cursor: pointer; padding: 0; margin-left: 2px;
+        }
+        .window-titlebar-buttons button:hover { filter: brightness(1.2); }
+        .window-titlebar-buttons button:active { filter: brightness(0.8); border-style: inset; }
+        .window-close-button { font-weight: bold; } /* Specific to the 'X' button */
+
+        /* --- Window Resize Handles --- */
+        .resize-handle {
+            position: absolute;
+            background: transparent; /* Or a very subtle color for debugging */
+            z-index: 10; /* Above content, below other windows if overlapping */
+        }
+        .resize-handle-right {
+            width: 6px; height: calc(100% - 6px); /* Avoid overlapping bottom-right */
+            top: 0; right: -3px; /* Half outside */
+            cursor: ew-resize;
+        }
+        .resize-handle-bottom {
+            width: calc(100% - 6px); /* Avoid overlapping bottom-right */
+            height: 6px;
+            bottom: -3px; left: 0; /* Half outside */
+            cursor: ns-resize;
+        }
+        .resize-handle-bottom-right {
+            width: 10px; height: 10px;
+            bottom: -5px; right: -5px; /* Slightly larger for easier grab */
+            cursor: nwse-resize; /* nwse for bottom-right */
+            /* background-color: rgba(255,0,0,0.2);  For debugging */
+        }
 
 
-    .taskbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 40px;
-      background: linear-gradient(to bottom, #245DD7 0%, #3F8CF1 10%, #3B84EE 90%, #52A0FE 100%);
-      border-top: 1px solid #67B3FF;
-      display: flex;
-      align-items: center;
-      padding: 0 5px;
-      box-sizing: border-box;
-      z-index: 1000;
-    }
+        /* --- Window Content Area Styles --- */
+        .window-content {
+            padding: 10px; flex-grow: 1; overflow: auto; font-size: 12px;
+            background-color: #FFFFFF; border: 1px solid #ACA899; margin: 2px;
+            position: relative; /* For potential absolute positioned elements within content */
+            display: flex; /* Added for Flexbox layout */
+            flex-direction: column; /* Arrange content in a column */
+        }
 
-    .start-button {
-      background: linear-gradient(to bottom, #5CBF49 0%, #50A83E 10%, #489938 90%, #3E822E 100%);
-      border: 1px outset #4CAF50;
-      border-radius: 3px;
-      color: white;
-      padding: 4px 15px 4px 10px;
-      font-size: 16px;
-      font-weight: bold;
-      font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-      margin-right: 10px;
-      height: 30px;
-    }
+        .window-content-main {
+            flex-grow: 1; /* Allows main content to take up available space */
+            overflow: auto; /* Keep content scrollable */
+        }
+        .window-content iframe { width: 100%; height: 100%; border: none; }
+        .window-content button.window-content-close-button {
+            padding: 8px 15px; font-size: 12px; cursor: pointer; background-color: #ddd;
+            border: 1px solid #bbb; border-radius: 3px; margin-top: 10px;
+        }
+        .window-content button.window-content-close-button:hover { background-color: #ccc; }
 
-    .start-button img {
-        width: 20px;
-        height: 20px;
-        margin-right: 5px;
-        filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.2));
-    }
+        /* --- Specific Welcome Window Styles --- */
+        #welcomeWindowTitle { font-size: 18px; margin-bottom: 0; }
 
-    .start-button:hover {
-      background: linear-gradient(to bottom, #6CD95A 0%, #5DBF49 10%, #53AC40 90%, #469136 100%);
-    }
-    .start-button:active {
-      background: linear-gradient(to top, #5CBF49 0%, #50A83E 10%, #489938 90%, #3E822E 100%);
-      border-style: inset;
-      padding: 5px 14px 3px 11px;
-    }
+        /* --- General Action Button in Window Content --- */
+        .window-content button.window-content-action-button {
+            padding: 8px 15px;
+            font-size: 12px;
+            cursor: pointer;
+            background-color: #245DD7;
+            color: white;
+            border: 1px solid #003B9C;
+            border-radius: 3px;
+            margin-top: 10px;
+            margin-left: 5px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        }
+        .window-content button.window-content-action-button:hover {
+            background-color: #3F8CF1;
+        }
+        .window-content button.window-content-action-button:active {
+            background-color: #1D52C1;
+            border-style: inset;
+        }
 
-    .start-menu {
-      position: fixed;
-      bottom: 40px;
-      left: 0;
-      width: 280px;
-      max-height: 450px;
-      background-color: #EBF4FC;
-      border: 1px solid #082970;
-      border-top-width: 2px;
-      border-left-width: 2px;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-      display: none;
-      z-index: 2000;
-      flex-direction: column;
-      overflow-y: auto;
-      font-size: 11px;
-    }
-
-    .start-menu-header {
-      background: linear-gradient(to bottom, #0C5BD9 0%, #1D6CF1 100%);
-      padding: 8px 10px;
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-    }
-    .start-menu-header img {
-        width: 32px;
-        height: 32px;
-        margin-right: 10px;
-        border: 1px solid #7FB4F8;
-        padding: 2px;
-        background-color: #fff;
-        border-radius: 3px;
-    }
-
-    .start-menu-body {
-      flex-grow: 1;
-      display: flex;
-    }
-
-    .start-menu-left, .start-menu-right {
-        display: flex;
-        flex-direction: column;
-        padding: 5px 0;
-    }
-    .start-menu-left {
-        width: 55%;
-    }
-    .start-menu-right {
-        width: 45%;
-        background-color: #D4E6F8;
-        border-left: 1px solid #A0C5E8;
-    }
-
-    .start-menu-item {
-      padding: 6px 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      color: #000;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .start-menu-item:hover {
-      background-color: #316AC5;
-      color: white;
-    }
-    .start-menu-item img {
-        width: 20px;
-        height: 20px;
-        margin-right: 8px;
-    }
-    .start-menu-item.pinned img {
-        width: 24px;
-        height: 24px;
-    }
-    .start-menu-item strong {
-        font-weight: bold;
-        font-size: 12px;
-    }
-    .start-menu-item em {
-        font-style: normal;
-        font-size: 10px;
-        color: #555;
-        margin-left: 28px;
-        margin-top: -18px;
-        display: block;
-    }
-    .start-menu-item:hover em {
-        color: #ddd;
-    }
+        /* --- New styles for buttons container at the bottom --- */
+        .window-buttons-container {
+            display: flex;
+            justify-content: flex-end; /* Align buttons to the right */
+            padding-top: 10px; /* Space above buttons */
+            border-top: 1px solid #ddd; /* Optional separator */
+            margin-top: auto; /* Pushes the container to the bottom */
+            flex-shrink: 0; /* Prevents shrinking */
+        }
+        /* Adjust existing button styles to fit the new container */
+        .window-buttons-container button {
+            margin-top: 0; /* Remove previous margin-top from .window-content button */
+            margin-left: 5px; /* Add some space between buttons */
+        }
 
 
-    .start-menu-separator {
-        height: 1px;
-        background-color: #A0C5E8;
-        margin: 5px 10px;
-    }
+        /* --- Image Styles within Window Content --- */
+        .window-content img.app-content-image { /* General image style */
+            max-width: 100%;
+            height: auto;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            display: block;
+            border-radius: 3px;
+        }
 
-    .start-menu-footer {
-        background-color: #EBF4FC;
-        border-top: 1px solid #A0C5E8;
-        padding: 5px 8px;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-    }
-    .start-menu-footer button {
-        background: none;
-        border: 1px solid transparent;
-        padding: 3px 6px;
-        margin-left: 5px;
-        cursor: pointer;
-        font-size: 11px;
-        display: flex;
-        align-items: center;
-        border-radius: 2px;
-    }
-     .start-menu-footer button:hover {
-        background-color: #316AC5;
-        color: white;
-        border: 1px outset #A0C5E8;
-     }
-     .start-menu-footer button img {
-         width: 20px;
-         height: 20px;
-         margin-right: 4px;
-     }
+        /* --- Pregunton Survey Image Grid --- */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 8px;
+            width: 100%;
+            aspect-ratio: 4 / 3; 
+            max-height: 450px;   
+            min-height: 150px;  
+            margin: 15px 0 95px; 
+        }
 
-    .window {
-      position: absolute;
-      top: 50px;
-      left: 100px;
-      width: 500px;
-      min-width: 200px;
-      min-height: 150px;
-      max-height: 80vh;
-      background-color: #ECE9D8;
-      border: 1px solid #003B9C;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
-      display: none;
-      z-index: 500;
-      flex-direction: column;
-      border-radius: 3px 3px 0 0;
-    }
-    .window.active {
-        z-index: 1500;
-    }
+        .image-grid .grid-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            border: 1px solid #A0C5E8;
+            border-radius: 3px;
+            box-sizing: border-box;
+            background-color: #f0f0f0; 
+        }
 
-    .window-titlebar {
-      background: linear-gradient(to bottom, #005CFD 0%, #0051E6 100%);
-      color: white;
-      padding: 4px 8px;
-      font-weight: bold;
-      font-size: 13px;
-      cursor: move;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 22px;
-      border-bottom: 1px solid #003B9C;
-      user-select: none;
-    }
-    .window-titlebar-title {
-        display: flex;
-        align-items: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .window-titlebar-title img {
-        width: 16px;
-        height: 16px;
-        margin-right: 5px;
-    }
 
-    .window-titlebar-buttons button {
-        background-color: #D95043;
-        color: white;
-        border: 1px outset white;
-        width: 18px;
-        height: 18px;
-        font-size: 10px;
-        line-height: 10px;
-        font-weight: bold;
-        font-family: "Webdings", "Arial";
-        cursor: pointer;
-        padding: 0;
-        margin-left: 2px;
-    }
-    .window-titlebar-buttons button.minimize,
-    .window-titlebar-buttons button.maximize {
-        background-color: #C0C0C0;
-    }
-    .window-titlebar-buttons button:hover {
-        filter: brightness(1.2);
-    }
-    .window-titlebar-buttons button:active {
-        filter: brightness(0.8);
-        border-style: inset;
-    }
+        .window-content img.profile-picture {
+            float: left;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin: 0px 10px 10px 0px;
+            border: 1px solid #A0C5E8;
+            padding: 2px;
+            background-color: #fff;
+            border-radius: 20px;
+        }
 
-    .window-content {
-      padding: 10px;
-      flex-grow: 1;
-      overflow: auto;
-      font-size: 12px;
-      background-color: #FFFFFF;
-      border: 1px solid #ACA899;
-      margin: 2px;
-    }
-    .window-content iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-
-    #welcomeWindowTitle {
-        font-size: 18px;
-        margin-bottom: 0;
-    }
-    #welcomeWindowPortfolio {
-        margin-top: 5px;
-        font-size: 12px;
-        color: #333;
-    }
-
-  </style>
+        /* --- Sprite Icon for Menu Buttons --- */
+        .menu-button-icon-sprite {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="desktop" id="desktop">
-    <div class="app-icon" id="icon-welcome" data-window-id="windowWelcome" data-icon-src="icons/portfolio_icon.png" data-app-name="Welcome" style="top: 20px; left: 20px;">
-      <img src="icons/portfolio_icon.png" alt="Welcome">
-      <span>Welcome</span>
-    </div>
-    <div class="app-icon" id="icon-easy-assessment" data-window-id="windowEasyAssessment" data-icon-src="icons/easy_assessment_icon.png" data-app-name="Easy Assessment" style="top: 20px; left: 120px;">
-      <img src="icons/easy_assessment_icon.png" alt="Easy Assessment">
-      <span>Easy Assessment Survey App</span>
-    </div>
-    <div class="app-icon" id="icon-gis" data-window-id="windowGis" data-icon-src="icons/gis_mapping_icon.png" data-app-name="GIS Projects" style="top: 150px; left: 20px;">
-      <img src="icons/gis_mapping_icon.png" alt="GIS">
-      <span>GIS and Mapping Projects</span>
-    </div>
-    <div class="app-icon" id="icon-epidemiology" data-window-id="windowEpidemiology" data-icon-src="icons/epidemiology_icon.png" data-app-name="Epidemiology" style="top: 150px; left: 120px;">
-      <img src="icons/epidemiology_icon.png" alt="Epidemiology">
-      <span>Understanding Epidemiology</span>
-    </div>
-    <div class="app-icon" id="icon-tools" data-window-id="windowTools" data-icon-src="icons/tools_icon.png" data-app-name="Tools" style="top: 280px; left: 20px;">
-      <img src="icons/tools_icon.png" alt="Tools">
-      <span>Tools</span>
-    </div>
-    <div class="app-icon" id="icon-fengshui" data-window-id="windowFengShui" data-icon-src="icons/fengshui_icon.png" data-app-name="Feng Shui Solver" style="top: 280px; left: 120px;">
-      <img src="icons/fengshui_icon.png" alt="Feng Shui">
-      <span>Feng Shui Solver</span>
-    </div>
-    <div class="app-icon" id="icon-games" data-window-id="windowGames" data-icon-src="icons/games_icon.png" data-app-name="Games & Toys" style="top: 20px; left: 220px;">
-      <img src="icons/games_icon.png" alt="Games">
-      <span>Games and Toys</span>
-    </div>
-  </div>
-
-  <div class="taskbar">
-    <button class="start-button" id="startButton">
-        <img src="icons/xp_start_icon.png" alt="Start"> start
-    </button>
+    <div id="bootScreen" style="display: none;">
+        <div class="boot-logo-container">
+            <img src="images/xp_logo.png" alt="Windows XP Logo" id="xpBootLogo">
+            <div class="windows-text-boot">
+                <span>Portfolio</span><span class="xp-text-boot">XP</span>
+                <div class="edition-text-boot">Creative</div>
+            </div>
+        </div>
+        <div class="loading-bar-container">
+            <div class="loading-bar-track">
+                <div class="loading-bar-sliding-block"></div>
+                <div class="loading-bar-sliding-block" style="animation-delay: 0.05s;"></div>
+                <div class="loading-bar-sliding-block" style="animation-delay: 0.1s;"></div>
+            </div>
+        </div>
+        <div class="copyright-text-boot">© Gustavo Chanchien</div>
     </div>
 
-  <div class="start-menu" id="startMenu">
-    <div class="start-menu-header">
-        <img src="icons/user_avatar_placeholder.png" alt="User"> Gustavo Chanchien
-    </div>
-    <div class="start-menu-body">
-        <div class="start-menu-left">
-            <div class="start-menu-item pinned" data-window-id="windowEasyAssessment" data-icon-src="icons/easy_assessment_icon.png" data-app-name="Easy Assessment">
-                <img src="icons/easy_assessment_icon.png" alt=""><strong>Easy Assessment</strong>
+    <div class="desktop-wrapper" id="desktopWrapper">
+        <div class="desktop" id="desktop">
+            <div id="selectionBox"></div>
+        </div>
+        <div class="taskbar" id="taskbar">
+            <button class="start-button" id="startButton">
+                <img src="images/xp_logo.png" alt="Start"> start
+            </button>
+            <div class="taskbar-apps" id="taskbarApps"></div>
+            <div class="notification-area" id="notificationArea">
+                <span id="weatherDisplay">Loading...</span>
+                <span id="timeDisplay">Loading...</span>
             </div>
-            <div class="start-menu-item pinned" data-window-id="windowGis" data-icon-src="icons/gis_mapping_icon.png" data-app-name="GIS Projects">
-                <img src="icons/gis_mapping_icon.png" alt=""><strong>GIS Projects</strong>
+        </div>
+        <div class="start-menu" id="startMenu">
+            <div class="start-menu-header">
+                <img src="images/profile_photo.png" alt="User"> Gustavo Chanchien
             </div>
-            <div class="start-menu-separator"></div>
-            <div class="start-menu-item" data-window-id="windowWelcome" data-icon-src="icons/portfolio_icon.png" data-app-name="Welcome">
-                <img src="icons/portfolio_icon.png" alt=""> Welcome
+            <div class="start-menu-body">
+                <div class="start-menu-left" id="startMenuLeftContainer"></div>
             </div>
-            <div class="start-menu-item" data-window-id="windowEpidemiology" data-icon-src="icons/epidemiology_icon.png" data-app-name="Epidemiology">
-                <img src="icons/epidemiology_icon.png" alt=""> Epidemiology
-            </div>
-             <div class="start-menu-item" data-window-id="windowTools" data-icon-src="icons/tools_icon.png" data-app-name="Tools">
-                <img src="icons/tools_icon.png" alt=""> Tools
-            </div>
-             <div class="start-menu-item" data-window-id="windowFengShui" data-icon-src="icons/fengshui_icon.png" data-app-name="Feng Shui Solver">
-                <img src="icons/fengshui_icon.png" alt=""> Feng Shui Solver
-            </div>
-             <div class="start-menu-item" data-window-id="windowGames" data-icon-src="icons/games_icon.png" data-app-name="Games & Toys">
-                <img src="icons/games_icon.png" alt=""> Games and Toys
-            </div>
-            </div>
-        <div class="start-menu-right">
-            <div class="start-menu-item" onclick="alert('My Documents (placeholder)')">
-                <img src="icons/mydocuments_icon.png" alt=""> My Documents
-            </div>
-            <div class="start-menu-item" onclick="alert('My Recent Documents (placeholder)')">
-                <img src="icons/myrecentdocs_icon.png" alt=""> My Recent Documents
-            </div>
-            <div class="start-menu-item" onclick="alert('My Pictures (placeholder)')">
-                <img src="icons/mypictures_icon.png" alt=""> My Pictures
-            </div>
-             <div class="start-menu-item" onclick="alert('My Music (placeholder)')">
-                <img src="icons/mymusic_icon.png" alt=""> My Music
-            </div>
-            <div class="start-menu-item" onclick="alert('My Computer (placeholder)')">
-                <img src="icons/mycomputer_icon.png" alt=""> My Computer
-            </div>
-            <div class="start-menu-separator"></div>
-            <div class="start-menu-item" onclick="alert('Control Panel (placeholder)')">
-                <img src="icons/controlpanel_icon.png" alt=""> Control Panel
-            </div>
-            <div class="start-menu-item" onclick="alert('Help and Support (placeholder)')">
-                <img src="icons/help_icon.png" alt=""> Help and Support
-            </div>
-            <div class="start-menu-item" onclick="alert('Search (placeholder)')">
-                <img src="icons/search_icon.png" alt=""> Search
-            </div>
-            <div class="start-menu-item" onclick="alert('Run... (placeholder)')">
-                <img src="icons/run_icon.png" alt=""> Run...
+            <div class="start-menu-footer">
+                <button id="logOffButton"> Go to GitHub</button>
+                <button id="shutDownButton"> Reboot Website</button>
             </div>
         </div>
     </div>
-    <div class="start-menu-footer">
-        <button onclick="alert('Log Off clicked. (Placeholder)')">
-            <img src="icons/logoff_icon.png" alt="Log Off"> Log Off
-        </button>
-        <button onclick="alert('Turn Off Computer clicked. (Placeholder)')">
-             <img src="icons/shutdown_icon.png" alt="Turn Off"> Turn Off Computer
-        </button>
+
+    <div class="info-popup" id="infoPopup">
+        <div class="info-popup-content">
+            <span class="info-popup-close" id="infoPopupClose" title="Close">×</span>
+            <h4>System Information</h4>
+            <p><strong>Your IP Address:</strong> <span id="popupIp">Loading...</span></p>
+            <p><strong>Approx. Location:</strong> <span id="popupLocation">Loading...</span></p>
+            <p><small>Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a>.</small></p>
+            <p><small>Geolocation by <a href="http://ip-api.com/" target="_blank" rel="noopener noreferrer">IP-API.com</a> (Note: HTTP used)</small></p>
+        </div>
     </div>
-  </div>
 
-  <div class="window" id="windowWelcome">
-    <div class="window-titlebar">
-      <div class="window-titlebar-title"><img src="icons/portfolio_icon.png" alt=""><span>Welcome to Gustavo's Portfolio</span></div>
-      <div class="window-titlebar-buttons">
-        <button class="close-button" data-window-id="windowWelcome">X</button>
-      </div>
-    </div>
-    <div class="window-content">
-      <h1 id="welcomeWindowTitle">Gustavo Chanchien</h1>
-      <p id="welcomeWindowPortfolio">Portfolio</p>
-      <p>Welcome to my interactive portfolio! Click on the icons or use the Start Menu to explore projects.</p>
-      <p>This desktop interface is built with HTML, CSS, and JavaScript.</p>
-    </div>
-  </div>
+    <script>
+        // --- DOM Element References (Boot Screen and Desktop Wrapper) ---
+        const bootScreenElement = document.getElementById('bootScreen');
+        const desktopWrapperElement = document.getElementById('desktopWrapper');
 
-  <div class="window" id="windowEasyAssessment">
-    <div class="window-titlebar">
-      <div class="window-titlebar-title"><img src="icons/easy_assessment_icon.png" alt=""><span>Easy Assessment Survey App</span></div>
-      <div class="window-titlebar-buttons">
-        <button class="close-button" data-window-id="windowEasyAssessment">X</button>
-      </div>
-    </div>
-    <div class="window-content">
-      <p>Content for <strong>Easy Assessment Survey App</strong> goes here.</p>
-      <p>You could embed the app using an iframe:</p>
-      <p>Or link to it: <a href="#" onclick="alert('Link to Easy Assessment App')">Open App</a></p>
-    </div>
-  </div>
+        // --- Application Data Configuration ---
+        const applicationsData = [
+            {
+                id: 'welcome',
+                name: 'Welcome',
+                fullName: "Welcome to Gustavo's Portfolio",
+                iconIndex: 9, 
+                isPinned: false, 
+                windowContentHTML: `
+                    <div class="window-content-main">
+                        <h1 id="welcomeWindowTitle">Gustavo Chanchien</h1>
+                        <p>Welcome to my portfolio! I'm a full-stack developer with 6 years of experience. Click on the icons or use the Start Menu to explore my projects and find out more about me.</p>
+                        <p>This desktop interface is built only with vanilla HTML, CSS, and JavaScript!</p>
+                    </div>
+                    <div class="window-buttons-container">
+                        <button class="window-content-close-button">Continue</button>
+                    </div>
+                `
+            },
+            {
+                id: 'aboutMe',
+                name: 'About Me',
+                fullName: 'Gustavo Chanchien Information',
+                iconIndex: 127,
+                isPinned: true,
+                windowContentHTML: `
+                    <div class="window-content-main">
+                        <p><strong>About Me</strong></p>
+                        <img src="images/profile_photo.png" alt="Gustavo Chanchien Profile" class="profile-picture">
+                        <p>
+                            Hi! I'm Gustavo Chanchien, I'm a full-stack developer and data analyst and I've been developing and coding since I was in high school. Now, I have over 6 years of professional experience developing all kinds of software, scripts, and programs to meet people's needs. I primarily work in Python, Javacript, and R, but I also know SQL, C++, C and use tools like Firebase, Google Cloud Services, REDCap, Tableau, Excel, Adobe Creative Cloud Suite tools, and LLMs like AI Studio and Gemini's API, ChatGPTs API, and some experience self-deploying models (Gemma 3) locally.
+                        </p>
+                        <p>
+                            I grew up in Managua, Nicaragua and first started coding with my best friend to build a cellphone app for our school's grade database using Ionic. Later by the time I graduated High School, there was a Zika Epidemic sweeping across the country and Latin America. I saw a need and took a gap year to work with the Sustainable Sciences Institute on a USAID grant to help track and reduce the spread of Zika through education on Aedes Aegypti Mosquito breeding sites. I worked on an EMR for the local clinic and a community tracking application while developing a 6 Module <i>"rotafolio"</i> curriculum.
 
-  <div class="window" id="windowGis">
-    <div class="window-titlebar">
-      <div class="window-titlebar-title"><img src="icons/gis_mapping_icon.png" alt=""><span>GIS and Mapping Projects</span></div>
-      <div class="window-titlebar-buttons">
-        <button class="close-button" data-window-id="windowGis">X</button>
-      </div>
-    </div>
-    <div class="window-content">
-      <p>Content for <strong>GIS and Mapping Projects</strong> goes here.</p>
-      <p>Showcase your maps, perhaps with embedded map viewers or links to project pages.</p>
-    </div>
-  </div>
+                            The next four years, I studied Computer Science and Psychology at Yale. I was motivated by how we can bridge the gap between people and data through technology. My senior project was an innovative take on how humans can process hyperlink and research data in 3D space using Virtual Reality based on the 1960 Project Xanadu Hyperlinks.
 
-  <div class="window" id="windowEpidemiology">
-    <div class="window-titlebar">
-      <div class="window-titlebar-title"><img src="icons/epidemiology_icon.png" alt=""><span>Understanding Epidemiology</span></div>
-      <div class="window-titlebar-buttons"><button class="close-button" data-window-id="windowEpidemiology">X</button></div>
-    </div>
-    <div class="window-content"><p>Details about <strong>Understanding Epidemiology</strong>...</p></div>
-  </div>
-
-  <div class="window" id="windowTools">
-    <div class="window-titlebar">
-      <div class="window-titlebar-title"><img src="icons/tools_icon.png" alt=""><span>Tools</span></div>
-      <div class="window-titlebar-buttons"><button class="close-button" data-window-id="windowTools">X</button></div>
-    </div>
-    <div class="window-content"><p>Various <strong>Tools</strong> developed or used...</p></div>
-  </div>
-
-  <div class="window" id="windowFengShui">
-    <div class="window-titlebar">
-      <div class="window-titlebar-title"><img src="icons/fengshui_icon.png" alt=""><span>Feng Shui Solver</span></div>
-      <div class="window-titlebar-buttons"><button class="close-button" data-window-id="windowFengShui">X</button></div>
-    </div>
-    <div class="window-content"><p>Information about the <strong>Feng Shui Solver</strong>...</p></div>
-  </div>
-
-  <div class="window" id="windowGames">
-    <div class="window-titlebar">
-      <div class="window-titlebar-title"><img src="icons/games_icon.png" alt=""><span>Games and Toys</span></div>
-      <div class="window-titlebar-buttons"><button class="close-button" data-window-id="windowGames">X</button></div>
-    </div>
-    <div class="window-content"><p>Fun <strong>Games and Toys</strong> projects...</p></div>
-  </div>
-
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const startButton = document.getElementById('startButton');
-      const startMenu = document.getElementById('startMenu');
-      const desktop = document.getElementById('desktop');
-      const appIcons = document.querySelectorAll('.app-icon');
-      const windows = document.querySelectorAll('.window');
-      const startMenuItems = document.querySelectorAll('.start-menu-item[data-window-id]');
-      const closeButtons = document.querySelectorAll('.close-button');
-
-      let highestZIndex = 1000; 
-
-      startButton.addEventListener('click', (event) => {
-        event.stopPropagation(); 
-        const isVisible = startMenu.style.display === 'flex';
-        startMenu.style.display = isVisible ? 'none' : 'flex';
-        if (!isVisible) {
-            startMenu.style.zIndex = highestZIndex + 1; 
-        }
-      });
-
-      document.addEventListener('click', (event) => {
-        if (startMenu.style.display === 'flex' && !startMenu.contains(event.target) && event.target !== startButton) {
-          startMenu.style.display = 'none';
-        }
-      });
-
-      function openWindow(windowId, appName, iconSrc) {
-        const windowToOpen = document.getElementById(windowId);
-        if (windowToOpen) {
-          windowToOpen.style.display = 'flex';
-          highestZIndex++;
-          windowToOpen.style.zIndex = highestZIndex;
-          windowToOpen.classList.add('active');
-
-          const titleElement = windowToOpen.querySelector('.window-titlebar-title span');
-          const iconElement = windowToOpen.querySelector('.window-titlebar-title img');
-          if (titleElement && appName) titleElement.textContent = appName;
-          if (iconElement && iconSrc) iconElement.src = iconSrc;
-
-          windows.forEach(win => {
-            if (win !== windowToOpen) win.classList.remove('active');
-          });
-          startMenu.style.display = 'none'; 
-        }
-      }
-
-      appIcons.forEach(icon => {
-        icon.addEventListener('dblclick', () => {
-          const windowId = icon.dataset.windowId;
-          const appName = icon.dataset.appName;
-          const iconSrc = icon.dataset.iconSrc;
-          if (windowId) {
-            openWindow(windowId, appName, iconSrc);
-          }
-        });
-
-        icon.addEventListener('click', (e) => {
-            appIcons.forEach(i => i.classList.remove('selected-icon')); 
-            icon.classList.add('selected-icon');
-            const windowElement = document.getElementById(icon.dataset.windowId);
-            if (windowElement && windowElement.style.display === 'flex') {
-                highestZIndex++;
-                windowElement.style.zIndex = highestZIndex;
-                windows.forEach(win => win.classList.remove('active'));
-                windowElement.classList.add('active');
+                            My primary motivations lie in creating software and technology that help people and communities reclaim their data and take advantage of new technologies to faciliatte their work and improve the lives of their community.
+                        </p>
+                    </div>
+                    <div class="window-buttons-container">
+                        <button class="window-content-action-button" data-action-url="YOUR_CV_LINK_HERE">View my CV</button>
+                        <button class="window-content-close-button">Close Window</button>
+                    </div>
+                `
+            },
+            {
+                id: 'preguntonSurveys',
+                name: 'Pregunton Surveys',
+                fullName: 'Pregunton Surveys WebApp',
+                iconIndex: 1,
+                isPinned: false,
+                windowContentHTML: `
+                    <div class="window-content-main">
+                        <p><strong>Pregunton Surveys Web App</strong></p>
+                        <p>
+                            The Pregunton Surveys Web App is a full-stack applicaton developed in Vue3 and Firebase that allows users to create custom surveys, distribute them easily with unique codes and view the results on custom report dashboards that update live as results come in.
+                        </p>
+                        <p>
+                            I built this application because I saw a need for it while working with Community Health Workers and their organizations. Many survey and data collection applications exist already, but this one is unique in its simplicity to set up, allowing anyone to build a survey and report dashboard and collect data quickly and securely. It has features that large survey and form services lack like conditionals and custom reports and dashboards, while still being incredibly simple to set up and get going.
+                        </p>
+                        <p>
+                            Future Plans: In the future I plan to Open-Source Pregunton so people can set up their own similar applications for environments where data is more sensitive and needs to be more closely managed by the organizations. In the mean time I'm already working on Pregunton 2.0, which will have many more features!
+                        </p>
+                        <div class="image-grid">
+                            <img src="images/preview-screenshots/pregunton1.png" alt="Pregunton Surveys Screenshot 1" class="grid-image">
+                            <img src="images/preview-screenshots/pregunton2.png" alt="Pregunton Surveys Screenshot 2" class="grid-image">
+                            <img src="images/preview-screenshots/pregunton3.png" alt="Pregunton Surveys Screenshot 3" class="grid-image">
+                            <img src="images/preview-screenshots/pregunton4.png" alt="Pregunton Surveys Screenshot 4" class="grid-image">
+                        </div>
+                    </div>
+                    <div class="window-buttons-container">
+                        <button class="window-content-action-button" data-action-url="https://pregunton.space">Take me there!</button>
+                        <button class="window-content-close-button">Close Window</button>
+                    </div>
+                `
+            },
+            {
+                id: 'epidemiology',
+                name: 'Epidemiology Concepts',
+                fullName: 'Understanding Epidemiology Concepts',
+                iconIndex: 45,
+                isPinned: false,
+                windowContentHTML: `
+                    <div class="window-content-main">
+                        <p><strong>Tools for Understanding Epidemiology Concepts</strong></p>
+                        <p>Learn some basic concepts in Epidemiology!</p>
+                        <p>I created these visualizations during my first year working on my Masters in Public Health at the University of New Mexico. I found a lot of the Epidemiology concepts and equations hard to grasp, but felt like there was an intuitive way to visualize them that makes them more memorable for me as a visual learner to study for exams. I've cleaned up the visualizations and grouped them together in this page.</p>
+                        <img src="images/epidemiology1.png" alt="Epidemiology Helpers Example Image" class="app-content-image">
+                        <img src="images/epidemiology2.png" alt="Epidemiology Helpers Example Image" class="app-content-image">
+                    </div>
+                    <div class="window-buttons-container">
+                        <button class="window-content-action-button" data-action-url="https://example.com/epidemiology">Take me there!</button>
+                        <button class="window-content-close-button">Close Window</button>
+                    </div>
+                `
+            },
+            {
+                id: 'gis',
+                name: 'GIS Projects',
+                fullName: 'GIS and Mapping Projects',
+                iconIndex: 109,
+                isPinned: false,
+                windowContentHTML: `
+                    <div class="window-content-main">
+                        <p><strong>GIS and Mapping Projects</strong></p>
+                        <p><i>Community Resource Maps</i></p>
+                        <p>I had some experience using Tableau to map resources for Community Health Workers to refer people to using the data from ShareNM (a community resource library). I've rebuilt that project to make it more accessible (and free to host and keep updated). Data is updated on a monthly basis from the ShareNM website.</p>
+                        <img src="images/epidemiology2.png" alt="Epidemiology Helpers Example Image" class="app-content-image">
+                        <button class="window-content-action-button" data-action-url="https://example.com/gis-community-maps">Take me there!</button>
+                        <p><i>GIS Heat Mapping, Albuquerque</i></p>
+                        <p>A quick project to build experience with using GIS tools to create a heat map of Albuquerque</p>
+                        <img src="images/epidemiology2.png" alt="Epidemiology Helpers Example Image" class="app-content-image">
+                        <button class="window-content-action-button" data-action-url="https://example.com/gis-heatmap">Take me there!</button>
+                        <p><i>Alcohol and Deaths, Albuquerque</i></p>
+                        <p>Alcohol and alcohol related death data by county in New Mexico overlayed with alcohol purchase and consumption data as well as liquor stores and bars</p>
+                        <img src="images/epidemiology2.png" alt="Epidemiology Helpers Example Image" class="app-content-image">
+                        <button class="window-content-action-button" data-action-url="https://example.com/gis-alcohol-deaths">Take me there!</button>
+                    </div>
+                    <div class="window-buttons-container">
+                        <button class="window-content-close-button">Close Window</button>
+                    </div>
+                `
+            },
+            {
+                id: 'tools',
+                name: 'Tools and Scripts',
+                fullName: 'Tools and Scripts',
+                iconIndex: 46,
+                isPinned: false,
+                windowContentHTML: `
+                    <div class="window-content-main">
+                        <p><strong>Tools and Scripts</strong></p>
+                        <p>A collection of useful utilities and resources. Most are for processing REDCap files, some operations are quite easy to do in R or other statistical software, but wanted to make such operations more accessible.</p>
+                        <p>A script to merge columns that have been filled out in alternate languages using different column names (when multilanguage support was not used)</p>
+                        <button class="window-content-action-button" data-action-url="https://example.com/spanish-merger">Spanish Column Merger</button>
+                        <p>A script to replace data with the dictionary text replacements</p>
+                        <button class="window-content-action-button" data-action-url="https://example.com/dictionary-activator">Dictionary Activator</button>
+                        <p>A script that manually downloads REDCap Data then clicks the buttons on the Tableau Desktop version to update Tableau Public Dashboards. It basically automates Tableau Public Dashboards so that you can update them live (which would normally require a premium subscription and viewer licenses)</p>
+                        <button class="window-content-action-button" data-action-url="https://example.com/tableau-updator">Tableau Updator</button>
+                    </div>
+                    <div class="window-buttons-container">
+                        <button class="window-content-close-button">Close Window</button>
+                    </div>
+                `
+            },
+            {
+                id: 'fengshui',
+                name: 'Feng Shui Solver',
+                fullName: 'Feng Shui Solver',
+                iconIndex: 68,
+                isPinned: false,
+                windowContentHTML: `
+                    <div class="window-content-main">
+                        <p><strong>Feng Shui Solver</strong></p>
+                        <p>An experiement in basic optimization concepts to optimally arrange a space for maximum feng shui. Not a replacement for an actual person, but fun nonetheless.</p>
+                        <p>Upgrade: Incorporating GenAI to create mockups of the designs</p>
+                    </div>
+                    <div class="window-buttons-container">
+                        <button class="window-content-action-button" data-action-url="https://example.com/fengshui-solver">Take me there!</button>
+                        <button class="window-content-close-button">Close Window</button>
+                    </div>
+                `
+            },
+            {
+                id: 'cryptography',
+                name: 'Cryptography',
+                fullName: 'Cryptography Visualizer',
+                iconIndex: 78,
+                isPinned: false,
+                windowContentHTML: `
+                    <div class="window-content-main">
+                        <p><strong>Cryptography Visualizer</strong></p>
+                        <p>A fun and interactive visualizer that helped me during my Cryptography and Security class to understand basic cryptography algorithms. Helps get a basic understanding of how they work and visually see how things are "encrypted".</p>
+                    </div>
+                    <div class="window-buttons-container">
+                        <button class="window-content-action-button" data-action-url="https://example.com/cryptography-visualizer">Take me there! </button>
+                        <button class="window-content-close-button">Close App</button>
+                    </div>
+                `
+            },
+            {
+                id: 'games',
+                name: 'Games & Fun',
+                fullName: 'Games & Fun',
+                iconIndex: 6,
+                isPinned: false,
+                windowContentHTML: `
+                    <div class="window-content-main">
+                        <p><strong>Fun Projects and Mini Games</strong></p>
+                        <p>Simple games and interactive experiments that I created for fun.</p>
+                        <p><i>Microbe Simulator</i></p>
+                        <p>A fun evolutionary microbe simulator.</p>
+                        <img src="images/epidemiology2.png" alt="Microbe Simulator Example Image" class="app-content-image">
+                        <button class="window-content-action-button" data-action-url="https://example.com/microbe-simulator">Take me there!</button>
+                        <p><i>Hexagonal Game of Life</i></p>
+                        <p>Hexagons are cool.</p>
+                        <img src="images/epidemiology2.png" alt="Hexagonal Game of Life Example Image" class="app-content-image">
+                        <button class="window-content-action-button" data-action-url="https://example.com/hex-game-of-life">Take me there!</button>
+                        <p><i>Low Poly Planet Generator</i></p>
+                        <p>A low poly planet generator I'm working on for a game. Some semblance of life on the planet</p>
+                        <img src="images/epidemiology2.png" alt="Low Poly Planet Example Image" class="app-content-image">
+                        <button class="window-content-action-button" data-action-url="https://example.com/low-poly-planet">Take me there!</button>
+                        <p><i>Mandelbrot Set Zoomer</i></p>
+                        <p>Albuquerque has a Fractal Society and I enjoy their Fractal Friday shows a lot so I made this to explore Mandelbrot sets a little more. Resolution is not great.</p>
+                        <img src="images/epidemiology2.png" alt="Mandelbrot Set Example Image" class="app-content-image">
+                        <button class="window-content-action-button" data-action-url="https://example.com/mandelbrot-zoomer">Take me there!</button>
+                    </div>
+                    <div class="window-buttons-container">
+                        <button class="window-content-close-button">Close Window</button>
+                    </div>
+                `
             }
-        });
-      });
+        ];
 
-      startMenuItems.forEach(item => {
-        item.addEventListener('click', () => {
-          const windowId = item.dataset.windowId;
-          const appName = item.dataset.appName;
-          const iconSrc = item.dataset.iconSrc;
-          if (windowId) {
-            openWindow(windowId, appName, iconSrc);
-          }
-        });
-      });
+        // --- Main DOMContentLoaded Event Listener ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Element References (Desktop UI) ---
+            const startButton = document.getElementById('startButton');
+            const startMenu = document.getElementById('startMenu');
+            const startMenuLeftContainer = document.getElementById('startMenuLeftContainer');
+            const desktop = document.getElementById('desktop');
+            const selectionBox = document.getElementById('selectionBox');
+            const taskbarAppsContainer = document.getElementById('taskbarApps');
+            const notificationArea = document.getElementById('notificationArea');
+            const timeDisplay = document.getElementById('timeDisplay');
+            const weatherDisplay = document.getElementById('weatherDisplay');
+            const infoPopup = document.getElementById('infoPopup');
+            const infoPopupClose = document.getElementById('infoPopupClose');
+            const popupIp = document.getElementById('popupIp');
+            const popupLocation = document.getElementById('popupLocation');
+            const logOffButton = document.getElementById('logOffButton');
+            const shutDownButton = document.getElementById('shutDownButton');
 
-      closeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const windowId = button.dataset.windowId;
-          const windowToClose = document.getElementById(windowId);
-          if (windowToClose) {
-            windowToClose.style.display = 'none';
-            windowToClose.classList.remove('active');
-          }
-        });
-      });
+            // --- State Variables ---
+            let isSelecting = false, selectionStartX, selectionStartY, desktopRect;
+            let highestZIndex = 1000; 
+            let appIconElements = [], windowElements = []; 
+            let windowsInitialised = false;
 
-      windows.forEach(win => {
-        win.addEventListener('mousedown', () => {
-          highestZIndex++;
-          win.style.zIndex = highestZIndex;
-          windows.forEach(w => w.classList.remove('active'));
-          win.classList.add('active');
-        }, true); 
-      });
+            // --- Desktop Icon Layout Constants ---
+            const BASE_ICON_ACTUAL_WIDTH = 80; 
+            const BASE_ICON_ACTUAL_HEIGHT = 100; 
+            const BASE_ICON_MARGIN = 10; 
+            const BASE_SPRITE_DISPLAY_SIZE = 48; 
+            const BASE_FONT_SIZE = 11; 
 
+            const MIN_SCALE_FACTOR = 0.65; 
+            const MIN_ICON_MARGIN = 5; 
+            const MIN_FONT_SIZE = 9; 
+            const MIN_SPRITE_DISPLAY_SIZE = 24; 
+            const MIN_ICON_ACTUAL_HEIGHT = BASE_ICON_ACTUAL_HEIGHT * MIN_SCALE_FACTOR;
 
-      appIcons.forEach(icon => {
-        let offsetX, offsetY, isDragging = false;
+            const BASE_ICON_SLOT_WIDTH = BASE_ICON_ACTUAL_WIDTH + (2 * BASE_ICON_MARGIN); 
+            const BASE_ICON_SLOT_HEIGHT = BASE_ICON_ACTUAL_HEIGHT + (2 * BASE_ICON_MARGIN); 
 
-        icon.addEventListener('mousedown', (e) => {
-          if (e.button !== 0) return;
+            // --- Boot Screen Logic Constants ---
+            const BOOT_SCREEN_FLAG_XP = 'hasSeenBootScreenXP_Portfolio'; 
+            const FORCE_BOOT_FLAG_XP = 'forceShowBootScreenXP_Portfolio'; 
+            const BOOT_DURATION = 3000; 
 
-          isDragging = true;
-          icon.classList.add('dragging');
-          const rect = icon.getBoundingClientRect();
-          offsetX = e.clientX - rect.left;
-          offsetY = e.clientY - rect.top;
+            function initializeDesktop(bootScreenJustShown) {
+                if (desktopWrapperElement) desktopWrapperElement.style.display = 'block';
 
-          icon.style.zIndex = 2000; 
+                createAllWindowsOnce(); 
+                refreshDesktopIconsLayout(); 
+                populateStartMenu(applicationsData); 
 
-          document.addEventListener('mousemove', onMouseMove);
-          document.addEventListener('mouseup', onMouseUp);
-        });
+                if (bootScreenJustShown) {
+                    const welcomeAppData = applicationsData.find(app => app.id === 'welcome');
+                    if (welcomeAppData) {
+                        openWindow(`window-${welcomeAppData.id}`, welcomeAppData.fullName, welcomeAppData.iconIndex);
+                        const welcomeWindowElement = document.getElementById(`window-${welcomeAppData.id}`);
+                        if (welcomeWindowElement) {
+                            setTimeout(() => {
+                                if (welcomeWindowElement.offsetWidth > 0 && welcomeWindowElement.offsetHeight > 0) {
+                                    welcomeWindowElement.style.left = `calc(50% - ${welcomeWindowElement.offsetWidth / 2}px)`;
+                                    welcomeWindowElement.style.top = `calc(30% - ${welcomeWindowElement.offsetHeight / 2}px)`;
+                                } else { 
+                                    welcomeWindowElement.style.left = '30%';
+                                    welcomeWindowElement.style.top = '20%';
+                                }
+                            }, 50);
+                        }
+                    }
+                }
+                updateDateTimeDisplay(); setInterval(updateDateTimeDisplay, 1000); 
+                fetchIpAndWeather(); setInterval(fetchIpAndWeather, 15 * 60 * 1000); 
+            }
 
-        function onMouseMove(e) {
-          if (!isDragging) return;
-          e.preventDefault(); 
+            function execShowBootScreen() {
+                if (bootScreenElement) {
+                    bootScreenElement.style.display = 'flex';
+                    if (desktopWrapperElement) desktopWrapperElement.style.display = 'none'; 
+                    setTimeout(() => {
+                        if (bootScreenElement) bootScreenElement.style.display = 'none';
+                        localStorage.setItem(BOOT_SCREEN_FLAG_XP, 'true'); 
+                        localStorage.removeItem(FORCE_BOOT_FLAG_XP); 
+                        initializeDesktop(true); 
+                    }, BOOT_DURATION);
+                } else {
+                    console.warn("Boot screen element not found. Initializing desktop directly.");
+                    initializeDesktop(true);
+                }
+            }
 
-          let newX = e.clientX - offsetX;
-          let newY = e.clientY - offsetY;
+            const hasSeenBoot = localStorage.getItem(BOOT_SCREEN_FLAG_XP);
+            const forceShowBoot = localStorage.getItem(FORCE_BOOT_FLAG_XP);
 
-          const desktopRect = desktop.getBoundingClientRect();
-          const iconRect = icon.getBoundingClientRect(); 
+            if (forceShowBoot === 'true' || !hasSeenBoot) {
+                if (desktopWrapperElement) desktopWrapperElement.style.display = 'none'; 
+                execShowBootScreen();
+            } else {
+                if (bootScreenElement) bootScreenElement.style.display = 'none'; 
+                initializeDesktop(false); 
+            }
 
-          if (newX < 0) newX = 0;
-          if (newY < 0) newY = 0;
-          if (newX + icon.offsetWidth > desktopRect.width) newX = desktopRect.width - icon.offsetWidth;
-          if (newY + icon.offsetHeight > desktopRect.height) newY = desktopRect.height - icon.offsetHeight;
+            if (shutDownButton) {
+                shutDownButton.addEventListener('click', () => {
+                    windowElements.forEach(win => { if (win.style.display !== 'none') closeWindow(win.id); });
+                    if(taskbarAppsContainer) taskbarAppsContainer.innerHTML = ''; 
 
-          icon.style.left = newX + 'px';
-          icon.style.top = newY + 'px';
-        }
+                    if (desktop) desktop.style.display = 'none';
+                    if (taskbar) taskbar.style.display = 'none';
+                    if (startMenu) startMenu.style.display = 'none';
+                    if (desktopWrapperElement) desktopWrapperElement.style.display = 'none';
 
-        function onMouseUp() {
-          if (!isDragging) return;
-          isDragging = false;
-          icon.classList.remove('dragging');
-          icon.style.zIndex = 1; 
+                    let shutDownMessage = document.getElementById('shutDownMessage');
+                    if (!shutDownMessage) { 
+                        shutDownMessage = document.createElement('div');
+                        shutDownMessage.id = 'shutDownMessage'; document.body.appendChild(shutDownMessage);
+                    }
+                    shutDownMessage.textContent = 'Portfolio is rebooting...'; shutDownMessage.style.display = 'flex';
 
-          document.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', onMouseUp);
-        }
-        const img = icon.querySelector('img');
-        if (img) {
-            img.addEventListener('dragstart', (e) => e.preventDefault());
-        }
-      });
-
-
-      windows.forEach(win => {
-        const titlebar = win.querySelector('.window-titlebar');
-        if (!titlebar) return;
-
-        let offsetX, offsetY, isDraggingWindow = false;
-
-        titlebar.addEventListener('mousedown', (e) => {
-          if (e.button !== 0) return; 
-          if (e.target.closest('.window-titlebar-buttons button')) {
-            return;
-          }
-
-          isDraggingWindow = true;
-          win.classList.add('dragging-window'); 
-
-          const rect = win.getBoundingClientRect();
-          offsetX = e.clientX - rect.left;
-          offsetY = e.clientY - rect.top;
-
-          highestZIndex++;
-          win.style.zIndex = highestZIndex;
-          windows.forEach(w => w.classList.remove('active'));
-          win.classList.add('active');
-
-
-          document.addEventListener('mousemove', onWindowMouseMove);
-          document.addEventListener('mouseup', onWindowMouseUp);
-        });
-
-        function onWindowMouseMove(e) {
-          if (!isDraggingWindow) return;
-          e.preventDefault();
-
-          let newX = e.clientX - offsetX;
-          let newY = e.clientY - offsetY;
-
-          const taskbarHeight = 40;
-          if (newX < 0) newX = 0;
-          if (newY < 0) newY = 0; 
-          if (newX + win.offsetWidth > window.innerWidth) newX = window.innerWidth - win.offsetWidth;
-          if (newY + win.offsetHeight > window.innerHeight - taskbarHeight) newY = window.innerHeight - taskbarHeight - win.offsetHeight;
-          if (newY < 0) newY = 0; 
-
-          win.style.left = newX + 'px';
-          win.style.top = newY + 'px';
-        }
-
-        function onWindowMouseUp() {
-          if (!isDraggingWindow) return;
-          isDraggingWindow = false;
-          win.classList.remove('dragging-window');
-          document.removeEventListener('mousemove', onWindowMouseMove);
-          document.removeEventListener('mouseup', onWindowMouseUp);
-        }
-      });
-      openWindow('windowWelcome', "Welcome to Gustavo's Portfolio", "icons/portfolio_icon.png");
-      const welcomeWindow = document.getElementById('windowWelcome');
-      if(welcomeWindow){ 
-          welcomeWindow.style.left = 'calc(50% - 250px)'; 
-          welcomeWindow.style.top = 'calc(50% - 150px)'; 
-      }
+                    setTimeout(() => {
+                        localStorage.setItem(FORCE_BOOT_FLAG_XP, 'true'); window.location.href = window.location.pathname;
+                    }, 500); 
+                });
+            }
 
 
-    });
-  </script>
+            function getSpriteIconStyles(iconIndex, displayWidth, displayHeight) {
+                const ICON_WIDTH_IN_SPRITE = 64; 
+                const ICON_HEIGHT_IN_SPRITE = 64; 
+                const SPRITE_SHEET_FILE = 'images/icons.png'; 
+                const SPRITE_SHEET_TOTAL_WIDTH = 512; 
+                const SPRITE_SHEET_TOTAL_HEIGHT = 1024; 
+                const ICONS_PER_ROW_IN_SPRITE = 8; 
 
+                const col = iconIndex % ICONS_PER_ROW_IN_SPRITE;
+                const row = Math.floor(iconIndex / ICONS_PER_ROW_IN_SPRITE);
+
+                const scaleX = displayWidth / ICON_WIDTH_IN_SPRITE;
+                const scaleY = displayHeight / ICON_HEIGHT_IN_SPRITE;
+
+                const scaledSpriteSheetWidth = SPRITE_SHEET_TOTAL_WIDTH * scaleX;
+                const scaledSpriteSheetHeight = SPRITE_SHEET_TOTAL_HEIGHT * scaleY;
+
+                const scaledIconXOffset = col * displayWidth;
+                const scaledIconYOffset = row * displayHeight;
+
+                return {
+                    backgroundImage: `url('${SPRITE_SHEET_FILE}')`,
+                    backgroundPosition: `-${scaledIconXOffset}px -${scaledIconYOffset}px`,
+                    backgroundSize: `${scaledSpriteSheetWidth}px ${scaledSpriteSheetHeight}px`,
+                    backgroundRepeat: 'no-repeat'
+                };
+            }
+
+            function getWeatherEmoji(wmoCode) {
+                if (wmoCode === undefined || wmoCode === null) {
+                    return "❓"; 
+                }
+                const emojiMap = {
+                    0: "☀️",  1: "🌤️",  2: "⛅",  3: "☁️",  45: "🌫️", 48: "🌫️",
+                    51: "💧", 53: "💧🌧️", 55: "🌧️", 56: "🥶💧", 57: "🥶🌧️",
+                    61: "🌦️", 63: "🌧️",  65: "🌧️☔", 66: "🥶🌦️", 67: "🥶🌧️☔",
+                    71: "🌨️", 73: "❄️",  75: "❄️☃️", 77: "❄️",
+                    80: "🌦️", 81: "🌧️",  82: "🌧️⛈️", 85: "🌨️", 86: "❄️☃️",
+                    95: "⛈️", 96: "⛈️🧊", 99: "⛈️🧊",
+                };
+                return emojiMap[wmoCode] || "❓"; 
+            }
+
+
+            function updateDateTimeDisplay() {
+                const now = new Date();
+                let hours = now.getHours();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; 
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const month = (now.getMonth() + 1).toString().padStart(2, '0'); 
+
+                if (timeDisplay) {
+                    timeDisplay.textContent = `${hours}:${minutes} ${ampm} | ${month}/${day}`;
+                }
+            }
+
+            async function fetchIpAndWeather() {
+                try {
+                    const ipResponse = await fetch('https://api.ipify.org?format=json');
+                    if (!ipResponse.ok) {
+                        throw new Error(`IP fetch failed: ${ipResponse.status} ${ipResponse.statusText}`);
+                    }
+                    const ipData = await ipResponse.json();
+                    const userIp = ipData.ip;
+
+                    if (typeof popupIp !== 'undefined' && popupIp) {
+                        popupIp.textContent = userIp;
+                    }
+                    
+                    const geoResponse = await fetch(`http://ip-api.com/json/${userIp}?fields=status,message,city,lat,lon,query`);
+                    if (!geoResponse.ok) {
+                        throw new Error(`Geo fetch failed: ${geoResponse.status} ${geoResponse.statusText}`);
+                    }
+                    const geoData = await geoResponse.json();
+
+                    if (geoData.status === 'fail') {
+                        console.warn('Geolocation API failure:', geoData.message);
+                        if (typeof weatherDisplay !== 'undefined' && weatherDisplay) weatherDisplay.textContent = 'Location N/A';
+                        if (typeof popupLocation !== 'undefined' && popupLocation) popupLocation.textContent = `N/A (${geoData.message || 'Error'})`;
+                        return; 
+                    }
+
+                    const { lat, lon, city } = geoData;
+
+                    if (typeof popupLocation !== 'undefined' && popupLocation) {
+                        popupLocation.textContent = city || 'N/A';
+                    }
+
+                    if (lat && lon) {
+                        const weatherApiResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                        if (!weatherApiResponse.ok) {
+                            const errorText = await weatherApiResponse.text(); 
+                            throw new Error(`Weather fetch failed: ${weatherApiResponse.status} ${weatherApiResponse.statusText} - ${errorText}`);
+                        }
+                        const weatherData = await weatherApiResponse.json();
+
+                        if (weatherData && weatherData.current_weather) {
+                            const temp = Math.round(weatherData.current_weather.temperature);
+                            const weatherCode = weatherData.current_weather.weathercode;
+                            let emoji = getWeatherEmoji(weatherCode); 
+
+                            if (typeof weatherDisplay !== 'undefined' && weatherDisplay) {
+                                weatherDisplay.textContent = `${temp}°C ${emoji}`;
+                            }
+                        } else {
+                            console.warn('Weather data or current_weather not found in API response:', weatherData);
+                            if (typeof weatherDisplay !== 'undefined' && weatherDisplay) weatherDisplay.textContent = 'Weather N/A';
+                        }
+                    } else {
+                        console.warn('Latitude or Longitude not available from geolocation data.');
+                        if (typeof weatherDisplay !== 'undefined' && weatherDisplay) weatherDisplay.textContent = 'Weather N/A (no lat/lon)';
+                    }
+                } catch (error) {
+                    console.error("Error in fetchIpAndWeather:", error.message, error);
+                    if (typeof weatherDisplay !== 'undefined' && weatherDisplay) weatherDisplay.textContent = 'Weather Error';
+                    if (typeof popupIp !== 'undefined' && popupIp && (popupIp.textContent === 'Loading...' || !popupIp.textContent)) popupIp.textContent = 'Error';
+                    if (typeof popupLocation !== 'undefined' && popupLocation && (popupLocation.textContent === 'Loading...' || !popupLocation.textContent)) popupLocation.textContent = 'Error';
+                }
+            }
+
+
+            function createDesktopIcon(app, topStyle, leftStyle, styleOptions) {
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'app-icon';
+                iconDiv.id = `icon-${app.id}`;
+                iconDiv.dataset.windowId = `window-${app.id}`; 
+                iconDiv.dataset.appName = app.fullName;
+                iconDiv.dataset.iconIndex = app.iconIndex;
+                iconDiv.style.top = topStyle;
+                iconDiv.style.left = leftStyle;
+                iconDiv.style.width = styleOptions.width + 'px';
+                iconDiv.style.height = styleOptions.height + 'px';
+                iconDiv.style.margin = styleOptions.margin + 'px';
+
+                const iconElement = document.createElement('div'); 
+                const spriteStyles = getSpriteIconStyles(app.iconIndex, styleOptions.spriteSize, styleOptions.spriteSize);
+                Object.assign(iconElement.style, spriteStyles); 
+                iconElement.style.width = styleOptions.spriteSize + 'px';
+                iconElement.style.height = styleOptions.spriteSize + 'px';
+                iconElement.style.marginBottom = Math.max(2, 5 * (styleOptions.height / BASE_ICON_ACTUAL_HEIGHT)) + 'px'; 
+                iconElement.setAttribute('aria-label', app.name); 
+                iconDiv.appendChild(iconElement);
+
+                const span = document.createElement('span'); 
+                span.textContent = app.name;
+                span.style.fontSize = styleOptions.fontSize + 'px';
+                iconDiv.appendChild(span);
+                desktop.appendChild(iconDiv);
+                appIconElements.push(iconDiv); 
+                addAppIconEventListeners(iconDiv); 
+            }
+
+            function createAllWindowsOnce() {
+                if (windowsInitialised) return; 
+                applicationsData.forEach(app => {
+                    if (!document.getElementById(`window-${app.id}`)) { 
+                        createWindowElement(app);
+                    }
+                });
+                windowsInitialised = true;
+            }
+
+            function createWindowElement(app) {
+                const windowDiv = document.createElement('div');
+                windowDiv.className = 'window'; windowDiv.id = `window-${app.id}`;
+
+                const titlebarDiv = document.createElement('div'); titlebarDiv.className = 'window-titlebar';
+                const titleTextDiv = document.createElement('div'); titleTextDiv.className = 'window-titlebar-title';
+
+                const titleIconElement = document.createElement('div'); 
+                const styles = getSpriteIconStyles(app.iconIndex, 16, 16); 
+                Object.assign(titleIconElement.style, styles);
+                titleIconElement.style.width = '16px'; titleIconElement.style.height = '16px'; titleIconElement.style.marginRight = '5px';
+
+                const titleSpan = document.createElement('span'); titleSpan.textContent = app.fullName;
+                titleTextDiv.appendChild(titleIconElement); titleTextDiv.appendChild(titleSpan);
+
+                const buttonsDiv = document.createElement('div'); buttonsDiv.className = 'window-titlebar-buttons';
+                const closeButton = document.createElement('button'); closeButton.className = 'window-close-button';
+                closeButton.textContent = 'X'; closeButton.dataset.windowId = windowDiv.id; 
+                buttonsDiv.appendChild(closeButton);
+
+                titlebarDiv.appendChild(titleTextDiv); titlebarDiv.appendChild(buttonsDiv);
+
+                const contentDiv = document.createElement('div'); contentDiv.className = 'window-content';
+                contentDiv.innerHTML = app.windowContentHTML; 
+
+                // Add resize handles
+                const resizeHandleR = document.createElement('div');
+                resizeHandleR.className = 'resize-handle resize-handle-right';
+                windowDiv.appendChild(resizeHandleR);
+
+                const resizeHandleB = document.createElement('div');
+                resizeHandleB.className = 'resize-handle resize-handle-bottom';
+                windowDiv.appendChild(resizeHandleB);
+
+                const resizeHandleBR = document.createElement('div');
+                resizeHandleBR.className = 'resize-handle resize-handle-bottom-right';
+                windowDiv.appendChild(resizeHandleBR);
+
+
+                windowDiv.appendChild(titlebarDiv); windowDiv.appendChild(contentDiv);
+                desktopWrapperElement.appendChild(windowDiv); 
+                windowElements.push(windowDiv); 
+
+                addWindowEventListeners(windowDiv); 
+                addCloseButtonEventListener(closeButton); 
+
+                // Re-select buttons within the *newly created* contentDiv
+                const contentCloseButtons = contentDiv.querySelectorAll('.window-content-close-button');
+                contentCloseButtons.forEach(btn => { btn.addEventListener('click', () => closeWindow(windowDiv.id)); });
+
+                const contentActionButtons = contentDiv.querySelectorAll('.window-content-action-button');
+                contentActionButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const url = btn.dataset.actionUrl;
+                        if (url) {
+                            window.open(url, '_blank'); 
+                        }
+                    });
+                });
+            }
+
+            function populateStartMenu(apps) {
+                if (!startMenuLeftContainer) return;
+                startMenuLeftContainer.innerHTML = ''; 
+
+                apps.filter(app => app.isPinned).forEach(app => { startMenuLeftContainer.appendChild(createStartMenuItem(app)); });
+
+                if (apps.filter(app => app.isPinned).length > 0 && apps.filter(app => !app.isPinned).length > 0) {
+                    const separator = document.createElement('div');
+                    separator.className = 'start-menu-separator';
+                    startMenuLeftContainer.appendChild(separator);
+                }
+
+                apps.filter(app => !app.isPinned).forEach(app => { startMenuLeftContainer.appendChild(createStartMenuItem(app)); });
+
+                addStartMenuItemEventListeners(); 
+            }
+
+            function createStartMenuItem(app) {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'start-menu-item';
+                if (app.isPinned) itemDiv.classList.add('pinned'); 
+                itemDiv.dataset.windowId = `window-${app.id}`;
+                itemDiv.dataset.appName = app.fullName;
+                itemDiv.dataset.iconIndex = app.iconIndex;
+
+                const itemIconElement = document.createElement('div');
+                const iconSize = app.isPinned ? 24 : 20; 
+                const styles = getSpriteIconStyles(app.iconIndex, iconSize, iconSize);
+                Object.assign(itemIconElement.style, styles);
+                itemIconElement.style.width = iconSize + 'px'; itemIconElement.style.height = iconSize + 'px';
+                itemIconElement.style.marginRight = '8px'; itemIconElement.style.flexShrink = '0';
+                itemDiv.appendChild(itemIconElement);
+
+                if (app.isPinned) { 
+                    const strong = document.createElement('strong'); strong.textContent = app.name; itemDiv.appendChild(strong);
+                } else {
+                    itemDiv.appendChild(document.createTextNode(` ${app.name}`)); 
+                }
+                return itemDiv;
+            }
+
+            function refreshDesktopIconsLayout() {
+                if (!desktop) { console.error("Desktop element not found for icon layout."); return; }
+                desktop.querySelectorAll('.app-icon').forEach(icon => icon.remove()); 
+                appIconElements = []; 
+
+                const DSK_CLIENT_HEIGHT = desktop.clientHeight;
+                const DSK_CLIENT_WIDTH = desktop.clientWidth;
+
+                if (DSK_CLIENT_HEIGHT <= 0 || DSK_CLIENT_WIDTH <= 0 || applicationsData.length === 0) return; 
+
+                let currentScale = 1.0; 
+                let tempScaledSlotHeight = BASE_ICON_SLOT_HEIGHT;
+                let tempIconsPerCol = Math.max(1, Math.floor(DSK_CLIENT_HEIGHT / tempScaledSlotHeight));
+                let tempScaledSlotWidth = BASE_ICON_SLOT_WIDTH;
+                let tempNumCols = Math.ceil(applicationsData.length / tempIconsPerCol);
+                let tempWidthNeeded = tempNumCols * tempScaledSlotWidth;
+
+                if (tempWidthNeeded > DSK_CLIENT_WIDTH) {
+                    let requiredScaleToFit = DSK_CLIENT_WIDTH / tempWidthNeeded;
+                    currentScale = Math.max(MIN_SCALE_FACTOR, requiredScaleToFit); 
+                }
+
+                if (BASE_ICON_ACTUAL_HEIGHT * currentScale < MIN_ICON_ACTUAL_HEIGHT) {
+                    currentScale = MIN_ICON_ACTUAL_HEIGHT / BASE_ICON_ACTUAL_HEIGHT;
+                }
+                currentScale = Math.max(MIN_SCALE_FACTOR, currentScale); 
+
+
+                const finalIconActualWidth = BASE_ICON_ACTUAL_WIDTH * currentScale;
+                const finalIconActualHeight = BASE_ICON_ACTUAL_HEIGHT * currentScale;
+                const finalIconMargin = Math.max(MIN_ICON_MARGIN, BASE_ICON_MARGIN * currentScale);
+                const finalSpriteDisplaySize = Math.max(MIN_SPRITE_DISPLAY_SIZE, BASE_SPRITE_DISPLAY_SIZE * currentScale);
+                const finalFontSize = Math.max(MIN_FONT_SIZE, BASE_FONT_SIZE * currentScale);
+
+                const finalSlotWidth = finalIconActualWidth + (2 * finalIconMargin);
+                const finalSlotHeight = finalIconActualHeight + (2 * finalIconMargin);
+
+                const iconsPerColumn = Math.max(1, Math.floor(DSK_CLIENT_HEIGHT / finalSlotHeight));
+
+                applicationsData.forEach((app, index) => {
+                    const rowInCurrentColumn = index % iconsPerColumn;
+                    const columnIndex = Math.floor(index / iconsPerColumn);
+                    const calculatedTop = rowInCurrentColumn * finalSlotHeight;
+                    const calculatedLeft = columnIndex * finalSlotWidth;
+                    const styleOptions = {
+                        width: finalIconActualWidth, height: finalIconActualHeight,
+                        margin: finalIconMargin, spriteSize: finalSpriteDisplaySize, fontSize: finalFontSize
+                    };
+                    createDesktopIcon(app, calculatedTop + 'px', calculatedLeft + 'px', styleOptions);
+                });
+            }
+
+
+            function openWindow(windowId, appName, iconIndex) {
+                const windowToOpen = document.getElementById(windowId);
+                if (!windowToOpen) {
+                    console.error(`Window with ID ${windowId} not found.`);
+                    return;
+                }
+
+                windowToOpen.style.display = 'flex'; 
+                highestZIndex++; 
+                windowToOpen.style.zIndex = highestZIndex;
+
+                windowElements.forEach(win => {
+                    win.classList.remove('active');
+                });
+                windowToOpen.classList.add('active');
+
+                const titleElement = windowToOpen.querySelector('.window-titlebar-title span');
+                if (titleElement && appName) {
+                    titleElement.textContent = appName;
+                }
+
+                if (startMenu) { 
+                    startMenu.style.display = 'none';
+                }
+
+                const appData = applicationsData.find(a => `window-${a.id}` === windowId);
+                const resolvedIconIndex = iconIndex !== undefined ? iconIndex : parseInt(windowToOpen.dataset.iconIndex || (appData?.iconIndex || 0), 10);
+
+                createOrUpdateTaskbarItem(windowId, appName || windowToOpen.dataset.appName || (appData?.fullName), resolvedIconIndex);
+                updateTaskbarActiveState(windowId); 
+            }
+
+            function closeWindow(windowId) {
+                const windowToClose = document.getElementById(windowId);
+                if (windowToClose) {
+                    windowToClose.style.display = 'none'; 
+                    windowToClose.classList.remove('active');
+
+                    const taskbarItemToRemove = document.getElementById(`taskbar-item-${windowId}`);
+                    if (taskbarItemToRemove) {
+                        taskbarItemToRemove.remove();
+                    }
+
+                    let topVisibleWindow = null;
+                    let maxZ = -1;
+                    windowElements.forEach(w => {
+                        if (w.style.display === 'flex') { 
+                            const z = parseInt(w.style.zIndex) || 0;
+                            if (z > maxZ) {
+                                maxZ = z;
+                                topVisibleWindow = w;
+                            }
+                        }
+                    });
+
+                    if (topVisibleWindow) {
+                        windowElements.forEach(w => w.classList.remove('active')); 
+                        topVisibleWindow.classList.add('active'); 
+                        updateTaskbarActiveState(topVisibleWindow.id);
+                    } else {
+                        updateTaskbarActiveState(null); 
+                    }
+                }
+            }
+
+            function createOrUpdateTaskbarItem(windowId, appName, iconIndex) {
+                let taskbarItem = document.getElementById(`taskbar-item-${windowId}`);
+                if (!taskbarItem) { 
+                    taskbarItem = document.createElement('div');
+                    taskbarItem.id = `taskbar-item-${windowId}`;
+                    taskbarItem.className = 'taskbar-item';
+                    taskbarItem.dataset.windowId = windowId;
+                    taskbarItem.dataset.iconIndex = iconIndex; 
+
+                    const taskbarIconElement = document.createElement('div');
+                    const styles = getSpriteIconStyles(iconIndex, 16, 16); 
+                    Object.assign(taskbarIconElement.style, styles);
+                    taskbarIconElement.style.width = '16px'; taskbarIconElement.style.height = '16px';
+                    taskbarIconElement.style.marginRight = '5px';
+                    taskbarIconElement.setAttribute('aria-label', ''); 
+
+                    const span = document.createElement('span');
+                    span.textContent = appName;
+
+                    taskbarItem.appendChild(taskbarIconElement);
+                    taskbarItem.appendChild(span);
+
+                    taskbarItem.addEventListener('click', () => {
+                        handleTaskbarItemClick(windowId); 
+                    });
+
+                    if (taskbarAppsContainer) {
+                        taskbarAppsContainer.appendChild(taskbarItem);
+                    }
+                }
+            }
+
+            function handleTaskbarItemClick(windowId) {
+                const windowElement = document.getElementById(windowId);
+                if (!windowElement) return;
+
+                const appData = applicationsData.find(app => `window-${app.id}` === windowId);
+                if (!appData) return; 
+
+                if (windowElement.style.display === 'flex' && windowElement.classList.contains('active')) {
+                    windowElement.style.display = 'none';
+                    windowElement.classList.remove('active');
+
+                    let topVisibleWindow = null;
+                    let maxZ = -1;
+                    windowElements.forEach(w => {
+                        if (w.style.display === 'flex') {
+                            const z = parseInt(w.style.zIndex) || 0;
+                            if (z > maxZ) {
+                                maxZ = z;
+                                topVisibleWindow = w;
+                            }
+                        }
+                    });
+                    if (topVisibleWindow) {
+                        windowElements.forEach(w => w.classList.remove('active'));
+                        topVisibleWindow.classList.add('active');
+                        updateTaskbarActiveState(topVisibleWindow.id);
+                    } else {
+                        updateTaskbarActiveState(null); 
+                    }
+                } else {
+                    openWindow(windowId, appData.fullName, appData.iconIndex);
+                }
+            }
+
+            function updateTaskbarActiveState(activeWindowId) {
+                if (!taskbarAppsContainer) return;
+
+                const taskbarItems = taskbarAppsContainer.querySelectorAll('.taskbar-item');
+                taskbarItems.forEach(item => {
+                    const windowId = item.dataset.windowId;
+                    const correspondingWindow = document.getElementById(windowId);
+
+                    if (windowId === activeWindowId && correspondingWindow && correspondingWindow.style.display === 'flex') {
+                        item.classList.add('active-task');
+                    } else {
+                        item.classList.remove('active-task');
+                    }
+                });
+            }
+
+            function addAppIconEventListeners(icon) {
+                icon.addEventListener('dblclick', () => {
+                    const windowId = icon.dataset.windowId;
+                    const appName = icon.dataset.appName;
+                    const iconIndex = parseInt(icon.dataset.iconIndex, 10);
+                    if (windowId) {
+                        openWindow(windowId, appName, iconIndex);
+                    }
+                });
+
+                icon.addEventListener('click', (e) => {
+                    appIconElements.forEach(i => i.classList.remove('selected-icon')); 
+                    icon.classList.add('selected-icon'); 
+
+                    const windowElement = document.getElementById(icon.dataset.windowId);
+                    if (windowElement && windowElement.style.display === 'flex') { 
+                        highestZIndex++;
+                        windowElement.style.zIndex = highestZIndex; 
+                        windowElements.forEach(win => {
+                            if (win !== windowElement) win.classList.remove('active');
+                        });
+                        windowElement.classList.add('active');
+                        updateTaskbarActiveState(windowElement.id);
+                    }
+                });
+
+                let offsetX, offsetY, isIconDragging = false;
+                const iconVisualElement = icon.firstChild; 
+
+                icon.addEventListener('mousedown', (e) => {
+                    if (e.target.closest('.app-icon')) {
+                        isSelecting = false; 
+                        if (selectionBox) selectionBox.style.display = 'none';
+                    }
+
+                    if (e.button !== 0) return; 
+
+                    isIconDragging = true;
+                    icon.classList.add('dragging'); 
+                    appIconElements.forEach(i => i.classList.remove('selected-icon')); 
+                    icon.classList.add('selected-icon'); 
+
+                    const rect = icon.getBoundingClientRect();
+                    offsetX = e.clientX - rect.left; 
+                    offsetY = e.clientY - rect.top;
+
+                    icon.initialLeft = icon.offsetLeft; 
+                    icon.initialTop = icon.offsetTop;
+
+                    icon.style.zIndex = 2000; 
+
+                    document.addEventListener('mousemove', onIconMouseMove);
+                    document.addEventListener('mouseup', onIconMouseUp);
+                });
+
+                function onIconMouseMove(e) {
+                    if (!isIconDragging) return;
+                    e.preventDefault(); 
+
+                    const currentDesktopRect = desktop.getBoundingClientRect(); 
+                    let newX = e.clientX - currentDesktopRect.left - offsetX;
+                    let newY = e.clientY - currentDesktopRect.top - offsetY;
+
+                    newX = Math.max(0, Math.min(newX, currentDesktopRect.width - icon.offsetWidth));
+                    newY = Math.max(0, Math.min(newY, currentDesktopRect.height - icon.offsetHeight));
+
+                    icon.style.left = newX + 'px';
+                    icon.style.top = newY + 'px';
+                }
+
+                function onIconMouseUp() {
+                    if (!isIconDragging) return;
+                    isIconDragging = false;
+                    icon.classList.remove('dragging');
+                    icon.style.zIndex = ''; 
+
+                    document.removeEventListener('mousemove', onIconMouseMove);
+                    document.removeEventListener('mouseup', onIconMouseUp);
+                }
+
+                if (iconVisualElement) {
+                    iconVisualElement.addEventListener('dragstart', (e) => e.preventDefault());
+                }
+            }
+
+            function addWindowEventListeners(win) {
+                win.addEventListener('mousedown', (e) => {
+                    if (!e.target.closest('.window-titlebar-buttons button') && !e.target.classList.contains('resize-handle')) { 
+                        highestZIndex++;
+                        win.style.zIndex = highestZIndex;
+
+                        windowElements.forEach(w => { 
+                            if (w !== win) w.classList.remove('active');
+                        });
+                        win.classList.add('active');
+                        updateTaskbarActiveState(win.id);
+                    }
+                }, true); 
+
+                const titlebar = win.querySelector('.window-titlebar');
+                if (!titlebar) {
+                    console.warn('Window found without a .window-titlebar element:', win.id);
+                    // return; // Don't return, resize might still work if handles are direct children
+                }
+
+                // --- Window Dragging Logic ---
+                let dragOffsetX, dragOffsetY, isWindowDragging = false;
+                if (titlebar) { // Only add drag if titlebar exists
+                    titlebar.addEventListener('mousedown', (e) => {
+                        if (e.button !== 0) return; 
+                        if (e.target.closest('.window-titlebar-buttons button')) return; 
+
+                        isWindowDragging = true;
+                        const rect = win.getBoundingClientRect();
+                        dragOffsetX = e.clientX - rect.left; 
+                        dragOffsetY = e.clientY - rect.top;
+
+                        document.addEventListener('mousemove', onWindowDragMove);
+                        document.addEventListener('mouseup', onWindowDragUp);
+                    });
+                }
+
+
+                function onWindowDragMove(e) {
+                    if (!isWindowDragging) return;
+                    e.preventDefault();
+
+                    let newX = e.clientX - dragOffsetX;
+                    let newY = e.clientY - dragOffsetY;
+
+                    const taskbarEl = document.getElementById('taskbar');
+                    const taskbarHeight = taskbarEl ? taskbarEl.offsetHeight : 0;
+                    const winWidth = win.offsetWidth;
+                    const winHeight = win.offsetHeight;
+
+                    newX = Math.max(0, Math.min(newX, window.innerWidth - winWidth));
+                    newY = Math.max(0, Math.min(newY, window.innerHeight - taskbarHeight - winHeight));
+                    
+                    // Prevent dragging too far off screen
+                    newX = Math.max(-winWidth + titlebar.offsetHeight, Math.min(newX, window.innerWidth - titlebar.offsetHeight));
+                    newY = Math.max(0, Math.min(newY, window.innerHeight - taskbarHeight - titlebar.offsetHeight));
+
+
+                    win.style.left = newX + 'px';
+                    win.style.top = newY + 'px';
+                }
+
+                function onWindowDragUp() {
+                    if (!isWindowDragging) return;
+                    isWindowDragging = false;
+                    document.removeEventListener('mousemove', onWindowDragMove);
+                    document.removeEventListener('mouseup', onWindowDragUp);
+                }
+
+                // --- Window Resizing Logic ---
+                const resizeHandles = {
+                    right: win.querySelector('.resize-handle-right'),
+                    bottom: win.querySelector('.resize-handle-bottom'),
+                     bottomRight: win.querySelector('.resize-handle-bottom-right')
+                };
+
+                let currentResizeHandle = null;
+                let initialMouseX, initialMouseY;
+                let initialWidth, initialHeight, initialLeft, initialTop;
+
+                const minWidth = parseInt(getComputedStyle(win).minWidth);
+                const minHeight = parseInt(getComputedStyle(win).minHeight);
+                const maxWidth = parseInt(getComputedStyle(win).maxWidth) || window.innerWidth; // Fallback for vw unit
+                const maxHeight = parseInt(getComputedStyle(win).maxHeight) || window.innerHeight; // Fallback for vh unit
+
+                function onResizeMouseDown(e, handleType) {
+                    if (e.button !== 0) return;
+                    e.preventDefault();
+                    e.stopPropagation(); // Prevent drag from starting
+
+                    currentResizeHandle = handleType;
+                    initialMouseX = e.clientX;
+                    initialMouseY = e.clientY;
+                    initialWidth = win.offsetWidth;
+                    initialHeight = win.offsetHeight;
+                    initialLeft = win.offsetLeft; // Not used for R, B, BR handles
+                    initialTop = win.offsetTop;   // Not used for R, B, BR handles
+
+                    // Bring window to front
+                    highestZIndex++;
+                    win.style.zIndex = highestZIndex;
+                    windowElements.forEach(w => w.classList.remove('active'));
+                    win.classList.add('active');
+                    updateTaskbarActiveState(win.id);
+
+
+                    document.addEventListener('mousemove', onResizeMouseMove);
+                    document.addEventListener('mouseup', onResizeMouseUp);
+                }
+
+                function onResizeMouseMove(e) {
+                    if (!currentResizeHandle) return;
+                    e.preventDefault();
+
+                    const deltaX = e.clientX - initialMouseX;
+                    const deltaY = e.clientY - initialMouseY;
+                    let newWidth = initialWidth;
+                    let newHeight = initialHeight;
+
+                    if (currentResizeHandle === 'right' || currentResizeHandle === 'bottomRight') {
+                        newWidth = Math.max(minWidth, Math.min(initialWidth + deltaX, maxWidth));
+                        win.style.width = newWidth + 'px';
+                    }
+                    if (currentResizeHandle === 'bottom' || currentResizeHandle === 'bottomRight') {
+                        newHeight = Math.max(minHeight, Math.min(initialHeight + deltaY, maxHeight));
+                        win.style.height = newHeight + 'px';
+                    }
+                }
+
+                function onResizeMouseUp() {
+                    if (!currentResizeHandle) return;
+                    currentResizeHandle = null;
+                    document.removeEventListener('mousemove', onResizeMouseMove);
+                    document.removeEventListener('mouseup', onResizeMouseUp);
+                }
+
+                if(resizeHandles.right) resizeHandles.right.addEventListener('mousedown', (e) => onResizeMouseDown(e, 'right'));
+                if(resizeHandles.bottom) resizeHandles.bottom.addEventListener('mousedown', (e) => onResizeMouseDown(e, 'bottom'));
+                if(resizeHandles.bottomRight) resizeHandles.bottomRight.addEventListener('mousedown', (e) => onResizeMouseDown(e, 'bottomRight'));
+            }
+
+
+            function addCloseButtonEventListener(button) {
+                button.addEventListener('click', () => {
+                    const windowId = button.dataset.windowId; 
+                    if (windowId) {
+                        closeWindow(windowId);
+                    } else {
+                        const parentWindow = button.closest('.window');
+                        if (parentWindow && parentWindow.id) {
+                            closeWindow(parentWindow.id);
+                        } else {
+                            console.error('Could not determine window ID for close button:', button);
+                        }
+                    }
+                });
+            }
+
+            function addStartMenuItemEventListeners() {
+                if (!startMenuLeftContainer) return;
+
+                const currentStartMenuItems = startMenuLeftContainer.querySelectorAll('.start-menu-item');
+                currentStartMenuItems.forEach(item => {
+                    item.addEventListener('click', (event) => {
+                        const windowId = item.dataset.windowId;
+                        const appName = item.dataset.appName;
+                        const iconIndex = parseInt(item.dataset.iconIndex, 10);
+
+                        if (windowId) {
+                            openWindow(windowId, appName, iconIndex);
+                        }
+                    });
+                });
+            }
+
+
+            const LOG_OFF_ICON_INDEX = 29; 
+            const SHUT_DOWN_ICON_INDEX = 42; 
+            const MENU_BUTTON_ICON_SIZE = 20; 
+            const ICON_MARGIN_RIGHT = '4px'; 
+
+            function createAndPrependIconButton(buttonElement, iconIndex, iconSize, ariaLabel) {
+                if (!buttonElement) {
+                    console.warn(`Button element not found for icon: ${ariaLabel}`);
+                    return;
+                }
+
+                const existingImg = buttonElement.querySelector('img');
+                if (existingImg) {
+                    existingImg.remove();
+                }
+
+                const iconSpan = document.createElement('span');
+                iconSpan.className = 'menu-button-icon-sprite'; 
+
+                const styles = getSpriteIconStyles(iconIndex, iconSize, iconSize);
+                Object.assign(iconSpan.style, styles); 
+                iconSpan.style.width = `${iconSize}px`;
+                iconSpan.style.height = `${iconSize}px`;
+                iconSpan.style.display = 'inline-block'; 
+                iconSpan.style.marginRight = ICON_MARGIN_RIGHT;
+                iconSpan.setAttribute('aria-label', ariaLabel); 
+
+                buttonElement.prepend(iconSpan); 
+            }
+
+            if (logOffButton) {
+                createAndPrependIconButton(logOffButton, LOG_OFF_ICON_INDEX, MENU_BUTTON_ICON_SIZE, 'Github');
+                logOffButton.addEventListener('click', () => {
+                    window.open('https://github.com/gustavochanchien/gustavochanchien.github.io', '_blank'); 
+                });
+            }
+
+            if (shutDownButton) { 
+                createAndPrependIconButton(shutDownButton, SHUT_DOWN_ICON_INDEX, MENU_BUTTON_ICON_SIZE, 'Reboot');
+            }
+
+            if (startButton) {
+                startButton.addEventListener('click', (event) => {
+                    event.stopPropagation(); 
+                    const isStartMenuVisible = startMenu.style.display === 'flex';
+
+                    if (isStartMenuVisible) {
+                        startMenu.style.display = 'none';
+                    } else {
+                        startMenu.style.display = 'flex';
+                        startMenu.style.zIndex = (highestZIndex || 0) + 100; 
+                    }
+                });
+            }
+
+            document.addEventListener('click', (event) => {
+                if (startMenu && startMenu.style.display === 'flex') {
+                    const clickedOnStartButton = startButton && (event.target === startButton || startButton.contains(event.target));
+                    const clickedInsideStartMenu = startMenu.contains(event.target);
+                    if (!clickedInsideStartMenu && !clickedOnStartButton) {
+                        startMenu.style.display = 'none';
+                    }
+                }
+
+                if (infoPopup && infoPopup.style.display === 'block') {
+                    const clickedInsideInfoPopup = infoPopup.contains(event.target);
+                    const clickedOnNotificationArea = notificationArea && notificationArea.contains(event.target);
+                    if (!clickedInsideInfoPopup && !clickedOnNotificationArea) {
+                        infoPopup.style.display = 'none';
+                    }
+                }
+            });
+
+
+            if (desktop) {
+                desktop.addEventListener('mousedown', (e) => {
+                    if (e.target !== desktop || e.button !== 0) {
+                        if (!e.target.closest('.app-icon') && !e.target.closest('.window')) {
+                            appIconElements.forEach(icon => icon.classList.remove('selected-icon'));
+                        }
+                        return;
+                    }
+
+                    let anIconIsDragging = false;
+                    if (appIconElements) {
+                        appIconElements.forEach(icon => {
+                            if (icon.classList.contains('dragging')) {
+                                anIconIsDragging = true;
+                            }
+                        });
+                    }
+                    if (anIconIsDragging) return;
+
+
+                    e.preventDefault(); 
+                    isSelecting = true;
+                    desktopRect = desktop.getBoundingClientRect(); 
+                    selectionStartX = e.clientX - desktopRect.left;
+                    selectionStartY = e.clientY - desktopRect.top;
+
+                    if (selectionBox) { 
+                        selectionBox.style.left = `${selectionStartX}px`;
+                        selectionBox.style.top = `${selectionStartY}px`;
+                        selectionBox.style.width = '0px';
+                        selectionBox.style.height = '0px';
+                        selectionBox.style.display = 'block';
+                    }
+
+                    document.addEventListener('mousemove', onDesktopMouseMove);
+                    document.addEventListener('mouseup', onDesktopMouseUp);
+                });
+            }
+
+            function onDesktopMouseMove(e) {
+                if (!isSelecting || !desktopRect || !selectionBox) return;
+                e.preventDefault();
+
+                let currentX = e.clientX - desktopRect.left;
+                let currentY = e.clientY - desktopRect.top;
+
+                currentX = Math.max(0, Math.min(currentX, desktopRect.width));
+                currentY = Math.max(0, Math.min(currentY, desktopRect.height));
+
+                const width = Math.abs(currentX - selectionStartX);
+                const height = Math.abs(currentY - selectionStartY);
+                const newLeft = Math.min(currentX, selectionStartX);
+                const newTop = Math.min(currentY, selectionStartY);
+
+                selectionBox.style.left = `${newLeft}px`;
+                selectionBox.style.top = `${newTop}px`;
+                selectionBox.style.width = `${width}px`;
+                selectionBox.style.height = `${height}px`;
+            }
+
+            function onDesktopMouseUp() {
+                if (!isSelecting) return;
+                isSelecting = false;
+                if (selectionBox) {
+                    selectionBox.style.display = 'none'; 
+                }
+
+                document.removeEventListener('mousemove', onDesktopMouseMove);
+                document.removeEventListener('mouseup', onDesktopMouseUp);
+            }
+
+            if (notificationArea) {
+                notificationArea.addEventListener('click', (event) => {
+                    event.stopPropagation(); 
+                    if (!infoPopup) return;
+
+                    const isPopupVisible = infoPopup.style.display === 'block';
+                    if (isPopupVisible) {
+                        infoPopup.style.display = 'none';
+                    } else {
+                        infoPopup.style.display = 'block';
+                        infoPopup.style.zIndex = (highestZIndex || 0) + 200;
+                    }
+                });
+            }
+
+            if (infoPopupClose && infoPopup) {
+                infoPopupClose.addEventListener('click', () => {
+                    infoPopup.style.display = 'none';
+                });
+            }
+
+            let resizeDebounceTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeDebounceTimer);
+                resizeDebounceTimer = setTimeout(() => {
+                    if (desktopWrapperElement && desktopWrapperElement.style.display === 'block') {
+                        refreshDesktopIconsLayout();
+                        // Also potentially re-constrain open windows if they are now out of bounds
+                        windowElements.forEach(win => {
+                            if (win.style.display === 'flex') {
+                                const taskbarEl = document.getElementById('taskbar');
+                                const taskbarHeight = taskbarEl ? taskbarEl.offsetHeight : 0;
+                                let newX = win.offsetLeft;
+                                let newY = win.offsetTop;
+                                newX = Math.max(0, Math.min(newX, window.innerWidth - win.offsetWidth));
+                                newY = Math.max(0, Math.min(newY, window.innerHeight - taskbarHeight - win.offsetHeight));
+                                win.style.left = newX + 'px';
+                                win.style.top = newY + 'px';
+                            }
+                        });
+                    }
+                }, 250); 
+            });
+
+        }); // End of DOMContentLoaded
+    </script>
 </body>
 </html>

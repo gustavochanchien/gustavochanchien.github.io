@@ -1,0 +1,32 @@
+
+- Core:
+  - Implemented dynamic loading of applications, icons, and windows from a central `applicationsData` array, replacing hardcoded HTML.
+  - Introduced icon management using a single sprite sheet (`images/icons.png`) and a `getSpriteIconStyles()` helper for efficiency.
+
+- New UI Elements & Features:
+  - Added a full boot screen simulation (`#bootScreen`) with logo, loading animation, and copyright, shown on first visit or reboot.
+  - Enhanced taskbar (`#taskbarApps`) to dynamically display items for open windows with icons and titles.
+  - Added a notification area (`#notificationArea`) to the taskbar.
+  - Implemented live time and date display in the notification area, updating every second.
+  - Integrated weather display in the notification area, fetching data from Open-Meteo API based on user's location.
+  - Added an info popup (`#infoPopup`), accessible from the notification area, displaying user's IP (via IPify API) and approximate location (via IP-API.com).
+  - Introduced a desktop icon selection box (`#selectionBox`) for drag-to-select functionality.
+  - Added a `favicon.ico`.
+
+- Enhanced Existing Features:
+  - Overhauled desktop icon layout (`refreshDesktopIconsLayout`) to be responsive and dynamic, with icon scaling based on available space.
+  - Updated Start Menu to be dynamically populated from `applicationsData`, including support for pinned items.
+  - Replaced "Turn Off Computer" with a functional "Reboot Website" button in Start Menu (simulates reboot, clears state, shows boot screen).
+  - Replaced "Log Off" with a functional "Go to Github" button in Start Menu.  
+  - Enabled rich HTML content within application windows, defined in `applicationsData`, allowing for more complex app interfaces.
+  - Improved window z-index management and interactivity.
+
+- API Integrations:
+  - Fetches user's public IP (api.ipify.org).
+  - Fetches geolocation based on IP (ip-api.com).
+  - Fetches current weather data (api.open-meteo.com).
+
+- Code & Performance:
+  - Refactored JavaScript for better modularity and use of constants.
+  - Implemented asynchronous operations (`async/await`) for API calls.
+  - Added debounced resize handler for efficient desktop icon relayout.

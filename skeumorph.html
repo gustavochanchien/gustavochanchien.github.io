@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gustavo Chanchien - Neomorphic Portfolio</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"> <style>
+        /* --- General Neomorphic Styles --- */
+        :root {
+            --nm-bg-color: #e0e5ec;
+            --nm-text-color: #535353;
+            --nm-primary-color: #3A6EA5; /* A color from your original theme */
+            --nm-shadow-dark: #a3b1c6;
+            --nm-shadow-light: #ffffff;
+            --nm-shadow-pressed-dark: #a3b1c6;
+            --nm-shadow-pressed-light: #ffffff;
+            --nm-border-radius: 15px;
+            --nm-padding: 20px;
+            --nm-margin: 20px;
+            --nm-transition: all 0.3s ease-in-out;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Tahoma", "Geneva", sans-serif; /* Keeping original font for familiarity */
+            background-color: var(--nm-bg-color);
+            color: var(--nm-text-color);
+            line-height: 1.6;
+            padding-bottom: 50px; /* Space for potential footer or just breathing room */
+        }
+
+        /* --- Utility Classes --- */
+        .nm-card {
+            background-color: var(--nm-bg-color);
+            border-radius: var(--nm-border-radius);
+            padding: var(--nm-padding);
+            margin: var(--nm-margin);
+            box-shadow: 8px 8px 16px var(--nm-shadow-dark),
+                        -8px -8px 16px var(--nm-shadow-light);
+            transition: var(--nm-transition);
+        }
+
+        .nm-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 12px 12px 24px var(--nm-shadow-dark),
+                        -12px -12px 24px var(--nm-shadow-light);
+        }
+
+        .nm-button {
+            background-color: var(--nm-bg-color);
+            border: none;
+            border-radius: var(--nm-border-radius);
+            padding: 12px 25px;
+            color: var(--nm-primary-color);
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 5px 5px 10px var(--nm-shadow-dark),
+                        -5px -5px 10px var(--nm-shadow-light);
+            transition: var(--nm-transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none; /* For anchor tags styled as buttons */
+        }
+
+        .nm-button:hover {
+            color: #2c527c; /* Darker shade of primary */
+        }
+
+        .nm-button:active, .nm-button.active {
+            box-shadow: inset 5px 5px 10px var(--nm-shadow-pressed-dark),
+                        inset -5px -5px 10px var(--nm-shadow-pressed-light);
+            color: #2c527c;
+        }
+
+        .nm-button-icon {
+            margin-right: 8px;
+            width: 20px; /* Adjust as needed */
+            height: 20px; /* Adjust as needed */
+            display: inline-block; /* For sprite positioning */
+        }
+
+
+        /* --- Header --- */
+        .portfolio-header {
+            background-color: var(--nm-bg-color);
+            padding: var(--nm-padding);
+            text-align: center;
+            box-shadow: 0px 5px 10px rgba(0,0,0,0.05); /* Softer bottom shadow for header */
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom-left-radius: var(--nm-border-radius);
+            border-bottom-right-radius: var(--nm-border-radius);
+            margin-bottom: var(--nm-margin);
+        }
+
+        .portfolio-header h1 {
+            margin: 0;
+            color: var(--nm-primary-color);
+            font-size: 2em;
+        }
+        .portfolio-header .subtitle {
+            font-size: 0.9em;
+            color: var(--nm-text-color);
+        }
+
+        /* --- Navigation (Simple for now) --- */
+        .portfolio-nav {
+            margin-top: 15px;
+        }
+        .portfolio-nav .nm-button {
+            margin: 0 10px;
+        }
+
+
+        /* --- Main Content --- */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--nm-padding);
+        }
+
+        .about-section, .projects-section {
+            margin-bottom: calc(var(--nm-margin) * 2);
+        }
+
+        .about-section h2, .projects-section h2 {
+            text-align: center;
+            color: var(--nm-primary-color);
+            margin-bottom: var(--nm-margin);
+            font-size: 1.8em;
+        }
+
+        .about-content {
+            display: flex;
+            align-items: flex-start; /* Align items to the top */
+            gap: 20px; /* Space between image and text */
+        }
+
+        .about-content .profile-picture-container {
+            flex-shrink: 0; /* Prevent image from shrinking */
+        }
+
+        .about-content .profile-picture {
+            width: 150px; /* Increased size */
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%; /* Circular profile picture */
+            box-shadow: 4px 4px 8px var(--nm-shadow-dark),
+                        -4px -4px 8px var(--nm-shadow-light);
+            padding: 5px; /* Small padding to lift it from the background a bit */
+            background-color: var(--nm-bg-color); /* Ensures padding effect works */
+        }
+
+        .about-text {
+            flex-grow: 1;
+        }
+        .about-text p {
+            margin-bottom: 15px;
+        }
+
+
+        /* --- Projects Grid --- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--nm-margin);
+        }
+
+        .project-card {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-card .card-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 15px;
+            align-self: center;
+            /* Sprite styles will be applied by JS */
+        }
+
+        .project-card h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--nm-primary-color);
+            text-align: center;
+        }
+
+        .project-card p.card-excerpt {
+            font-size: 0.9em;
+            flex-grow: 1;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+
+        /* --- Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: var(--nm-padding);
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background-color: var(--nm-bg-color);
+            border-radius: var(--nm-border-radius);
+            padding: var(--nm-padding);
+            box-shadow: 10px 10px 20px var(--nm-shadow-dark),
+                        -10px -10px 20px var(--nm-shadow-light);
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative; /* For close button positioning */
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--nm-shadow-dark);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--nm-primary-color);
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+        }
+        .modal-header .modal-title-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .modal-close-button { /* This is the 'X' button */
+            background: none;
+            border: none;
+            font-size: 2em; /* Make X larger */
+            font-weight: bold;
+            color: var(--nm-text-color);
+            cursor: pointer;
+            padding: 0 10px;
+            line-height: 1;
+        }
+        .modal-close-button:hover {
+            color: var(--nm-primary-color);
+        }
+
+
+        /* Styles for content within modals (from original windowContentHTML) */
+        .modal-body h1, .modal-body h2, .modal-body h3, .modal-body h4, .modal-body p strong {
+            color: var(--nm-primary-color); /* Primary color for headings and strong text */
+        }
+        .modal-body p {
+            margin-bottom: 1em;
+        }
+        .modal-body img.app-content-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            display: block;
+            border-radius: calc(var(--nm-border-radius) / 2);
+            box-shadow: 3px 3px 6px var(--nm-shadow-dark),
+                        -3px -3px 6px var(--nm-shadow-light);
+        }
+         /* Adapting original profile picture style within modal if it appears */
+        .modal-body img.profile-picture {
+            float: left;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin: 0 15px 10px 0;
+            border-radius: 50%; /* Consistent with about section */
+            box-shadow: 2px 2px 4px var(--nm-shadow-dark),
+                        -2px -2px 4px var(--nm-shadow-light);
+            padding: 3px;
+            background-color: var(--nm-bg-color);
+        }
+
+        /* Adapting original buttons inside window content to neomorphic */
+        .modal-body .window-content-close-button,
+        .modal-body .window-content-action-button {
+            background-color: var(--nm-bg-color);
+            border: none;
+            border-radius: var(--nm-border-radius);
+            padding: 10px 20px;
+            color: var(--nm-primary-color);
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 4px 4px 8px var(--nm-shadow-dark),
+                        -4px -4px 8px var(--nm-shadow-light);
+            transition: var(--nm-transition);
+            margin-top: 15px;
+            margin-right: 10px; /* Spacing between buttons */
+            text-decoration: none;
+        }
+        .modal-body .window-content-close-button:hover,
+        .modal-body .window-content-action-button:hover {
+            color: #2c527c;
+        }
+        .modal-body .window-content-close-button:active,
+        .modal-body .window-content-action-button:active {
+            box-shadow: inset 4px 4px 8px var(--nm-shadow-pressed-dark),
+                        inset -4px -4px 8px var(--nm-shadow-pressed-light);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr; /* Single column on smaller screens */
+            }
+            .portfolio-header h1 {
+                font-size: 1.5em;
+            }
+            .about-content {
+                flex-direction: column; /* Stack image and text */
+                align-items: center; /* Center items when stacked */
+                text-align: center; /* Center text */
+            }
+            .about-content .profile-picture-container {
+                margin-bottom: 15px;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+            .modal-header h3 {
+                font-size: 1.2em;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="portfolio-header">
+        <h1>Gustavo Chanchien</h1>
+        <p class="subtitle">Neomorphic Portfolio</p>
+        <nav class="portfolio-nav">
+            <a href="#about" class="nm-button">About Me</a>
+            <a href="#projects" class="nm-button">Projects</a>
+            <a href="https://github.com/gustavochanchien/gustavochanchien.github.io" target="_blank" rel="noopener noreferrer" class="nm-button" id="githubLink">
+                Go to GitHub
+            </a>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <section id="about" class="about-section nm-card">
+            <h2>About Me</h2>
+            <div id="about-content-container" class="about-content">
+                <div class="profile-picture-container">
+                    <img src="images/profile_photo.png" alt="Gustavo Chanchien" class="profile-picture">
+                </div>
+                <div id="about-text-content" class="about-text">
+                    </div>
+            </div>
+        </section>
+
+        <section id="projects" class="projects-section">
+            <h2>My Projects</h2>
+            <div class="projects-grid" id="projectsGrid">
+                </div>
+        </section>
+    </div>
+
+    <div class="modal-overlay" id="projectModalOverlay">
+        <div class="modal-content" id="projectModalContent">
+            <div class="modal-header">
+                <h3 id="modalTitle"><div id="modalTitleIcon" class="modal-title-icon"></div><span id="modalTitleText"></span></h3>
+                <button class="modal-close-button" id="modalCloseButton">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                </div>
+        </div>
+    </div>
+
+    <script>
+    // --- Application Data Configuration (from original) ---
+    const applicationsData = [
+        {
+            id: 'welcome', // Will be used for the About section
+            name: 'About Me',
+            fullName: "Welcome to Gustavo's Portfolio",
+            iconIndex: 127, // Original About Me icon
+            windowContentHTML: `
+                <p>Hi! I'm Gustavo Chanchien, a full-stack developer and data analyst with over 6 years of professional experience developing all kinds of software, scripts, and programs to meet people's needs. I primarily work in Python, JavaScript, and R, but I also know SQL, C++, C and use tools like Firebase, Google Cloud Services, REDCap, Tableau, Excel, Adobe Creative Cloud Suite tools, and LLMs like AI Studio and Gemini's API, ChatGPTs API, and some experience self-deploying models (Gemma 3) locally.</p>
+                <p>I grew up in Managua, Nicaragua and first started coding with my best friend to build a cellphone app for our school's grade database using Ionic. Later by the time I graduated High School, there was a Zika Epidemic sweeping across the country and Latin America. I saw a need and took a gap year to work with the Sustainable Sciences Institute on a USAID grant to help track and reduce the spread of Zika through education on Aedes Aegypti Mosquito breeding sites. I worked on an EMR for the local clinic and a community tracking application while developing a 6 Module <i>"rotafolio"</i> curriculum.</p>
+                <p>The next four years, I studied Computer Science and Psychology at Yale. I was motivated by how we can bridge the gap between people and data through technology. My senior project was an innovative take on how humans can process hyperlink and research data in 3D space using Virtual Reality based on the 1960 Project Xanadu Hyperlinks.</p>
+                <p>My primary motivations lie in creating software and technology that help people and communities reclaim their data and take advantage of new technologies to facilitate their work and improve the lives of their community.</p>
+                <p><a href="[YOUR_CV_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">View my CV</a></p>
+            ` // Removed the close button as modal has one. Added placeholder for CV URL.
+        },
+        {
+            id: 'preguntonSurveys',
+            name: 'Pregunton Surveys',
+            fullName: 'Pregunton Surveys WebApp',
+            iconIndex: 1,
+            excerpt: 'A full-stack app for creating custom surveys and live report dashboards using Vue3 and Firebase.',
+            windowContentHTML: `
+                <p><strong>Pregunton Surveys Web App</strong></p>
+                <p>The Pregunton Surveys Web App is a full-stack application developed in Vue3 and Firebase that allows users to create custom surveys, distribute them easily with unique codes and view the results on custom report dashboards that update live as results come in.</p>
+                <p>I built this application because I saw a need for it while working with Community Health Workers and their organizations. Many survey and data collection applications exist already, but this one is unique in its simplicity to set up, allowing anyone to build a survey and report dashboard and collect data quickly and securely. It has features that large survey and form services lack like conditionals and custom reports and dashboards, while still being incredibly simple to set up and get going.</p>
+                <p>Future Plans: In the future I plan to Open-Source Pregunton so people can set up their own similar applications for environments where data is more sensitive and needs to be more closely managed by the organizations. In the mean time I'm already working on Pregunton 2.0, which will have many more features!</p>
+                <img src="images/pregunton_dashboard_example.png" alt="Pregunton Surveys Dashboard Example" class="app-content-image">
+                <p><a href="[PREGUNTON_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Take me there!</a></p>
+            ` // Placeholder URL
+        },
+        {
+            id: 'epidemiology',
+            name: 'Epidemiology Concepts',
+            fullName: 'Understanding Epidemiology Concepts',
+            iconIndex: 45,
+            excerpt: 'Visualizations to help understand and memorize basic epidemiology concepts and equations.',
+            windowContentHTML: `
+                <p><strong>Tools for Understanding Epidemiology Concepts</strong></p>
+                <p>Learn some basic concepts in Epidemiology!</p>
+                <p>I created these visualizations during my first year working on my Masters in Public Health at the University of New Mexico. I found a lot of the Epidemiology concepts and equations hard to grasp, but felt like there was an intuitive way to visualize them that makes them more memorable for me as a visual learner to study for exams. I've cleaned up the visualizations and grouped them together in this page.</p>
+                <img src="images/epidemiology1.png" alt="Epidemiology Helpers Example Image 1" class="app-content-image">
+                <img src="images/epidemiology2.png" alt="Epidemiology Helpers Example Image 2" class="app-content-image">
+                <p><a href="[EPI_CONCEPTS_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Take me there!</a></p>
+            ` // Placeholder URL
+        },
+        {
+            id: 'gis',
+            name: 'GIS Projects',
+            fullName: 'GIS and Mapping Projects',
+            iconIndex: 109,
+            excerpt: 'A collection of GIS projects including community resource maps and heat mapping analyses.',
+            windowContentHTML: `
+                <p><strong>GIS and Mapping Projects</strong></p>
+                <p><i>Community Resource Maps</i></p>
+                <p>I had some experience using Tableau to map resources for Community Health Workers to refer people to using the data from ShareNM (a community resource library). I've rebuilt that project to make it more accessible (and free to host and keep updated). Data is updated on a monthly basis from the ShareNM website.</p>
+                <p><a href="[GIS_COMMUNITY_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Resource Map</a></p>
+                <hr>
+                <p><i>GIS Heat Mapping, Albuquerque</i></p>
+                <p>A quick project to build experience with using GIS tools to create a heat map of Albuquerque.</p>
+                <p><a href="[GIS_HEATMAP_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Heat Map Project</a></p>
+                <hr>
+                <p><i>Alcohol and Deaths, Albuquerque</i></p>
+                <p>Alcohol and alcohol related death data by county in New Mexico overlayed with alcohol purchase and consumption data as well as liquor stores and bars.</p>
+                <p><a href="[GIS_ALCOHOL_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Alcohol Data Project</a></p>
+            ` // Placeholder URLs and commented out images if you don't have them yet.
+        },
+        {
+            id: 'tools',
+            name: 'Tools & Scripts',
+            fullName: 'Useful Tools and Scripts',
+            iconIndex: 46,
+            excerpt: 'A collection of utilities, primarily for processing REDCap files and automating Tableau updates.',
+            windowContentHTML: `
+                <p><strong>Tools and Scripts</strong></p>
+                <p>A collection of useful utilities and resources. Most are for processing REDCap files; some operations are quite easy to do in R or other statistical software, but I wanted to make such operations more accessible.</p>
+                <hr>
+                <p><i>Spanish Column Merger for REDCap</i>: A script to merge columns that have been filled out in alternate languages using different column names (when multilanguage support was not used).</p>
+                <p><a href="[TOOL_MERGER_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Spanish Column Merger</a></p>
+                <hr>
+                <p><i>Dictionary Activator for REDCap</i>: A script to replace data with the dictionary text replacements.</p>
+                <p><a href="[TOOL_DICT_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Dictionary Activator</a></p>
+                <hr>
+                <p><i>Tableau Public Auto-Updater</i>: A script that manually downloads REDCap Data then clicks the buttons on the Tableau Desktop version to update Tableau Public Dashboards. It basically automates Tableau Public Dashboards so that you can update them live (which would normally require a premium subscription and viewer licenses).</p>
+                <p><a href="[TOOL_TABLEAU_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Tableau Updator</a></p>
+            ` // Placeholder URLs
+        },
+        {
+            id: 'fengshui',
+            name: 'Feng Shui Solver',
+            fullName: 'Feng Shui Solver',
+            iconIndex: 68,
+            excerpt: 'An experimental optimization tool for arranging spaces for maximum feng shui, with GenAI mockup ideas.',
+            windowContentHTML: `
+                <p><strong>Feng Shui Solver</strong></p>
+                <p>An experiment in basic optimization concepts to optimally arrange a space for maximum feng shui. Not a replacement for an actual person, but fun nonetheless.</p>
+                <p>Upgrade: Incorporating GenAI to create mockups of the designs.</p>
+                <p><a href="[FENGSHUI_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Try the Solver!</a></p>
+            ` // Placeholder URL
+        },
+        {
+            id: 'cryptography',
+            name: 'Cryptography Visualizer',
+            fullName: 'Cryptography Visualizer',
+            iconIndex: 78,
+            excerpt: 'An interactive visualizer for understanding basic cryptography algorithms.',
+            windowContentHTML: `
+                <p><strong>Cryptography Visualizer</strong></p>
+                <p>A fun and interactive visualizer that helped me during my Cryptography and Security class to understand basic cryptography algorithms. Helps get a basic understanding of how they work and visually see how things are "encrypted".</p>
+                <p><a href="[CRYPTO_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Explore Visualizer</a></p>
+            ` // Placeholder URL
+        },
+        {
+            id: 'games',
+            name: 'Games & Fun',
+            fullName: 'Games & Fun Projects',
+            iconIndex: 6,
+            excerpt: 'A collection of simple games and interactive experiments created for fun and learning.',
+            windowContentHTML: `
+                <p><strong>Fun Projects and Mini Games</strong></p>
+                <p>Simple games and interactive experiments that I created for fun.</p>
+                <hr>
+                <p><i>Microbe Simulator</i>: A fun evolutionary microbe simulator.</p>
+                <p><a href="[GAME_MICROBE_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Microbe Sim</a></p>
+                <hr>
+                <p><i>Hexagonal Game of Life</i>: Because hexagons are cool.</p>
+                <p><a href="[GAME_HEXGOL_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Hex GOL</a></p>
+                <hr>
+                <p><i>Low Poly Planet Generator</i>: A low poly planet generator I'm working on for a game.</p>
+                <p><a href="[GAME_PLANET_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Planet Gen</a></p>
+                <hr>
+                <p><i>Mandelbrot Set Zoomer</i>: Explore Mandelbrot sets, inspired by Albuquerque's Fractal Society.</p>
+                <p><a href="[GAME_MANDELBROT_URL_HERE]" target="_blank" rel="noopener noreferrer" class="window-content-action-button">Mandelbrot Explorer</a></p>
+            ` // Placeholder URLs
+        }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const projectsGrid = document.getElementById('projectsGrid');
+        const modalOverlay = document.getElementById('projectModalOverlay');
+        const modalTitleText = document.getElementById('modalTitleText');
+        const modalTitleIcon = document.getElementById('modalTitleIcon');
+        const modalBody = document.getElementById('modalBody');
+        const modalCloseButton = document.getElementById('modalCloseButton');
+        const aboutTextContent = document.getElementById('about-text-content');
+        const githubLink = document.getElementById('githubLink');
+
+        // --- Sprite Icon Helper (adapted from original) ---
+        function getSpriteIconStyles(iconIndex, displayWidth, displayHeight) {
+            const ICON_WIDTH_IN_SPRITE = 64;
+            const ICON_HEIGHT_IN_SPRITE = 64;
+            const SPRITE_SHEET_FILE = 'images/icons.png';
+            const SPRITE_SHEET_TOTAL_WIDTH = 512;
+            const SPRITE_SHEET_TOTAL_HEIGHT = 1024;
+            const ICONS_PER_ROW_IN_SPRITE = 8;
+
+            const col = iconIndex % ICONS_PER_ROW_IN_SPRITE;
+            const row = Math.floor(iconIndex / ICONS_PER_ROW_IN_SPRITE);
+
+            const scaleX = displayWidth / ICON_WIDTH_IN_SPRITE;
+            const scaleY = displayHeight / ICON_HEIGHT_IN_SPRITE;
+            const scaledSpriteSheetWidth = SPRITE_SHEET_TOTAL_WIDTH * scaleX;
+            const scaledSpriteSheetHeight = SPRITE_SHEET_TOTAL_HEIGHT * scaleY;
+            const scaledIconXOffset = col * displayWidth;
+            const scaledIconYOffset = row * displayHeight;
+
+            return {
+                backgroundImage: `url('${SPRITE_SHEET_FILE}')`,
+                backgroundPosition: `-${scaledIconXOffset}px -${scaledIconYOffset}px`,
+                backgroundSize: `${scaledSpriteSheetWidth}px ${scaledSpriteSheetHeight}px`,
+                backgroundRepeat: 'no-repeat'
+            };
+        }
+
+        // Populate "About Me" section
+        const aboutData = applicationsData.find(app => app.id === 'welcome');
+        if (aboutData && aboutTextContent) {
+             // The profile image is already in HTML, so just inject text
+            aboutTextContent.innerHTML = aboutData.windowContentHTML;
+        }
+        
+        // Add icon to GitHub button
+        const GITHUB_ICON_INDEX = 29; // Example: Using 'Log Off' icon index for GitHub, choose appropriate
+        if (githubLink) {
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'nm-button-icon';
+            const ghIconStyles = getSpriteIconStyles(GITHUB_ICON_INDEX, 20, 20);
+            Object.assign(iconSpan.style, ghIconStyles);
+            githubLink.prepend(iconSpan);
+        }
+
+
+        // Populate Project Cards
+        applicationsData.forEach(app => {
+            if (app.id === 'welcome') return; // Skip 'welcome' as it's used for About section
+
+            const card = document.createElement('div');
+            card.className = 'project-card nm-card';
+            card.dataset.appId = app.id;
+
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'card-icon';
+            const iconStyles = getSpriteIconStyles(app.iconIndex, 48, 48);
+            Object.assign(iconDiv.style, iconStyles);
+
+            const title = document.createElement('h3');
+            title.textContent = app.name;
+
+            const excerpt = document.createElement('p');
+            excerpt.className = 'card-excerpt';
+            excerpt.textContent = app.excerpt || `Click to learn more about ${app.name}.`; // Fallback excerpt
+
+            const viewButton = document.createElement('button');
+            viewButton.className = 'nm-button';
+            viewButton.textContent = 'View Details';
+            viewButton.onclick = () => openModal(app.id);
+
+
+            card.appendChild(iconDiv);
+            card.appendChild(title);
+            card.appendChild(excerpt);
+            card.appendChild(viewButton);
+
+            projectsGrid.appendChild(card);
+        });
+
+        // Modal Functions
+        function openModal(appId) {
+            const app = applicationsData.find(a => a.id === appId);
+            if (!app) return;
+
+            modalTitleText.textContent = app.fullName;
+            const titleIconStyles = getSpriteIconStyles(app.iconIndex, 24, 24);
+            Object.assign(modalTitleIcon.style, titleIconStyles);
+
+            modalBody.innerHTML = app.windowContentHTML;
+            // Re-attach event listeners for any buttons inside the newly injected modal content if needed
+            // For example, if .window-content-close-button was intended to close modal:
+            modalBody.querySelectorAll('.window-content-close-button').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.preventDefault(); // Prevent default if it's an anchor
+                    closeModal();
+                };
+            });
+            // For action buttons, ensure they open in new tabs if they are links
+             modalBody.querySelectorAll('.window-content-action-button').forEach(btn => {
+                if (btn.tagName === 'A' || (btn.dataset && btn.dataset.actionUrl)) {
+                    btn.setAttribute('target', '_blank');
+                    btn.setAttribute('rel', 'noopener noreferrer');
+                    if (btn.dataset.actionUrl && btn.tagName !== 'A') {
+                        btn.onclick = () => window.open(btn.dataset.actionUrl, '_blank');
+                    }
+                }
+            });
+
+
+            modalOverlay.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modalOverlay.style.display = 'none';
+            modalBody.innerHTML = ''; // Clear content
+        }
+
+        modalCloseButton.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (event) => {
+            if (event.target === modalOverlay) { // Click on overlay itself, not content
+                closeModal();
+            }
+        });
+        
+        // Smooth scrolling for nav links
+        document.querySelectorAll('.portfolio-nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+    });
+    </script>
+</body>
+</html>
