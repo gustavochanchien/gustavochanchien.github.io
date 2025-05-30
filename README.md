@@ -2,8 +2,7 @@
 
 This is my interactive creative portfolio, I designed it as a nostalgic Windows XP-style desktop envinronment to showcase some of my front-end development experience and as a fun project. It's made completely with vanilla Javascript, HTML, and CSS in a single html document.
 
-[![Portfolio XP Desktop Screenshot](images/desktop-preview
-.png)](https://gustavochanchien.github.io)
+[![Portfolio XP Desktop Screenshot](images/desktop-preview.png)](https://gustavochanchien.github.io)
 
 ## Live Demo
 
