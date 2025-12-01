@@ -2,8 +2,6 @@
 
 This is my personal portfolio website. I use it to introduce myself as a full-stack developer & data analyst, share a bit of my background in public health and epidemiology, and showcase selected projects — all wrapped around a playful 3js balloon simulation on the landing section.
 
-![Portfolio Screenshot](images/portfolio-screenshot.png)
-
 ## Live Demo
 
 `https://gustavochanchien.github.io`
