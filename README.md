@@ -4,7 +4,7 @@ This is my personal portfolio website. I use it to introduce myself as a full-st
 
 ## Live Demo
 
-`https://gustavochanchien.github.io`
+[gustavochanchien.github.io](https://gustavochanchien.github.io)
 
 ## Overview
 
