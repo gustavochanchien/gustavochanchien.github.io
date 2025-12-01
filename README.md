@@ -1,77 +1,91 @@
-# Portfolio XP Desktop - Gustavo Chanchien
+# Portfolio - Gustavo Chanchien
 
-This is my interactive creative portfolio, I designed it as a nostalgic Windows XP-style desktop envinronment to showcase some of my front-end development experience and as a fun project. It's made completely with vanilla Javascript, HTML, and CSS in a single html document.
+This is my personal portfolio website. I use it to introduce myself as a full-stack developer & data analyst, share a bit of my background in public health and epidemiology, and showcase selected projects — all wrapped around a playful 3js balloon simulation on the landing section.
 
-[![Portfolio XP Desktop Screenshot](images/desktop-preview.png)](https://gustavochanchien.github.io)
+![Portfolio Screenshot](images/portfolio-screenshot.png)
 
 ## Live Demo
 
-**`https://gustavochanchien.github.io`**
+`https://gustavochanchien.github.io`
 
 ## Overview
 
-I built this portfolio so it would be a fun immersive desktop simulation and to hold all my projects. It features a fake boot screen, draggable icons that move and resize with the actual window size, launchable "applications", a working start menu, and a taskbar that has the time, date, and weather updates (fetched from the IP address). The "applications" are all stored in an array so I can easily add and edit them as I add projects. 
+I built this portfolio as a simple, focused place to:
+
+* Highlight my work as a developer and data analyst.
+* Tell a bit of my story — from growing up in Managua, Nicaragua to working on projects that help people and communities better understand and use their data.
+* Experiment with interactive visuals like the 3js balloon simulation on the homepage.
+
+The site is structured into clear sections (About, Projects, Contact) so visitors can quickly learn who I am, what I’ve built, and how to reach me.
 
 ## Features
 
 ### User Interface & Experience:
-* **Windows XP Inspired Design:** A parody recreation of the classic Windows XP aesthetic.
-* **Boot Screen Simulation:** A skippable (after first visit) boot sequence with loading animation.
-* **Interactive Desktop:**
-    * Draggable application icons.
-    * Icon selection and hover effects.
-    * Icons move around to fit the window and resize when appropriate
-    * Desktop area simulated selection box.
-* **Functional Taskbar:**
-    * XP-style Start Button and menu.
-    * Displays and manages open application "windows." in taskbar
-    * Real-time clock and dynamic weather display.
-* **Start Menu:**
-    * Lists available "applications" (projects, about me, etc.).
-    * "Reboot Website" functionality.
-* **Draggable & Closable Windows:**
-    * Application windows can be moved around the desktop.
-    * Each window has a title bar with icon, title, and a close button.
-    * Content for each "application" is dynamically loaded.
-* **Dynamic Content:**
-    * Weather information based on the user's approximate location (via IP geolocation).
-    * User's IP and approximate location displayed in an info popup.
+
+  * Hero Section with 3js Balloon Simulation:
+    * Interactive balloon scene on load (“mouse over to burn”).
+    * Visual, playful introduction instead of a static hero image.
+    * Simple “Pause” control to stop / resume the animation.
+  * Clean Navigation:
+    * Top navigation bar with anchors for **About**, **Projects**, and **Contact**.
+    * Smooth, single-page experience so everything is reachable within a few scrolls.
+  * About Section:
+    * Short narrative about my background in Managua, how I started coding, and why I care about building tools that help communities reclaim and understand their data.
+    * Highlights my core skills and domains (Python, JavaScript, R, SQL; public health, epidemiology, and GIS).
+  * Projects Section:
+    * Curated list of selected projects with brief descriptions and tech stacks.
+    * Focus on work that bridges software, data, and real-world impact.
+  * Contact / Call-to-Action:
+    * Friendly “Get in touch :)” section inviting collaboration.
+    * Direct links to my GitHub profile and a note about being based in Albuquerque, New Mexico.
 
 ### Technical Highlights:
-* **Vanilla JavaScript Core:** The entire desktop interaction logic, window management, and dynamic content loading are handled with plain JavaScript, without relying on external UI frameworks for the desktop simulation.
-* **Modular Application Structure:** "Applications" are defined in a central JavaScript array (`applicationsData`), making the portfolio easily extensible with new projects or sections.
-* **Dynamic DOM Manipulation:** Icons, windows, start menu items, and taskbar entries are created and managed programmatically.
-* **CSS Sprite for Icons:** Efficiently loads and displays all UI icons (desktop, window title bars, start menu, taskbar) from a single sprite sheet, with positions and scaling calculated in JavaScript.
-* **API Integration:**
-    * Asynchronously fetches data from `api.ipify.org` (IP address), `ip-api.com` (geolocation), and `api.open-meteo.com` (weather).
-* **Comprehensive Event Handling:** Manages user interactions like clicks, double-clicks, drag-and-drop, and mouse movements.
-* **Z-Index Management:** Dynamically assigns `z-index` values to ensure active windows are always on top.
-* **Responsive Icon Layout:** Desktop icons are dynamically scaled and arranged based on the available viewport space, with debounced updates on window resize.
-* **`localStorage`:** Used to manage the boot screen visibility state.
+
+  * Static Site on GitHub Pages:
+    * Served directly from `index.html`, making the site easy to host and version-control.
+  * Vanilla JavaScript + 3js:
+    * No front-end framework — the site is built with plain JavaScript plus a 3js-powered balloon simulation.
+  * Modular JavaScript Structure:
+    * `app.js` for general page behavior (navigation, section handling, UI interactions).
+    * `projects.js` to keep project data/configuration separate from layout logic.
+    * `simulation.js` for the balloon scene, animation loop, and pointer interaction logic.
+  * Custom Styling:
+    * All layout, typography, and component styles live in `styles.css`, making it straightforward to tweak the visual design.
+  * Lightweight & Extensible:
+    * Easy to add new projects by updating the data structure in `projects.js` and adjusting markup if needed.
+    * No build step required — just commit and push to update the live site.
 
 ## Technologies Used
 
-* **HTML5**
-* **CSS3** (Flexbox, Gradients, Custom Properties, Animations)
-* **Vanilla JavaScript (ES6+)**
+  * HTML5
+  * CSS3
+  * JavaScript (ES6+)
+  * 3js / Three.js (for the balloon simulation)
+  * GitHub Pages (hosting)
 
 ## How It Works
 
-The webpage initializes by checking `localStorage` to determine if the boot screen should be displayed. Once the desktop environment is loaded:
-1.  **Applications Data (`applicationsData`):** A JavaScript array holds objects, each defining an "application" with its ID, name, icon index (for the sprite sheet), and the HTML content for its window.
-2.  **Desktop Initialization:**
-    * Icons are dynamically created and positioned on the desktop based on `applicationsData` and available screen space.
-    * Application windows are created (initially hidden).
-    * The Start Menu is populated.
-3.  **Interactivity:** Event listeners handle all user actions:
-    * Dragging icons or windows updates their `position` style.
-    * Clicking/double-clicking icons or Start Menu items opens the corresponding window.
-    * Opening a window also creates a taskbar item for it.
-    * Window `z-index` is managed to bring the most recently interacted window to the front.
-4.  **Dynamic Information:**
-    * The clock updates every second.
-    * IP, location, and weather data are fetched on load and periodically refreshed.
-    * Icon graphics are rendered using a CSS sprite sheet; JavaScript calculates the `background-position` and `background-size` to display the correct portion of the sprite.
----
+When the page loads:
 
-This project was a fun challenge to use modern web technologies to recreate a nostalgic expereince. I hope you enjoy exploring it!
+  1. **Base layout renders** from `index.html`, including the navigation bar, hero section, content sections, and contact/footer.
+  2. **Balloon simulation initializes**:
+     * `simulation.js` sets up the 3D scene, camera, and render loop.
+     * Pointer/mouse events drive the “burn” interaction and balloon behavior.
+  3. **Page interactions wire up**:
+     * `app.js` attaches event listeners for navigation links and any UI controls (like the simulation pause button).
+  4. **Projects populate**:
+     * Project metadata in `projects.js` is used to render the list of projects in the Projects section, keeping content and presentation loosely separated.
+
+* * *
+
+This portfolio is an ongoing playground for me to experiment with interactive visuals, front-end patterns, and data-driven storytelling. I hope you enjoy exploring it!
+
+## About
+
+Personal portfolio site
+
+`https://gustavochanchien.github.io`
+
+### Resources
+
+Readme

@@ -11,7 +11,73 @@
     // Then initialize interactive behaviors
     initCarousels();
     initNavbar();
+    initImageLightbox();
   });
+
+    // --------- IMAGE LIGHTBOX FOR SECTION PHOTOS ----------
+
+  function initImageLightbox() {
+    const lightbox = document.getElementById("image-lightbox");
+    if (!lightbox) return;
+
+    const imgEl = lightbox.querySelector("[data-lightbox-img]");
+    const closeBtn = lightbox.querySelector("[data-lightbox-close]");
+    const backdrop = lightbox.querySelector("[data-lightbox-backdrop]");
+
+    if (!imgEl || !closeBtn || !backdrop) return;
+
+    // All section images you want clickable:
+    const clickableImages = document.querySelectorAll(".stack-item-image-row-img");
+
+    if (!clickableImages.length) return;
+
+    function openLightbox(source, alt) {
+      imgEl.src = source;
+      imgEl.alt = alt || "";
+      lightbox.classList.add("is-open");
+      document.body.classList.add("lightbox-open");
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("is-open");
+      document.body.classList.remove("lightbox-open");
+      // Small delay is optional; here we can clear right away
+      imgEl.src = "";
+      imgEl.alt = "";
+    }
+
+    clickableImages.forEach((img) => {
+      img.style.cursor = "zoom-in"; // optional visual hint
+
+      img.addEventListener("click", () => {
+        openLightbox(img.src, img.alt);
+      });
+    });
+
+    // Close button
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+
+    // Clicking outside the inner image/box should close
+    backdrop.addEventListener("click", (e) => {
+      // If click target *is* the backdrop, close. If you want
+      // even clicks on inner area (outside the image) to close,
+      // you can remove this check and always close.
+      if (e.target === backdrop) {
+        closeLightbox();
+      }
+    });
+
+    // Escape key closes the lightbox
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && lightbox.classList.contains("is-open")) {
+        closeLightbox();
+      }
+    });
+  }
+
 
   // --------- RENDER FUNCTIONS (from projects.js) ----------
 

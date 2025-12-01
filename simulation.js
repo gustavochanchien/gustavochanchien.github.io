@@ -142,7 +142,7 @@ function initLanternSimulation(container) {
   // Color & pattern utilities
   // ---------------------------------------------------------
   const brightColorHex = 0xfff6a0; // soft bright pastel yellow when lit
-  const orangeColorHex = 0xc4c47a; // warm peachy orange for mix / emissive
+  const orangeColorHex = 0xe2a112; // warm peachy orange for mix / emissive
   const brightColor = new THREE.Color(brightColorHex);
   const orangeColor = new THREE.Color(orangeColorHex);
   const litMixColor = brightColor.clone().lerp(orangeColor, 0.5);
