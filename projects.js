@@ -109,7 +109,7 @@ window.projectsData = {
         {
           label: "Albuquerque Box Hot Air Balloon Game",
           title: "Hot Air Balloon Flight Simulator in the Albuquerque Box",
-          body: `[JavaScript] Wanted to make a game that has the experience of flying a hot air balloon through the different layers of the box.`,
+          body: `[JavaScript] Wanted to make a game that has the experience of flying a hot air balloon through the different layers of the box. https://gustavochanchien.github.io/albuquerque-box-game/`,
           images: [
             {
               url: "images/preview-screenshots/boxsim.png",
@@ -120,7 +120,7 @@ window.projectsData = {
         {
           label: "Phoenix Rising Homepage",
           title: "The webpage for Phoenix Rising R/C Balloon Group",
-          body: `[JavaScript, Google Drive] Static informational webpage for the R/C Balloon Group.`,
+          body: `[JavaScript, Google Drive] Static informational webpage for the R/C Balloon Group. https://gustavochanchien.github.io/phoenix-rising/`,
           images: [
             {
               url: "images/preview-screenshots/pr.png", 
@@ -171,6 +171,17 @@ window.projectsData = {
       title: "Other Projects",
       description: `All the other random stuff I've made.`,
       items: [
+        {
+          label: "Workout App Concept",
+          title: "A concept for a workout app that uses optimal timing",
+          body: `[JavaScript] A concept for a workout tracker app that helps you learn optimal timing for rests, concentric, and eccentric movements, and track your PRs. https://gustavochanchien.github.io/workout-concept/`,
+          images: [
+            {
+              url: "images/preview-screenshots/workout.png",
+              alt: "Workout Timer"
+            },
+          ]
+        },
         {
           label: "VectorCardiogram and ECG Simulator",
           title: "A simulator to compare ECG and Vectorcardiogram outputs",
