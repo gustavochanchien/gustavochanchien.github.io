@@ -1,6 +1,20 @@
 (function () {
   "use strict";
 
+  // --------- NEW: helper to auto-link URLs in text ----------
+  function autoLink(text) {
+    if (!text) return "";
+
+    // Very simple URL matcher: http:// or https:// followed by non-space chars
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    return text.replace(urlRegex, (url) => {
+      const safeUrl = url.replace(/"/g, "&quot;");
+      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    });
+  }
+  // --------- END NEW HELPER ----------
+
   document.addEventListener("DOMContentLoaded", function () {
     // Render sections and carousel from projects.js data
     if (window.projectsData) {
@@ -14,7 +28,7 @@
     initImageLightbox();
   });
 
-    // --------- IMAGE LIGHTBOX FOR SECTION PHOTOS ----------
+  // --------- IMAGE LIGHTBOX FOR SECTION PHOTOS ----------
 
   function initImageLightbox() {
     const lightbox = document.getElementById("image-lightbox");
@@ -78,7 +92,6 @@
     });
   }
 
-
   // --------- RENDER FUNCTIONS (from projects.js) ----------
 
   function renderSectionsFromData(data) {
@@ -113,7 +126,7 @@
         card.appendChild(titleEl);
       }
 
-      // Description
+      // Description (unchanged; still plain text)
       if (section.description) {
         const descEl = document.createElement("p");
         descEl.textContent = section.description;
@@ -142,7 +155,7 @@
             itemWrap.appendChild(titleEl);
           }
 
-          // ----- NEW: horizontal image row support -----
+          // ----- horizontal image row support -----
           // Preferred: item.images = [{ url, alt, href?, loading? }, ...]
           if (Array.isArray(item.images) && item.images.length > 0) {
             const imagesRow = document.createElement("div");
@@ -184,12 +197,14 @@
             imagesRow.appendChild(img);
             itemWrap.appendChild(imagesRow);
           }
-          // ----- END NEW IMAGE ROW -----
+          // ----- END IMAGE ROW -----
 
           if (item.body) {
             const bodyEl = document.createElement("div");
             bodyEl.className = "stack-item-body";
-            bodyEl.textContent = item.body;
+            // --------- NEW: use autoLink + innerHTML so URLs are clickable ----------
+            bodyEl.innerHTML = autoLink(item.body);
+            // --------- END CHANGE ----------
             itemWrap.appendChild(bodyEl);
           }
 

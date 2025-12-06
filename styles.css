@@ -564,6 +564,15 @@ main {
     conic-gradient(#000 0 0) padding-box;
 }
 
+.stack-card a {
+  color: #759ef8ff;
+  text-decoration: underline;
+}
+
+.stack-card a:hover {
+  color: #547dd4ff;
+}
+
 .stack-tab span {
   display: inline-block;
 }
