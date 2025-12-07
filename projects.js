@@ -118,6 +118,17 @@ window.projectsData = {
           ]
         },
         {
+          label: "Workout App Concept",
+          title: "A concept for a workout app that uses optimal timing",
+          body: `[JavaScript] A concept for a workout tracker app that helps you learn optimal timing for rests, concentric, and eccentric movements, and track your PRs. https://gustavochanchien.github.io/workout-concept/`,
+          images: [
+            {
+              url: "images/preview-screenshots/workout.png",
+              alt: "Workout Timer"
+            },
+          ]
+        },
+        {
           label: "Phoenix Rising Homepage",
           title: "The webpage for Phoenix Rising R/C Balloon Group",
           body: `[JavaScript, Google Drive] Static informational webpage for the R/C Balloon Group. https://gustavochanchien.github.io/phoenix-rising/`,
@@ -171,17 +182,6 @@ window.projectsData = {
       title: "Other Projects",
       description: `All the other random stuff I've made.`,
       items: [
-        {
-          label: "Workout App Concept",
-          title: "A concept for a workout app that uses optimal timing",
-          body: `[JavaScript] A concept for a workout tracker app that helps you learn optimal timing for rests, concentric, and eccentric movements, and track your PRs. https://gustavochanchien.github.io/workout-concept/`,
-          images: [
-            {
-              url: "images/preview-screenshots/workout.png",
-              alt: "Workout Timer"
-            },
-          ]
-        },
         {
           label: "VectorCardiogram and ECG Simulator",
           title: "A simulator to compare ECG and Vectorcardiogram outputs",
