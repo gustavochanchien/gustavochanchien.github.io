@@ -299,7 +299,6 @@ main {
 .hero-circle-svg {
   width: 110px;
   height: 110px;
-  animation: spinText 25s linear infinite;
   will-change: transform;
 }
 
@@ -318,9 +317,6 @@ main {
   object-fit: contain;
   pointer-events: none;
   z-index: 2;
-
-  animation: spinText 25s linear infinite;
-  transform-origin: 50% 50%;
 }
 
 @keyframes spinText {
@@ -926,7 +922,7 @@ main {
   justify-content: center;
 }
 
-/* Inner container with zoom animation */
+/* Inner container */
 .image-lightbox-inner {
   position: relative;
   max-width: min(900px, 90vw);
