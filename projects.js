@@ -63,16 +63,16 @@ window.projectsData = {
           body: `[Javascript] The ThemeAny chrome extension allows you to set any website to dark mode, I made this because there aren't any similar apps and when I look at recipes I like them to be in dark mode for easy reading. Download it here: https://chromewebstore.google.com/detail/themeany/kjihonkoamigalhkfmndehdkfnldjpfi`,
           images: [
             {
-              url: "images/preview-screenshots/pregunton1.png",
-              alt: "Pregunton Surveys dashboard"
+              url: "images/preview-screenshots/themeany0.png",
+              alt: "Slice view"
             },
             {
-              url: "images/preview-screenshots/pregunton2.png",
-              alt: "Survey creation screen"
+              url: "images/preview-screenshots/themeany1.png",
+              alt: "Original"
             },
             {
-              url: "images/preview-screenshots/pregunton3.png",
-              alt: "Survey results analytics"
+              url: "images/preview-screenshots/themeany2.png",
+              alt: "Themed"
             }
           ]
         },
