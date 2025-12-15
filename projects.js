@@ -58,6 +58,25 @@ window.projectsData = {
           ]
         },
         {
+          label: "ThemeAny",
+          title: "ThemeAny Chrome Extension",
+          body: `[Javascript] The ThemeAny chrome extension allows you to set any website to dark mode, I made this because there aren't any similar apps and when I look at recipes I like them to be in dark mode for easy reading. Download it here: https://chromewebstore.google.com/detail/themeany/kjihonkoamigalhkfmndehdkfnldjpfi`,
+          images: [
+            {
+              url: "images/preview-screenshots/pregunton1.png",
+              alt: "Pregunton Surveys dashboard"
+            },
+            {
+              url: "images/preview-screenshots/pregunton2.png",
+              alt: "Survey creation screen"
+            },
+            {
+              url: "images/preview-screenshots/pregunton3.png",
+              alt: "Survey results analytics"
+            }
+          ]
+        },
+        {
           label: "R/C Hot Air Balloon Telemetry",
           title: "Educational Displays for R/C Hot Air Balloon Demonstrations",
           body: `[Arduino C++, JavaScript] Developing live and interactive telemetry interfaces for R/C hot air balloons to help team about phyics and hot air balloon demonstrations [LINK]`,
