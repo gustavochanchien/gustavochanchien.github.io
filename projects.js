@@ -77,6 +77,17 @@ window.projectsData = {
           ]
         },
         {
+          label: "ABQ Crime Dashboard",
+          title: "A Dashboard of 911 Calls using CABQs open data API",
+          body: `[Javascript] A client-side dashboard that visualizes Albuquerque 911 incident data with interactive maps (dots, heatmaps, ZIP-code choropleths), time sliders, and rich filtering to explore spatial and temporal patterns. It combines performant geospatial rendering with synchronized charts and KPIs to let users look into call types, trends, and regions in a single-page web app. https://gustavochanchien.github.io/abq-crime-dashboard/`,
+          images: [
+            {
+              url: "images/preview-screenshots/crime-dash.png",
+              alt: "Crime Report dashboard"
+            }
+          ]
+        },
+        {
           label: "R/C Hot Air Balloon Telemetry",
           title: "Educational Displays for R/C Hot Air Balloon Demonstrations",
           body: `[Arduino C++, JavaScript] Developing live and interactive telemetry interfaces for R/C hot air balloons to help team about phyics and hot air balloon demonstrations [LINK]`,
