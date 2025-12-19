@@ -67,7 +67,7 @@ window.projectsData = {
         {
           label: "ThemeAny",
           title: "ThemeAny Chrome Extension",
-          body: `[Javascript] The ThemeAny chrome extension allows you to set any website to dark mode, I made this because there aren't any similar apps and when I look at recipes I like them to be in dark mode for easy reading. Download it here: https://chromewebstore.google.com/detail/themeany/kjihonkoamigalhkfmndehdkfnldjpfi`,
+          body: `[JavaScript, Chrome Extensions API, CSS] The ThemeAny chrome extension allows you to set any website to dark mode, I made this because there aren't any similar apps and when I look at recipes I like them to be in dark mode for easy reading. Download it here: https://chromewebstore.google.com/detail/themeany/kjihonkoamigalhkfmndehdkfnldjpfi`,
           images: [
             {
               url: "images/preview-screenshots/themeany0.png",
@@ -86,7 +86,7 @@ window.projectsData = {
         {
           label: "ABQ Crime Dashboard",
           title: "A Dashboard of 911 Calls using CABQs open data API",
-          body: `[Javascript] A client-side dashboard that visualizes Albuquerque 911 incident data with interactive maps (dots, heatmaps, ZIP-code choropleths), time sliders, and rich filtering to explore spatial and temporal patterns. It combines performant geospatial rendering with synchronized charts and KPIs to let users look into call types, trends, and regions in a single-page web app. https://gustavochanchien.github.io/abq-crime-dashboard/`,
+          body: `[JavaScript, Leaflet, Chart.js, ArcGIS REST API] A client-side dashboard that visualizes Albuquerque 911 incident data with interactive maps (dots, heatmaps, ZIP-code choropleths), time sliders, and rich filtering to explore spatial and temporal patterns. It combines performant geospatial rendering with synchronized charts and KPIs to let users look into call types, trends, and regions in a single-page web app. https://gustavochanchien.github.io/abq-crime-dashboard/`,
           images: [
             {
               url: "images/preview-screenshots/crime-dash.png",
@@ -124,7 +124,7 @@ window.projectsData = {
         {
           label: "Outbreak Simulator",
           title: "Outbreak and Infection Simulator",
-          body: `[JavaScript] A fun infection simulator with a live preview that simultaneously develops matching datasets for use with homework projects. It also makes SIR graphs and has a variety of tunable parameters all for demonstration purposes. https://gustavochanchien.github.io/outbreak-simulator/`,
+          body: `[JavaScript, HTML5 Canvas] A fun infection simulator with a live preview that simultaneously develops matching datasets for use with homework projects. It also makes SIR graphs and has a variety of tunable parameters all for demonstration purposes. https://gustavochanchien.github.io/outbreak-simulator/`,
           images: [
             {
               url: "images/epi.png",
@@ -135,7 +135,7 @@ window.projectsData = {
         {
           label: "Pathfinding Experiment",
           title: "A pathfinding lab that uses real road speed as costs",
-          body: `[JavaScript] Learning about pathfinding algorithms and thought this would be a fun way to see how different ones performed on real road data. It's interesting how greedy will not take highways and A*'s accuracy. https://gustavochanchien.github.io/pathfinding-experiment/`,
+          body: `[JavaScript, MapLibre GL JS, Overpass API] Learning about pathfinding algorithms and thought this would be a fun way to see how different ones performed on real road data. It's interesting how greedy will not take highways and A*'s accuracy. https://gustavochanchien.github.io/pathfinding-experiment/`,
           images: [
             {
               url: "images/preview-screenshots/pathfinding2.png",
@@ -150,7 +150,7 @@ window.projectsData = {
         {
           label: "Albuquerque Box Hot Air Balloon Game",
           title: "Hot Air Balloon Flight Simulator in the Albuquerque Box",
-          body: `[JavaScript] Wanted to make a game that has the experience of flying a hot air balloon through the different layers of the box. https://gustavochanchien.github.io/albuquerque-box-game/`,
+          body: `[JavaScript, MapLibre GL JS, HTML5 Canvas] Wanted to make a game that has the experience of flying a hot air balloon through the different layers of the box. https://gustavochanchien.github.io/albuquerque-box-game/`,
           images: [
             {
               url: "images/preview-screenshots/boxsim.png",
@@ -172,7 +172,7 @@ window.projectsData = {
         {
           label: "Projector Light Show",
           title: "A laser-like smoky light show",
-          body: `[JavaScript] A browser-based, real-time projector and light-show visualizer inspired by Blaize V3, rebuilt from the ground up using HTML5 Canvas and JavaScript to run entirely in the browser. It features 30+ animated presets, beat-reactive visuals, real-time controls, and a pop-out control panel optimized for live projector and dual-screen setups. https://gustavochanchien.github.io/projector-light-show/`,
+          body: `[JavaScript, HTML5 Canvas, Web Audio API] A browser-based, real-time projector and light-show visualizer inspired by Blaize V3, rebuilt from the ground up using HTML5 Canvas and JavaScript to run entirely in the browser. It features 30+ animated presets, beat-reactive visuals, real-time controls, and a pop-out control panel optimized for live projector and dual-screen setups. https://gustavochanchien.github.io/projector-light-show/`,
           images: [
             {
               url: "images/preview-screenshots/lightshow.png",
@@ -241,12 +241,12 @@ window.projectsData = {
         {
           label: "VectorCardiogram and ECG Simulator",
           title: "A simulator to compare ECG and Vectorcardiogram outputs",
-          body: `[JavaScript] Vectorcardiograms were the original way to read heart rhythms but they were phased out and now mostly used for specialty diagnostic tests. My grandpa originally learned to read vectorcardiograms and I made this simulator so he could explain it better. Not medically accurate. https://gustavochanchien.github.io/ecg-vector-simulator/`
+          body: `[JavaScript, HTML5 Canvas] Vectorcardiograms were the original way to read heart rhythms but they were phased out and now mostly used for specialty diagnostic tests. My grandpa originally learned to read vectorcardiograms and I made this simulator so he could explain it better. Not medically accurate. https://gustavochanchien.github.io/ecg-vector-simulator/`
         },
         {
           label: "CSS Tabs",
           title: "A quick webapp for tuning the tab parameters",
-          body: `[JavaScript] I needed to adjust the tabs for this website's cards and navbars and so I wanted to experiment with them a bunch, so I made this quick website with sliders so I can adjust it and see what works and where it breaks. https://gustavochanchien.github.io/tab-design-tester/`
+          body: `[JavaScript, CSS] I needed to adjust the tabs for this website's cards and navbars and so I wanted to experiment with them a bunch, so I made this quick website with sliders so I can adjust it and see what works and where it breaks. https://gustavochanchien.github.io/tab-design-tester/`
         },
         {
           label: "Hot Air Balloon Simulator",
