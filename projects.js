@@ -28,7 +28,14 @@ window.projectsData = {
       href: "#",
       openInNewTab: true,
       loading: "lazy"
-    }
+    },
+    {
+      imageUrl: "images/preview-screenshots/crime-dash.png",
+      alt: "Crime Dasb",
+      href: "/abq-crime-dashboard",
+      openInNewTab: true,
+      loading: "lazy"
+    },
   ],
 
   sections: [
@@ -159,6 +166,21 @@ window.projectsData = {
             {
               url: "images/preview-screenshots/workout.png",
               alt: "Workout Timer"
+            },
+          ]
+        },
+        {
+          label: "Projector Light Show",
+          title: "A laser-like smoky light show",
+          body: `[JavaScript] A browser-based, real-time projector and light-show visualizer inspired by Blaize V3, rebuilt from the ground up using HTML5 Canvas and JavaScript to run entirely in the browser. It features 30+ animated presets, beat-reactive visuals, real-time controls, and a pop-out control panel optimized for live projector and dual-screen setups. https://gustavochanchien.github.io/projector-light-show/`,
+          images: [
+            {
+              url: "images/preview-screenshots/lightshow.png",
+              alt: "Dashboard View"
+            },
+            {
+              url: "images/preview-screenshots/lightshow.png",
+              alt: "Live picture"
             },
           ]
         },
