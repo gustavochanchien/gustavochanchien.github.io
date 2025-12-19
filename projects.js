@@ -90,7 +90,7 @@ window.projectsData = {
         {
           label: "R/C Hot Air Balloon Telemetry",
           title: "Educational Displays for R/C Hot Air Balloon Demonstrations",
-          body: `[Arduino C++, JavaScript] Developing live and interactive telemetry interfaces for R/C hot air balloons to help team about phyics and hot air balloon demonstrations [LINK]`,
+          body: `[Arduino C++, JavaScript] Developing live and interactive telemetry interfaces for R/C hot air balloons to help team about phyics and hot air balloon demonstrations https://github.com/gustavochanchien/ESP32_Basic_Telemetry`,
           images: [
             {
               url: "images/telemetry.jpeg",

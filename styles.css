@@ -641,6 +641,13 @@ main {
 .stack-item-body {
   font-size: 0.84rem;
   color: #6b7280;
+  overflow-wrap: anywhere; 
+  word-break: break-word;
+}
+
+.stack-item-body a {
+  word-break: break-all; 
+  display: inline-block; 
 }
 .stack-section--second {
   margin-top: 0;
