@@ -84,6 +84,10 @@ window.projectsData = {
             {
               url: "images/preview-screenshots/crime-dash.png",
               alt: "Crime Report dashboard"
+            },
+            {
+              url: "images/preview-screenshots/crime-dash2.png",
+              alt: "heatmap view"
             }
           ]
         },
