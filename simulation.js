@@ -599,7 +599,7 @@ function initLanternSimulation(container) {
         }
         colorAttr.needsUpdate = true;
 
-        const baseEmissive = 0.3;
+        const baseEmissive = 0.1;
         mat.emissive.setHex(orangeColorHex);
         //mat.emissive.copy(lantern.userData.offColor);      // use the lantern’s hue
         mat.emissiveIntensity = baseEmissive + 1.0 * b;
