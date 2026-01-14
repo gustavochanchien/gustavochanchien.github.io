@@ -99,6 +99,13 @@ window.projectsData = {
           ]
         },
         {
+          label: "Down the Lobby Hole",
+          title: "Helpful visualization of lobbying data",
+          body: `[Javascript, Chart.js] An interesting visualization of data from OpenFEC, LDA, and NM CFIS. UNDER CONSTRUCTION https://github.com/gustavochanchien/lobby`,
+          images: [
+          ]
+        },
+        {
           label: "R/C Hot Air Balloon Telemetry",
           title: "Educational Displays for R/C Hot Air Balloon Demonstrations",
           body: `[Arduino C++, JavaScript] Developing live and interactive telemetry interfaces for R/C hot air balloons to help team about phyics and hot air balloon demonstrations https://github.com/gustavochanchien/ESP32_Basic_Telemetry`,
@@ -187,7 +194,7 @@ window.projectsData = {
         {
           label: "Phoenix Rising Homepage",
           title: "The webpage for Phoenix Rising R/C Balloon Group",
-          body: `[JavaScript, Google Drive] Static informational webpage for the R/C Balloon Group. https://gustavochanchien.github.io/phoenix-rising/`,
+          body: `[JavaScript, Google Drive] Static informational webpage for the R/C Balloon Group. https://phoenixrisingballoonclub.web.app`,
           images: [
             {
               url: "images/preview-screenshots/pr.png", 

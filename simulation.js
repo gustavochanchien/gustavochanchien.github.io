@@ -33,10 +33,22 @@ function initLanternSimulation(container) {
   camera.position.set(0, 5, 22);
   camera.lookAt(0, 5, 0);
 
+  // Adaptive DPR cap (helps mobile a lot)
+  let targetDPR = Math.min(window.devicePixelRatio || 1, 2);
+  if (initialSize.width < 700) targetDPR = Math.min(targetDPR, 1.25);
+  if (initialSize.width < 500) targetDPR = Math.min(targetDPR, 1.1);
+
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(targetDPR);
   renderer.setSize(initialSize.width, initialSize.height);
+
+  // Shadows are expensive with lots of moving meshes; keep them but cheaper.
   renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
+
+  // Keep output sane (defaults are fine, but set explicitly)
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
   container.appendChild(renderer.domElement);
 
   // ---------------------------------------------------------
@@ -61,7 +73,9 @@ function initLanternSimulation(container) {
   const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
   dirLight.position.set(6, 12, 8);
   dirLight.castShadow = true;
-  dirLight.shadow.mapSize.set(1024, 1024);
+
+  // Cheaper shadows (1024 -> 512)
+  dirLight.shadow.mapSize.set(512, 512);
   dirLight.shadow.camera.near = 1;
   dirLight.shadow.camera.far = 50;
   scene.add(dirLight);
@@ -73,7 +87,9 @@ function initLanternSimulation(container) {
   const lanternDepth = 0.6;
   const lanternHeight = 1.0;
   const cornerRadius = 0.3;
-  const smoothness = 5;
+
+  // Reducing smoothness reduces vertexCount a LOT (big perf win)
+  const smoothness = 3;
 
   const baseRoundedGeo = new RoundedBoxGeometry(
     lanternWidth,
@@ -141,11 +157,7 @@ function initLanternSimulation(container) {
   // ---------------------------------------------------------
   // Color & pattern utilities
   // ---------------------------------------------------------
-  const brightColorHex = 0xfff6a0; // soft bright pastel yellow when lit
-  const orangeColorHex = 0xe2a112; // warm peachy orange for mix / emissive
-  const brightColor = new THREE.Color(brightColorHex);
-  const orangeColor = new THREE.Color(orangeColorHex);
-  const litMixColor = brightColor.clone().lerp(orangeColor, 0.5);
+  const orangeColorHex = 0xe2a112; // warm peachy orange for emissive
   const tempColor = new THREE.Color();
   const tempHSL = { h: 0, s: 0, l: 0 };
 
@@ -223,6 +235,9 @@ function initLanternSimulation(container) {
   const VERTICAL_DRAG = 0.995;
   const MAX_VERTICAL_SPEED = 4.0;
 
+  // Update vertex colors only when brightness step changes
+  const BRIGHTNESS_STEPS = 24;
+
   const lanterns = [];
 
   // Visible region estimates (updated on resize)
@@ -286,12 +301,18 @@ function initLanternSimulation(container) {
 
     lantern.userData.buoyancy = Math.random() * Math.random() * 0.4;
     lantern.userData.hovered = false;
+
+    // force a color refresh when respawned
+    lantern.userData.lastBrightStep = -1;
   }
 
   function spawnLantern(isInitial = false) {
     const mat = createLanternMaterial();
 
+    // Per-lantern geometry because color attribute is unique per lantern
     const geo = lanternGeo.clone();
+
+    // Create and attach per-lantern color attribute
     const colors = new Float32Array(vertexCount * 3);
     geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
@@ -320,8 +341,8 @@ function initLanternSimulation(container) {
 
     // Per-lantern wobble parameters (side-to-side drift)
     lantern.userData.wobble = {
-      ampX: THREE.MathUtils.randFloat(0.4, 1.0),   // X swing amplitude
-      ampZ: THREE.MathUtils.randFloat(0.3, 0.8),   // Z swing amplitude
+      ampX: THREE.MathUtils.randFloat(0.4, 1.0), // X swing amplitude
+      ampZ: THREE.MathUtils.randFloat(0.3, 0.8), // Z swing amplitude
       speedX: THREE.MathUtils.randFloat(0.4, 1.0), // X wobble speed
       speedZ: THREE.MathUtils.randFloat(0.4, 1.0), // Z wobble speed
       phaseX: Math.random() * Math.PI * 2,
@@ -331,9 +352,9 @@ function initLanternSimulation(container) {
     // per-lantern pattern / palette with darker, more saturated base
     const offColor = new THREE.Color();
     offColor.setHSL(
-      Math.random(),                 // random hue
-      0.95 + Math.random() * 0.05,   // saturation 0.95–1.0
-      0.35 + Math.random() * 0.08    // lightness 0.35–0.43 (darker)
+      Math.random(), // random hue
+      0.95 + Math.random() * 0.05, // saturation 0.95–1.0
+      0.35 + Math.random() * 0.08 // lightness 0.35–0.43 (darker)
     );
     lantern.userData.offColor = offColor;
 
@@ -350,26 +371,60 @@ function initLanternSimulation(container) {
 
     lantern.userData.material = mat;
 
+    // Precompute base (unlit) vertex colors ONCE for this lantern (big perf win)
+    const baseColors = new Float32Array(vertexCount * 3);
+    for (let i = 0; i < vertexCount; i++) {
+      applyPatternColor(lantern.userData.pattern, i, tempColor);
+      const idx = i * 3;
+      baseColors[idx] = tempColor.r;
+      baseColors[idx + 1] = tempColor.g;
+      baseColors[idx + 2] = tempColor.b;
+    }
+    lantern.userData.baseColors = baseColors;
+
+    // Track last applied brightness step (to avoid per-frame vertex writes)
+    lantern.userData.lastBrightStep = -1;
+
     // pass isInitial flag so first spawn can use full random Y, respawns use top-only
     resetLantern(lantern, isInitial);
+
+    // Fill initial color attribute immediately (step will get applied in animate too)
+    // This ensures the lantern starts with correct pattern even before first animate.
+    {
+      const colorAttr = geo.attributes.color;
+      const colorArray = colorAttr.array;
+      for (let i = 0; i < baseColors.length; i++) colorArray[i] = baseColors[i];
+      colorAttr.needsUpdate = true;
+    }
 
     scene.add(lantern);
     lanterns.push(lantern);
   }
 
-  const initialLanterns = 110;
+  // Adaptive lantern count based on container area (keeps mobile smooth)
+  const baseArea = 800 * 400;
+  const area = initialSize.width * initialSize.height;
+  const density = 210 / baseArea;
+  const initialLanterns = Math.max(
+    35,
+    Math.min(210, Math.floor(area * density))
+  );
+
   for (let i = 0; i < initialLanterns; i++) {
     // true => initial spawn with random vertical placement
     spawnLantern(true);
   }
 
   // ---------------------------------------------------------
-  // Pointer hover detection
+  // Pointer hover detection (throttled)
   // ---------------------------------------------------------
   const pointer = new THREE.Vector2();
   const hoverRadius = 0.3;
   const hoverRadiusSq = hoverRadius * hoverRadius;
   const tmpScreenPos = new THREE.Vector3();
+
+  let lastHoverCheck = 0;
+  const HOVER_THROTTLE_MS = 30;
 
   function updatePointer(event) {
     const rect = renderer.domElement.getBoundingClientRect();
@@ -378,26 +433,30 @@ function initLanternSimulation(container) {
   }
 
   function onPointerMove(event) {
+    const now = performance.now();
+    if (now - lastHoverCheck < HOVER_THROTTLE_MS) return;
+    lastHoverCheck = now;
+
     updatePointer(event);
 
-    for (const lantern of lanterns) {
-      lantern.userData.hovered = false;
+    for (let i = 0; i < lanterns.length; i++) {
+      lanterns[i].userData.hovered = false;
     }
 
-    for (const lantern of lanterns) {
+    for (let i = 0; i < lanterns.length; i++) {
+      const lantern = lanterns[i];
       tmpScreenPos.copy(lantern.position).project(camera);
       const dx = tmpScreenPos.x - pointer.x;
       const dy = tmpScreenPos.y - pointer.y;
-      const distSq = dx * dx + dy * dy;
-      if (distSq < hoverRadiusSq) {
+      if (dx * dx + dy * dy < hoverRadiusSq) {
         lantern.userData.hovered = true;
       }
     }
   }
 
   function onPointerLeave() {
-    for (const lantern of lanterns) {
-      lantern.userData.hovered = false;
+    for (let i = 0; i < lanterns.length; i++) {
+      lanterns[i].userData.hovered = false;
     }
   }
 
@@ -411,6 +470,12 @@ function initLanternSimulation(container) {
     const { width, height } = getSize();
     if (!width || !height) return;
 
+    // Update DPR on resize too (optional, but nice)
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (width < 700) dpr = Math.min(dpr, 1.25);
+    if (width < 500) dpr = Math.min(dpr, 1.1);
+    renderer.setPixelRatio(dpr);
+
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
@@ -418,9 +483,36 @@ function initLanternSimulation(container) {
   });
 
   // ---------------------------------------------------------
-  // Simple sphere-based collisions between lanterns
+  // Spatial-hash collisions (much cheaper than O(n^2))
   // ---------------------------------------------------------
+  const CELL_SIZE = lanternCollisionRadius * 2.5;
+  const grid = new Map();
+  const offsets = [-1, 0, 1];
+
+  function cellKey(cx, cy, cz) {
+    // cheap-ish integer hash
+    return (cx << 20) ^ (cy << 10) ^ cz;
+  }
+
   function handleLanternCollisions(dt) {
+    grid.clear();
+
+    // Build grid
+    for (let i = 0; i < lanterns.length; i++) {
+      const p = lanterns[i].position;
+      const cx = Math.floor(p.x / CELL_SIZE);
+      const cy = Math.floor(p.y / CELL_SIZE);
+      const cz = Math.floor(p.z / CELL_SIZE);
+      const key = cellKey(cx, cy, cz);
+
+      let bucket = grid.get(key);
+      if (!bucket) {
+        bucket = [];
+        grid.set(key, bucket);
+      }
+      bucket.push(i);
+    }
+
     const minDist = lanternCollisionRadius * 2;
     const minDistSq = minDist * minDist;
     const restitution = 0.3;
@@ -430,55 +522,76 @@ function initLanternSimulation(container) {
       const pa = a.position;
       const va = a.userData.velocity;
 
-      for (let j = i + 1; j < lanterns.length; j++) {
-        const b = lanterns[j];
-        const pb = b.position;
-        const vb = b.userData.velocity;
+      const cx = Math.floor(pa.x / CELL_SIZE);
+      const cy = Math.floor(pa.y / CELL_SIZE);
+      const cz = Math.floor(pa.z / CELL_SIZE);
 
-        const dx = pb.x - pa.x;
-        const dy = pb.y - pa.y;
-        const dz = pb.z - pa.z;
+      for (let oxi = 0; oxi < 3; oxi++) {
+        for (let oyi = 0; oyi < 3; oyi++) {
+          for (let ozi = 0; ozi < 3; ozi++) {
+            const ox = offsets[oxi];
+            const oy = offsets[oyi];
+            const oz = offsets[ozi];
 
-        const distSq = dx * dx + dy * dy + dz * dz;
-        if (distSq === 0 || distSq > minDistSq) continue;
+            const key = cellKey(cx + ox, cy + oy, cz + oz);
+            const bucket = grid.get(key);
+            if (!bucket) continue;
 
-        const dist = Math.sqrt(distSq);
-        const overlap = minDist - dist;
-        if (overlap <= 0) continue;
+            for (let bi = 0; bi < bucket.length; bi++) {
+              const j = bucket[bi];
+              if (j <= i) continue;
 
-        const nx = dx / dist;
-        const ny = dy / dist;
-        const nz = dz / dist;
+              const b = lanterns[j];
+              const pb = b.position;
+              const vb = b.userData.velocity;
 
-        const halfCorrection = overlap * 0.5;
-        pa.x -= nx * halfCorrection;
-        pa.y -= ny * halfCorrection;
-        pa.z -= nz * halfCorrection;
+              const dx = pb.x - pa.x;
+              const dy = pb.y - pa.y;
+              const dz = pb.z - pa.z;
 
-        pb.x += nx * halfCorrection;
-        pb.y += ny * halfCorrection;
-        pb.z += nz * halfCorrection;
+              const distSq = dx * dx + dy * dy + dz * dz;
+              if (distSq === 0 || distSq > minDistSq) continue;
 
-        const rvx = vb.x - va.x;
-        const rvy = vb.y - va.y;
-        const rvz = vb.z - va.z;
-        const velAlongNormal = rvx * nx + rvy * ny + rvz * nz;
+              const dist = Math.sqrt(distSq);
+              const overlap = minDist - dist;
+              if (overlap <= 0) continue;
 
-        if (velAlongNormal > 0) continue;
+              const nx = dx / dist;
+              const ny = dy / dist;
+              const nz = dz / dist;
 
-        const jImpulse = -(1 + restitution) * velAlongNormal * 0.5;
+              const half = overlap * 0.5;
+              pa.x -= nx * half;
+              pa.y -= ny * half;
+              pa.z -= nz * half;
 
-        const impulseX = jImpulse * nx;
-        const impulseY = jImpulse * ny;
-        const impulseZ = jImpulse * nz;
+              pb.x += nx * half;
+              pb.y += ny * half;
+              pb.z += nz * half;
 
-        va.x -= impulseX;
-        va.y -= impulseY;
-        va.z -= impulseZ;
+              const rvx = vb.x - va.x;
+              const rvy = vb.y - va.y;
+              const rvz = vb.z - va.z;
+              const velAlongNormal = rvx * nx + rvy * ny + rvz * nz;
 
-        vb.x += impulseX;
-        vb.y += impulseY;
-        vb.z += impulseZ;
+              if (velAlongNormal > 0) continue;
+
+              const jImpulse = -(1 + restitution) * velAlongNormal * 0.5;
+
+              const impulseX = jImpulse * nx;
+              const impulseY = jImpulse * ny;
+              const impulseZ = jImpulse * nz;
+
+              va.x -= impulseX;
+              va.y -= impulseY;
+              va.z -= impulseZ;
+
+              vb.x += impulseX;
+              vb.y += impulseY;
+              vb.z += impulseZ;
+            }
+          }
+        }
       }
     }
   }
@@ -488,6 +601,9 @@ function initLanternSimulation(container) {
   // ---------------------------------------------------------
   let lastTime = performance.now();
 
+  // Optional: run collisions every other frame to reduce cost further
+  let collisionToggle = 0;
+
   function animate(now) {
     const dt = Math.min((now - lastTime) / 1000, 0.05) || 0.016;
     lastTime = now;
@@ -495,7 +611,8 @@ function initLanternSimulation(container) {
     const time = now * 0.001; // seconds, for wobble
 
     if (!paused) {
-      for (const lantern of lanterns) {
+      for (let li = 0; li < lanterns.length; li++) {
+        const lantern = lanterns[li];
         const v = lantern.userData.velocity;
         const mat = lantern.userData.material;
         const isHovered = !!lantern.userData.hovered;
@@ -570,43 +687,57 @@ function initLanternSimulation(container) {
           v.z = -Math.abs(v.z) * 0.6;
         }
 
-        // per-vertex color update (pattern + lit gradient)
-        const geom = lantern.geometry;
-        const colorAttr = geom.attributes.color;
-        const colorArray = colorAttr.array;
-        const pattern = lantern.userData.pattern;
+        // -----------------------------------------------------
+        // Vertex color update: ONLY when brightness step changes
+        // -----------------------------------------------------
+        const brightStep = (b * BRIGHTNESS_STEPS) | 0;
+        if (brightStep !== lantern.userData.lastBrightStep) {
+          lantern.userData.lastBrightStep = brightStep;
 
-        for (let i = 0; i < vertexCount; i++) {
-        applyPatternColor(pattern, i, tempColor);
+          const geom = lantern.geometry;
+          const colorAttr = geom.attributes.color;
+          const colorArray = colorAttr.array;
+          const base = lantern.userData.baseColors;
 
-        if (b > 0) {
-            // instead of lerping to a warm global color,
-            // keep the hue and just brighten based on buoyancy and height
-            tempColor.getHSL(tempHSL);
+          const qb = brightStep / BRIGHTNESS_STEPS;
 
-            const h = heightFactors[i];       // 0 bottom, 1 top
-            const grad = b * (1.0 - h);       // brighter near the bottom
-            const extraLight = 0.35 * grad;   // tweak 0.35 up/down for more/less glow
+          for (let i = 0; i < vertexCount; i++) {
+            const idx = i * 3;
 
-            tempHSL.l = Math.min(1, tempHSL.l + extraLight);
-            tempColor.setHSL(tempHSL.h, tempHSL.s, tempHSL.l);
+            // start from precomputed base pattern color
+            tempColor.setRGB(base[idx], base[idx + 1], base[idx + 2]);
+
+            if (qb > 0) {
+              // keep hue; brighten based on buoyancy + height gradient
+              tempColor.getHSL(tempHSL);
+
+              const h = heightFactors[i]; // 0 bottom, 1 top
+              const grad = qb * (1.0 - h); // brighter near bottom
+              const extraLight = 0.35 * grad;
+
+              tempHSL.l = Math.min(1, tempHSL.l + extraLight);
+              tempColor.setHSL(tempHSL.h, tempHSL.s, tempHSL.l);
+            }
+
+            colorArray[idx] = tempColor.r;
+            colorArray[idx + 1] = tempColor.g;
+            colorArray[idx + 2] = tempColor.b;
+          }
+
+          colorAttr.needsUpdate = true;
         }
 
-        const idx = i * 3;
-        colorArray[idx] = tempColor.r;
-        colorArray[idx + 1] = tempColor.g;
-        colorArray[idx + 2] = tempColor.b;
-        }
-        colorAttr.needsUpdate = true;
-
+        // emissive (cheap, per-lantern)
         const baseEmissive = 0.1;
         mat.emissive.setHex(orangeColorHex);
-        //mat.emissive.copy(lantern.userData.offColor);      // use the lantern’s hue
         mat.emissiveIntensity = baseEmissive + 1.0 * b;
-
       }
 
-      handleLanternCollisions(dt);
+      // collisions (every other frame for extra perf headroom)
+      collisionToggle ^= 1;
+      if (collisionToggle === 0) {
+        handleLanternCollisions(dt);
+      }
     }
 
     renderer.render(scene, camera);
