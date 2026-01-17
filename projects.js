@@ -117,6 +117,17 @@ window.projectsData = {
           ]
         },
         {
+          label: "Albuquerque Box Hot Air Balloon Game",
+          title: "Hot Air Balloon Flight Simulator in the Albuquerque Box",
+          body: `[JavaScript, MapLibre GL JS, HTML5 Canvas] Wanted to make a game that has the experience of flying a hot air balloon through the different layers of the box. https://gustavochanchien.github.io/albuquerque-box-game/`,
+          images: [
+            {
+              url: "images/preview-screenshots/boxsim.png",
+              alt: "Box Simulator"
+            },
+          ]
+        },
+        {
           label: "R/C Hot Air Balloon Telemetry",
           title: "Educational Displays for R/C Hot Air Balloon Demonstrations",
           body: `[Arduino C++, JavaScript] Developing live and interactive telemetry interfaces for R/C hot air balloons to help team about phyics and hot air balloon demonstrations https://github.com/gustavochanchien/ESP32_Basic_Telemetry`,
@@ -162,17 +173,6 @@ window.projectsData = {
             {
               url: "images/preview-screenshots/pathfinding1.png",
               alt: "Pathfinding few agents"
-            },
-          ]
-        },
-        {
-          label: "Albuquerque Box Hot Air Balloon Game",
-          title: "Hot Air Balloon Flight Simulator in the Albuquerque Box",
-          body: `[JavaScript, MapLibre GL JS, HTML5 Canvas] Wanted to make a game that has the experience of flying a hot air balloon through the different layers of the box. https://gustavochanchien.github.io/albuquerque-box-game/`,
-          images: [
-            {
-              url: "images/preview-screenshots/boxsim.png",
-              alt: "Box Simulator"
             },
           ]
         },
