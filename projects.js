@@ -106,6 +106,17 @@ window.projectsData = {
           ]
         },
         {
+          label: "Hot Air Balloon Interactive Display",
+          title: "Interactive Mass Assension Balloon Simulator",
+          body: `[JavaScript, Three.js, MediaPipe] An interactive WebGL balloon swarm that responds to mouse hover and optional camera-based hand, wrist, or full-body tracking. Built with instanced rendering for performance, custom shaders for balloon patterns and lighting, and simple buoyancy-driven physics. https://gustavochanchien.github.io/balloon-simulator/`,
+          images: [
+            {
+              url: "images/preview-screenshots/interactive_balloons.png",
+              alt: "Interactive balloon swarm simulation"
+            }
+          ]
+        },
+        {
           label: "R/C Hot Air Balloon Telemetry",
           title: "Educational Displays for R/C Hot Air Balloon Demonstrations",
           body: `[Arduino C++, JavaScript] Developing live and interactive telemetry interfaces for R/C hot air balloons to help team about phyics and hot air balloon demonstrations https://github.com/gustavochanchien/ESP32_Basic_Telemetry`,
@@ -258,7 +269,7 @@ window.projectsData = {
         {
           label: "Hot Air Balloon Simulator",
           title: "A quick webapp for tuning the parameters on the hot air balloons on my page",
-          body: `[JavaScript, 3DJS] A little website to help tune the appearance of the hot air ballons for my welcome banner, but also a fun interactive website, I'm thinking about connecting tis up with a Kinect or something because the balloon museum has a similar display but it's not really aligned with the hot air balloon theme so I think it would be cool (note to self). https://gustavochanchien.github.io/balloon-simulator/`
+          body: `[JavaScript, 3DJS] A little website to help tune the appearance of the hot air ballons for my welcome banner, but also a fun interactive website, I'm thinking about connecting tis up with a Kinect or something because the balloon museum has a similar display but it's not really aligned with the hot air balloon theme so I think it would be cool (note to self). https://gustavochanchien.github.io/balloon-simulator/original_simulation/`
         },
         {
           label: "Portfolio XP Windows Clone",
