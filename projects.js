@@ -269,7 +269,7 @@ window.projectsData = {
         {
           label: "Hot Air Balloon Simulator",
           title: "A quick webapp for tuning the parameters on the hot air balloons on my page",
-          body: `[JavaScript, 3DJS] A little website to help tune the appearance of the hot air ballons for my welcome banner, but also a fun interactive website, I'm thinking about connecting tis up with a Kinect or something because the balloon museum has a similar display but it's not really aligned with the hot air balloon theme so I think it would be cool (note to self). https://gustavochanchien.github.io/balloon-simulator/original_simulation/`
+          body: `[JavaScript, 3DJS] A little website to help tune the appearance of the hot air ballons for my welcome banner, but also a fun interactive website, I'm thinking about connecting tis up with a Kinect or something because the balloon museum has a similar display but it's not really aligned with the hot air balloon theme so I think it would be cool (note to self). https://gustavochanchien.github.io/balloon-simulator/original_simulation/original_index.html`
         },
         {
           label: "Portfolio XP Windows Clone",
