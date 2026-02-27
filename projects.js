@@ -65,6 +65,24 @@ window.projectsData = {
           ]
         },
         {
+          label: "English Chinese Reference",
+          title: "iOs App",
+          body: `[Swift] Coming Soon`,
+          images: [
+          ]
+        },
+        {
+          label: "Chrome Peacock",
+          title: "Organizing Chrome Window Extension",
+          body: `[JavaScript, Chrome Extensions API, CSS] Subtly change the color of each chrome window for organization! Concept based on Peacock for VS Code. https://chromewebstore.google.com/detail/chrome-peacock/gejflhnnmkkpegbemjefeghkolmjjjlp`,
+          images: [
+            {
+              url: "images/preview-screenshots/chromepeacock.png",
+              alt: "Slice view"
+            },
+          ]
+        },
+        {
           label: "ThemeAny",
           title: "ThemeAny Chrome Extension",
           body: `[JavaScript, Chrome Extensions API, CSS] The ThemeAny chrome extension allows you to set any website to dark mode, I made this because there aren't any similar apps and when I look at recipes I like them to be in dark mode for easy reading. Download it here: https://chromewebstore.google.com/detail/themeany/kjihonkoamigalhkfmndehdkfnldjpfi`,
