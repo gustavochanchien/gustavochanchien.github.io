@@ -65,13 +65,6 @@ window.projectsData = {
           ]
         },
         {
-          label: "English Chinese Reference",
-          title: "iOs App",
-          body: `[Swift] Coming Soon`,
-          images: [
-          ]
-        },
-        {
           label: "Chrome Peacock",
           title: "Organizing Chrome Window Extension",
           body: `[JavaScript, Chrome Extensions API, CSS] Subtly change the color of each chrome window for organization! Concept based on Peacock for VS Code. https://chromewebstore.google.com/detail/chrome-peacock/gejflhnnmkkpegbemjefeghkolmjjjlp`,
@@ -120,6 +113,13 @@ window.projectsData = {
           label: "Down the Lobby Hole",
           title: "Helpful visualization of lobbying data",
           body: `[Javascript, Chart.js] An interesting visualization of data from OpenFEC, LDA, and NM CFIS. UNDER CONSTRUCTION https://github.com/gustavochanchien/lobby`,
+          images: [
+          ]
+        },
+                {
+          label: "English Chinese Reference",
+          title: "iOs App",
+          body: `[Swift] Coming Soon`,
           images: [
           ]
         },
