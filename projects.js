@@ -116,7 +116,7 @@ window.projectsData = {
           images: [
           ]
         },
-                {
+        {
           label: "English Chinese Reference",
           title: "iOs App",
           body: `[Swift] Coming Soon`,

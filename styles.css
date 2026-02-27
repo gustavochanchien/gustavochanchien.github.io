@@ -111,6 +111,7 @@ main {
   width: 100%;
   height: 100%;
   padding-inline: 40px;
+  overflow: hidden; /* Added overflow hidden to clip the mask overspill */
 
   /* Base padding for stacked/small state */
   padding-top: 32px;
@@ -148,22 +149,21 @@ main {
 
   inset: -1px -1px -1px -1px;
 
-
   background: #ffffff border-box;
-  box-shadow: var(--shadow-soft);
-  z-index: -1;
+  z-index: -1; /* Removed redundant box-shadow */
 
   border-inline: calc(var(--r-mask) + 1px) solid #0000;
 
   border-radius: var(--r-side) var(--r-side) 0 0 / var(--r-top);
 
+  /* Changed + 2px to + 1px in the mask heights below */
   mask: radial-gradient(
           calc(var(--r-mask) + 1px) at calc(var(--r-mask) + 1px) 0,
           #0000 98%,
           #000 101%
         )
         calc(-1 * (var(--r-mask) + 1px)) 100% /
-        100% calc(var(--r-mask) + 2px) repeat-x,
+        100% calc(var(--r-mask) + 1px) repeat-x, 
         conic-gradient(#000 0 0) padding-box;
   -webkit-mask: radial-gradient(
                   calc(var(--r-mask) + 1px) at calc(var(--r-mask) + 1px) 0,
@@ -171,13 +171,12 @@ main {
                   #000 101%
                 )
                 calc(-1 * (var(--r-mask) + 1px)) 100% /
-                100% calc(var(--r-mask) + 2px) repeat-x,
+                100% calc(var(--r-mask) + 1px) repeat-x,
                 conic-gradient(#000 0 0) padding-box;
 
   transform: scaleY(-1);
   transform-origin: center;
 }
-
 
 .nav-logo {
   font-family: "Playfair Display", serif;
@@ -899,7 +898,6 @@ main {
   cursor: pointer;
   z-index: 2;
 }
-
 
 /* --- IMAGE LIGHTBOX --- */
 
