@@ -47,7 +47,7 @@ window.projectsData = {
       items: [
         {
           label: "Pregunton",
-          title: "Pregunton Surveys Web App",
+          title: "Pregunton Surveys and Case Management Web App",
           body: `[TypeScript, Vue3, Firebase] The Pregunton Surveys Web App is a full-stack applicaton developed in Vue3 and Firebase that allows users to create custom surveys, distribute them easily with unique codes and view the results on custom report dashboards that update live as results come in. I built this application because I saw a need for it while working with Community Health Workers and their organizations. See the demo here [https://pregunton.space].`,
           images: [
             {
@@ -61,6 +61,17 @@ window.projectsData = {
             {
               url: "images/preview-screenshots/pregunton3.png",
               alt: "Survey results analytics"
+            }
+          ]
+        },
+        {
+          label: "Legislator Lookup",
+          title: "Work in Progress: Some helpful tools for getting to know your legislators",
+          body: `[JavaScript, A lot of APIs, Cloud Functions] WORK IN PROGRESS, DESCRIPTION IN PROGRESS. https://legislatorlookup.web.app/`,
+          images: [
+            {
+              url: "images/preview-screenshots/legis1.png",
+              alt: "A Legislators page"
             }
           ]
         },
@@ -107,13 +118,6 @@ window.projectsData = {
               url: "images/preview-screenshots/crime-dash2.png",
               alt: "heatmap view"
             }
-          ]
-        },
-        {
-          label: "Down the Lobby Hole",
-          title: "Helpful visualization of lobbying data",
-          body: `[Javascript, Chart.js] An interesting visualization of data from OpenFEC, LDA, and NM CFIS. UNDER CONSTRUCTION https://github.com/gustavochanchien/lobby`,
-          images: [
           ]
         },
         {
