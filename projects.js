@@ -77,8 +77,8 @@ window.projectsData = {
         },
         {
           label: "AI WhatsApp Family Planner",
-          title: "A Budget WhatsApp Bot to manage a Family Calendar",
-          body: `[Go, Python, Gemini API, Google Cloud] A technical guide to building an autonomous, budget-friendly WhatsApp bot that uses Gemini AI and PicoClaw to automatically parse family group chat messages and sync events directly to a shared Google Calendar. Built to run on Google Cloud's free tier for under $1/month. Read the full walkthrough here: https://medium.com/p/40d5b5e83e99`,
+          title: "A Budget WhatsApp AI Agent to manage a Family Calendar",
+          body: `[Go, Python, Gemini API, Google Cloud] A technical guide to building an autonomous, budget-friendly WhatsApp AI agent that uses Gemini AI and PicoClaw to automatically parse family group chat messages and sync events directly to a shared Google Calendar. Built to run on Google Cloud's free tier for under $1/month. Read the full walkthrough here: https://medium.com/p/40d5b5e83e99`,
           images: [
             {
               url: "images/mediumarticleimage.png",
