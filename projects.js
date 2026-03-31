@@ -66,8 +66,8 @@ window.projectsData = {
         },
         {
           label: "Legislator Lookup",
-          title: "Work in Progress: Some helpful tools for getting to know your legislators",
-          body: `[JavaScript, A lot of APIs, Cloud Functions] WORK IN PROGRESS, DESCRIPTION IN PROGRESS. https://legislatorlookup.web.app/`,
+          title: "Some helpful tools for getting to know your legislators",
+          body: `[JavaScript, Cloud Functions, MapLibre GL JS, Chart.js] A web app that helps you get to know your state legislators. Enter an address to find your district representatives, view their sponsored bills, analyze bill activity patterns with interactive timelines and charts, and access biographical data like education, salary, and tenure. It pulls from LegiScan, Open States, Ballotpedia, and the Census Geocoder and renders district boundaries on an interactive map. https://legislatorlookup.web.app/`,
           images: [
             {
               url: "images/preview-screenshots/legis1.png",
