@@ -91,7 +91,7 @@ window.projectsData = {
           ]
         },
         {
-          label: "Chrome Peacock",
+          label: "Footer Window Organizer",
           title: "Organizing Chrome Window Extension",
           body: `[JavaScript, Chrome Extensions API, CSS] Subtly change the color of each chrome window for organization! Concept based on Peacock for VS Code. https://chromewebstore.google.com/detail/chrome-peacock/gejflhnnmkkpegbemjefeghkolmjjjlp`,
           images: [
