@@ -48,7 +48,7 @@ window.projectsData = {
         {
           label: "Pregunton",
           title: "Pregunton Surveys and Case Management Web App",
-          body: `[TypeScript, Vue3, Firebase] The Pregunton Surveys Web App is a full-stack applicaton developed in Vue3 and Firebase that allows users to create custom surveys, distribute them easily with unique codes and view the results on custom report dashboards that update live as results come in. I built this application because I saw a need for it while working with Community Health Workers and their organizations. See the demo here [https://pregunton.space].`,
+          body: `[TypeScript, Vue3, Firebase] The Pregunton Surveys Web App is a full-stack applicaton developed in Vue3 and Firebase that allows users to create custom surveys, distribute them easily with unique codes and view the results on custom report dashboards that update live as results come in. I built this application because I saw a need for it while working with Community Health Workers and their organizations. See the demo here https://pregunton.space`,
           images: [
             {
               url: "images/preview-screenshots/pregunton1.png",
@@ -73,12 +73,16 @@ window.projectsData = {
               url: "images/preview-screenshots/legis1.png",
               alt: "A Legislators page"
             }
+            {
+              url: "images/preview-screenshots/legis2.png",
+              alt: "Lobbying page"
+            }
           ]
         },
         {
           label: "AI WhatsApp Family Planner",
           title: "A Budget WhatsApp AI Agent to manage a Family Calendar",
-          body: `[Go, Python, Gemini API, Google Cloud] A technical guide to building an autonomous, budget-friendly WhatsApp AI agent that uses Gemini AI and PicoClaw to automatically parse family group chat messages and sync events directly to a shared Google Calendar. Built to run on Google Cloud's free tier for under $1/month. Read the full walkthrough here: https://medium.com/p/40d5b5e83e99`,
+          body: `[PicoClaw, WhatsApp Web API, Python, Gemini API, Google Cloud] A technical guide to building an autonomous, budget-friendly WhatsApp AI agent that uses Gemini AI and PicoClaw to automatically parse family group chat messages and sync events directly to a shared Google Calendar. Built to run on Google Cloud's free tier for under $1/month. Read the full walkthrough here: https://medium.com/p/40d5b5e83e99`,
           images: [
             {
               url: "images/mediumarticleimage.png",
