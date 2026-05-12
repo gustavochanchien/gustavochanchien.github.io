@@ -72,7 +72,7 @@ window.projectsData = {
             {
               url: "images/preview-screenshots/legis1.png",
               alt: "A Legislators page"
-            }
+            },
             {
               url: "images/preview-screenshots/legis2.png",
               alt: "Lobbying page"
@@ -279,7 +279,6 @@ window.projectsData = {
           title: "For combining the dictionary with the data",
           body: `[Python, OpenCV] Uses the REDCap dictionary from a project to add descriptions and generally make the REDCap data exports easier to read with options to include different components or replace different responses (some or all). [LINK]`
         },
-        ,
         {
           label: "Tableau Public Automatic Uplaoder",
           title: "Automatically pulls weekly redcap data and updates Tableau Public Repositories",

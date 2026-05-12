@@ -1,6 +1,5 @@
 // simulation.js
 import * as THREE from "https://unpkg.com/three@0.165.0/build/three.module.js";
-import { RoundedBoxGeometry } from "https://unpkg.com/three@0.165.0/examples/jsm/geometries/RoundedBoxGeometry.js?module";
 
 /**
  * Lantern simulation mounted into the hero media box.
@@ -46,10 +45,13 @@ function initLanternSimulation(container) {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
 
-  // Keep output sane (defaults are fine, but set explicitly)
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
 
   container.appendChild(renderer.domElement);
+
+  // Theme-aware environment + lighting are set up below the lights.
 
   // ---------------------------------------------------------
   // UI: pause / play
@@ -66,160 +68,330 @@ function initLanternSimulation(container) {
   }
 
   // ---------------------------------------------------------
-  // Lights
+  // Lights + theme-aware environment
   // ---------------------------------------------------------
-  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+  scene.add(ambientLight);
 
-  const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+  const dirLight = new THREE.DirectionalLight(0xfff0e0, 1.25);
   dirLight.position.set(6, 12, 8);
   dirLight.castShadow = true;
-
-  // Cheaper shadows (1024 -> 512)
   dirLight.shadow.mapSize.set(512, 512);
   dirLight.shadow.camera.near = 1;
   dirLight.shadow.camera.far = 50;
   scene.add(dirLight);
 
-  // ---------------------------------------------------------
-  // Geometry: rounded lantern body + small basket
-  // ---------------------------------------------------------
-  const lanternWidth = 0.6;
-  const lanternDepth = 0.6;
-  const lanternHeight = 1.0;
-  const cornerRadius = 0.3;
+  // PMREM-based environment that swaps when the page theme changes.
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  let currentEnvRT = null;
 
-  // Reducing smoothness reduces vertexCount a LOT (big perf win)
-  const smoothness = 3;
+  // Declared up-front so applyTheme() can update per-balloon emissive
+  // uniforms whenever the theme flips.
+  const lanterns = [];
+  let lanternEmissiveStrength = 0;
 
-  const baseRoundedGeo = new RoundedBoxGeometry(
-    lanternWidth,
-    lanternHeight,
-    lanternDepth,
-    smoothness,
-    cornerRadius
-  );
+  function makeSkyTexture(theme) {
+    const c = document.createElement("canvas");
+    c.width = 256;
+    c.height = 256;
+    const ctx = c.getContext("2d");
+    const g = ctx.createLinearGradient(0, 0, 0, 256);
+    if (theme === "dark") {
+      g.addColorStop(0.0, "#1a2540");
+      g.addColorStop(0.4, "#0a0e26");
+      g.addColorStop(0.75, "#05060f");
+      g.addColorStop(1.0, "#000000");
+    } else {
+      g.addColorStop(0.0, "#7fb8ff");
+      g.addColorStop(0.3, "#a88cff");
+      g.addColorStop(0.55, "#ffd1e8");
+      g.addColorStop(0.78, "#cfe9ff");
+      g.addColorStop(1.0, "#ffffff");
+    }
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 256, 256);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.needsUpdate = true;
+    return tex;
+  }
 
-  // flare top so it's slightly wider than the bottom
-  const flareFactor = 1.3;
-  const basePosAttr = baseRoundedGeo.attributes.position;
-  for (let i = 0; i < basePosAttr.count; i++) {
-    const y = basePosAttr.getY(i);
-    if (y > 0) {
-      const x = basePosAttr.getX(i);
-      const z = basePosAttr.getZ(i);
-      basePosAttr.setX(i, x * flareFactor);
-      basePosAttr.setZ(i, z * flareFactor);
+  function applyTheme(theme) {
+    const skyTex = makeSkyTexture(theme);
+    const envRT = pmrem.fromEquirectangular(skyTex);
+    if (currentEnvRT) currentEnvRT.dispose();
+    currentEnvRT = envRT;
+    scene.environment = envRT.texture;
+    skyTex.dispose();
+
+    if (theme === "dark") {
+      ambientLight.intensity = 0.45;
+      dirLight.intensity = 0.85;
+      dirLight.color.setHex(0xc8d4ff);
+      renderer.toneMappingExposure = 0.85;
+      lanternEmissiveStrength = 1.4;
+    } else {
+      ambientLight.intensity = 0.9;
+      dirLight.intensity = 1.25;
+      dirLight.color.setHex(0xfff0e0);
+      renderer.toneMappingExposure = 1.0;
+      lanternEmissiveStrength = 0.0;
+    }
+
+    for (let i = 0; i < lanterns.length; i++) {
+      const u = lanterns[i].userData.material.userData.uniforms;
+      if (u && u.uEmissiveStrength) {
+        u.uEmissiveStrength.value = lanternEmissiveStrength;
+      }
     }
   }
-  basePosAttr.needsUpdate = true;
-  baseRoundedGeo.computeVertexNormals();
 
-  const lanternGeo = baseRoundedGeo;
+  const getTheme = () =>
+    document.documentElement.getAttribute("data-theme") === "dark"
+      ? "dark"
+      : "light";
 
-  // Precompute per-vertex height and angle factors (for patterns)
-  lanternGeo.computeBoundingBox();
-  const lanternMinY = lanternGeo.boundingBox.min.y;
-  const lanternMaxY = lanternGeo.boundingBox.max.y;
-  const lanternHeightRange = lanternMaxY - lanternMinY;
-  const vertexCount = lanternGeo.attributes.position.count;
+  applyTheme(getTheme());
 
-  const heightFactors = new Float32Array(vertexCount);
-  const angleFactors = new Float32Array(vertexCount);
-  const posAttrForFactors = lanternGeo.attributes.position;
-
-  for (let i = 0; i < vertexCount; i++) {
-    const x = posAttrForFactors.getX(i);
-    const y = posAttrForFactors.getY(i);
-    const z = posAttrForFactors.getZ(i);
-
-    heightFactors[i] = (y - lanternMinY) / lanternHeightRange; // 0 bottom, 1 top
-
-    const angle = Math.atan2(z, x); // -PI..PI
-    angleFactors[i] = (angle + Math.PI) / (Math.PI * 2); // 0..1
-  }
-
-  // Basket: small box under each lantern
-  const basketWidth = lanternWidth * 0.35;
-  const basketDepth = lanternDepth * 0.35;
-  const basketHeight = lanternHeight * 0.18;
-
-  const basketGeo = new THREE.BoxGeometry(
-    basketWidth,
-    basketHeight,
-    basketDepth
-  );
-  const basketMat = new THREE.MeshStandardMaterial({
-    color: 0xd6b48a, // light brown-cream
-    metalness: 0.25,
-    roughness: 0.9,
+  const themeObserver = new MutationObserver(() => applyTheme(getTheme()));
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
   });
 
   // ---------------------------------------------------------
-  // Color & pattern utilities
+  // Geometry: hot air balloon envelope (lathe) + gondola box
+  // (Geometry/material logic adapted from /balloon-simulator)
   // ---------------------------------------------------------
-  const orangeColorHex = 0xe2a112; // warm peachy orange for emissive
-  const tempColor = new THREE.Color();
-  const tempHSL = { h: 0, s: 0, l: 0 };
+  const balloonScale = 0.95;
+  const radialSegments = 18;
 
-  const patternTypes = ["checker", "horizontal", "diagonal"];
+  const envelopeProfile = [
+    [0.07, -0.62],
+    [0.12, -0.52],
+    [0.33, -0.28],
+    [0.48,  0.00],
+    [0.44,  0.26],
+    [0.30,  0.50],
+    [0.03,  0.62],
+  ].map(([r, y]) => new THREE.Vector2(r * balloonScale, y * balloonScale));
 
-  function createPaletteFromBase(baseColor) {
-    const c1 = baseColor.clone();
-    const c2 = baseColor.clone().offsetHSL(0.05, 0.08, 0.1);
-    const c3 = baseColor.clone().offsetHSL(-0.05, -0.05, -0.08);
-    return [c1, c2, c3];
-  }
+  const lanternGeo = new THREE.LatheGeometry(envelopeProfile, radialSegments);
+  lanternGeo.computeVertexNormals();
+  lanternGeo.computeBoundingBox();
 
-  function applyPatternColor(pattern, vertexIndex, outColor) {
-    if (!pattern || !pattern.palette || pattern.palette.length === 0) {
-      outColor.set(0xffffff);
-      return;
-    }
+  const lanternMinY = lanternGeo.boundingBox.min.y;
+  const lanternMaxY = lanternGeo.boundingBox.max.y;
+  const lanternHeightRange = (lanternMaxY - lanternMinY) || 1;
+  const envelopeWidth = (lanternGeo.boundingBox.max.x - lanternGeo.boundingBox.min.x) || 1;
+  const envelopeDepth = (lanternGeo.boundingBox.max.z - lanternGeo.boundingBox.min.z) || 1;
+  const envelopeHeight = lanternHeightRange;
 
-    const h = heightFactors[vertexIndex];
-    const a = angleFactors[vertexIndex];
-    const palette = pattern.palette;
-    const len = palette.length;
-
-    switch (pattern.type) {
-      case "checker": {
-        const cellsY = pattern.cellsY || 6;
-        const cellsA = pattern.cellsA || 6;
-        const iy = Math.floor(h * cellsY);
-        const ia = Math.floor(a * cellsA);
-        const idx = (iy + ia) % len;
-        outColor.copy(palette[(idx + len) % len]);
-        break;
-      }
-      case "horizontal": {
-        const stripes = pattern.stripes || 7;
-        const idx = Math.floor(h * stripes) % len;
-        outColor.copy(palette[(idx + len) % len]);
-        break;
-      }
-      case "diagonal":
-      default: {
-        const stripes = pattern.stripes || 9;
-        const v = (h + a) * stripes;
-        const idx = Math.floor(v) % len;
-        outColor.copy(palette[(idx + len) % len]);
-        break;
-      }
+  // Per-vertex height + angle factors drive the shader's procedural pattern.
+  const vertexCount = lanternGeo.attributes.position.count;
+  const heightFactors = new Float32Array(vertexCount);
+  const angleFactors = new Float32Array(vertexCount);
+  {
+    const pa = lanternGeo.attributes.position;
+    for (let i = 0; i < vertexCount; i++) {
+      const x = pa.getX(i);
+      const y = pa.getY(i);
+      const z = pa.getZ(i);
+      heightFactors[i] = (y - lanternMinY) / lanternHeightRange;
+      angleFactors[i] = (Math.atan2(z, x) + Math.PI) / (Math.PI * 2);
     }
   }
+  lanternGeo.setAttribute(
+    "aHeightFactor",
+    new THREE.BufferAttribute(heightFactors, 1)
+  );
+  lanternGeo.setAttribute(
+    "aAngleFactor",
+    new THREE.BufferAttribute(angleFactors, 1)
+  );
+
+  // Gondola dims are derived from the envelope bounding box.
+  const GONDOLA_WIDTH_RATIO = 0.20;
+  const GONDOLA_DEPTH_RATIO = 0.20;
+  const GONDOLA_HEIGHT_RATIO = 0.12;
+  const basketWidth = envelopeWidth * GONDOLA_WIDTH_RATIO;
+  const basketDepth = envelopeDepth * GONDOLA_DEPTH_RATIO;
+  const basketHeight = envelopeHeight * GONDOLA_HEIGHT_RATIO;
+
+  const basketGeo = new THREE.BoxGeometry(basketWidth, basketHeight, basketDepth);
+  const basketMat = new THREE.MeshStandardMaterial({
+    color: 0x8b6b46, // wicker brown
+    metalness: 0.0,
+    roughness: 1.0,
+  });
+  const gondolaLocalYOffset = lanternMinY - basketHeight * 0.75;
+
+  // ---------------------------------------------------------
+  // Balloon material: MeshPhysicalMaterial + custom shader pattern.
+  // Each balloon gets its own material clone with unique uniforms
+  // (tint / pattern type / seed / buoyancy). Adapted from balloon-simulator.
+  // ---------------------------------------------------------
+  const REAL_BALLOON_PALETTE = [
+    0xd72638, 0xff6f00, 0xf9c80e, 0x2e7d32, 0x1565c0, 0x283593, 0x6a1b9a,
+    0x00838f, 0x6d4c41, 0x263238, 0xffffff, 0xe0e0e0, 0x111111,
+  ];
+
+  const SHADER_VERTEX_DECL = `
+attribute float aHeightFactor;
+attribute float aAngleFactor;
+varying float vH;
+varying float vA;
+`;
+
+  const SHADER_VERTEX_BODY = `
+#include <begin_vertex>
+vH = aHeightFactor;
+vA = aAngleFactor;
+`;
+
+  const SHADER_FRAGMENT_DECL = `
+uniform vec3 uBaseTint;
+uniform float uPatternType;
+uniform float uSeed;
+uniform float uBuoyancy;
+uniform vec3 uBrightColor;
+uniform vec3 uFlameColor;
+uniform float uFlameMix;
+uniform float uLitMix;
+uniform float uLitBoost;
+uniform float uPatDensity;
+uniform float uPaperWhiteMix;
+uniform float uEmissiveStrength;
+
+varying float vH;
+varying float vA;
+
+float hash11(float p) {
+  p = fract(p * 0.1031);
+  p *= p + 33.33;
+  p *= p + p;
+  return fract(p);
+}
+vec3 srgbToLinear(vec3 c) { return pow(c, vec3(2.2)); }
+vec3 pickRealPaint(float idx) {
+  vec3 c;
+  if (idx < 0.5)       c = vec3(0.843, 0.149, 0.220);
+  else if (idx < 1.5)  c = vec3(1.000, 0.435, 0.000);
+  else if (idx < 2.5)  c = vec3(0.976, 0.784, 0.055);
+  else if (idx < 3.5)  c = vec3(0.180, 0.490, 0.196);
+  else if (idx < 4.5)  c = vec3(0.082, 0.396, 0.753);
+  else if (idx < 5.5)  c = vec3(0.157, 0.208, 0.576);
+  else if (idx < 6.5)  c = vec3(0.416, 0.106, 0.604);
+  else if (idx < 7.5)  c = vec3(0.000, 0.514, 0.561);
+  else if (idx < 8.5)  c = vec3(0.427, 0.298, 0.255);
+  else if (idx < 9.5)  c = vec3(0.149, 0.196, 0.220);
+  else if (idx < 10.5) c = vec3(0.92);
+  else                 c = vec3(0.08);
+  return srgbToLinear(c);
+}
+vec3 paletteColor(float seed, float slot) {
+  float r0 = floor(hash11(seed + 11.0) * 12.0);
+  float r1 = floor(hash11(seed + 29.0) * 12.0);
+  float r2 = floor(hash11(seed + 71.0) * 12.0);
+  vec3 c0 = pickRealPaint(r0);
+  vec3 c1 = pickRealPaint(r1);
+  vec3 c2 = pickRealPaint(r2);
+  float grime = (hash11(seed + 101.0) - 0.5) * 0.06;
+  c0 = clamp(c0 + grime, 0.0, 1.0);
+  c1 = clamp(c1 + grime, 0.0, 1.0);
+  c2 = clamp(c2 + grime, 0.0, 1.0);
+  if (slot < 0.5) return c0;
+  if (slot < 1.5) return c1;
+  return c2;
+}
+vec3 pickPalette(float t, float seed) {
+  float slot = (t < 0.333) ? 0.0 : ((t < 0.666) ? 1.0 : 2.0);
+  return paletteColor(seed, slot);
+}
+float patternIndex(float type, float h, float a, float density, float seed) {
+  float panels = floor(mix(10.0, 18.0, hash11(seed + 3.1)) * density);
+  float ia = floor(a * panels);
+  float gore = mod(ia, 3.0) / 2.0;
+  if (type < 0.5) {
+    return gore;
+  } else if (type < 1.5) {
+    float band = smoothstep(0.00, 0.22, h) * (1.0 - smoothstep(0.22, 0.30, h));
+    float scallop = step(0.5, fract(ia * 0.35 + h * 8.0));
+    float alt = mix(gore, 0.0, scallop);
+    return mix(gore, alt, band);
+  } else {
+    float zig = floor((h * 7.0 - a * 7.0) * density);
+    return mod(zig, 3.0) / 2.0;
+  }
+}
+`;
+
+  const SHADER_FRAGMENT_BODY = `
+float b = clamp(uBuoyancy, 0.0, 1.0);
+float t = patternIndex(uPatternType, vH, vA, uPatDensity, uSeed);
+vec3 basePat = pickPalette(t, uSeed);
+basePat = mix(basePat, vec3(1.0), uPaperWhiteMix);
+float belly = smoothstep(0.10, 0.65, vH) * (1.0 - smoothstep(0.65, 0.92, vH));
+basePat *= (0.92 + 0.14 * belly);
+float grad = b * (1.0 - vH);
+basePat = mix(basePat, uFlameColor, uFlameMix * grad);
+basePat *= (1.0 + 0.25 * uLitBoost * grad);
+basePat = min(basePat, vec3(1.0));
+basePat = mix(basePat, uBrightColor, uLitMix * b);
+vec4 diffuseColor = vec4(basePat, 1.0);
+`;
 
   function createLanternMaterial() {
-    return new THREE.MeshStandardMaterial({
+    const mat = new THREE.MeshPhysicalMaterial({
       color: 0xffffff,
-      vertexColors: true,
       metalness: 0.0,
-      roughness: 0.9,
-      transparent: true,
-      opacity: 0.9,
-      emissive: 0x000000,
-      emissiveIntensity: 0.0,
-      side: THREE.DoubleSide,
+      roughness: 0.48,
+      clearcoat: 0.45,
+      clearcoatRoughness: 0.48,
+      side: THREE.FrontSide,
     });
+
+    const u = {
+      uBaseTint: { value: new THREE.Color(0xffffff) },
+      uPatternType: { value: 0 },
+      uSeed: { value: Math.random() * 1000 },
+      uBuoyancy: { value: 0 },
+      uBrightColor: { value: new THREE.Color(0xffddb0) },
+      uFlameColor: { value: new THREE.Color(0xff7a18) },
+      uFlameMix: { value: 0.7 },
+      uLitMix: { value: 0.14 },
+      uLitBoost: { value: 0.22 },
+      uPatDensity: { value: 1.05 },
+      uPaperWhiteMix: { value: 0.0001 },
+      uEmissiveStrength: { value: lanternEmissiveStrength },
+    };
+
+    mat.onBeforeCompile = (shader) => {
+      Object.assign(shader.uniforms, u);
+      shader.vertexShader = SHADER_VERTEX_DECL + shader.vertexShader;
+      shader.vertexShader = shader.vertexShader.replace(
+        "#include <begin_vertex>",
+        SHADER_VERTEX_BODY
+      );
+      shader.fragmentShader = SHADER_FRAGMENT_DECL + shader.fragmentShader;
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "vec4 diffuseColor = vec4( diffuse, opacity );",
+        SHADER_FRAGMENT_BODY
+      );
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <emissivemap_fragment>",
+        `
+#include <emissivemap_fragment>
+float _b = clamp(uBuoyancy, 0.0, 1.0);
+vec3 _glowColor = mix(uBrightColor, uFlameColor, 0.55);
+float _glow = _b * uEmissiveStrength * (0.35 + 0.65 * (1.0 - vH));
+totalEmissiveRadiance += _glowColor * _glow;
+`
+      );
+    };
+
+    mat.userData.uniforms = u;
+    return mat;
   }
 
   // ---------------------------------------------------------
@@ -234,11 +406,6 @@ function initLanternSimulation(container) {
   const HORIZONTAL_DRAG = 0.949;
   const VERTICAL_DRAG = 0.995;
   const MAX_VERTICAL_SPEED = 4.0;
-
-  // Update vertex colors only when brightness step changes
-  const BRIGHTNESS_STEPS = 24;
-
-  const lanterns = [];
 
   // Visible region estimates (updated on resize)
   let yVisibleMin = -2;
@@ -276,7 +443,7 @@ function initLanternSimulation(container) {
   updateVisibleBounds();
 
   const lanternCollisionRadius =
-    Math.max(lanternWidth * flareFactor, lanternHeight) * 0.35;
+    Math.max(envelopeWidth, envelopeHeight) * 0.35;
 
   // ---------------------------------------------------------
   // Lantern spawn / reset
@@ -301,30 +468,21 @@ function initLanternSimulation(container) {
 
     lantern.userData.buoyancy = Math.random() * Math.random() * 0.4;
     lantern.userData.hovered = false;
-
-    // force a color refresh when respawned
-    lantern.userData.lastBrightStep = -1;
   }
 
   function spawnLantern(isInitial = false) {
     const mat = createLanternMaterial();
 
-    // Per-lantern geometry because color attribute is unique per lantern
-    const geo = lanternGeo.clone();
-
-    // Create and attach per-lantern color attribute
-    const colors = new Float32Array(vertexCount * 3);
-    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-    const lantern = new THREE.Mesh(geo, mat);
+    // Single shared geometry — per-instance variation lives in shader uniforms.
+    const lantern = new THREE.Mesh(lanternGeo, mat);
     lantern.castShadow = true;
     lantern.receiveShadow = false;
 
-    // basket
+    // Gondola sits below the envelope.
     const basket = new THREE.Mesh(basketGeo, basketMat);
     basket.castShadow = true;
     basket.receiveShadow = false;
-    basket.position.y = lanternMinY - basketHeight * 0.7;
+    basket.position.y = gondolaLocalYOffset;
     lantern.add(basket);
 
     lantern.userData.velocity = new THREE.Vector3();
@@ -339,63 +497,30 @@ function initLanternSimulation(container) {
       0
     );
 
-    // Per-lantern wobble parameters (side-to-side drift)
     lantern.userData.wobble = {
-      ampX: THREE.MathUtils.randFloat(0.4, 1.0), // X swing amplitude
-      ampZ: THREE.MathUtils.randFloat(0.3, 0.8), // Z swing amplitude
-      speedX: THREE.MathUtils.randFloat(0.4, 1.0), // X wobble speed
-      speedZ: THREE.MathUtils.randFloat(0.4, 1.0), // Z wobble speed
+      ampX: THREE.MathUtils.randFloat(0.4, 1.0),
+      ampZ: THREE.MathUtils.randFloat(0.3, 0.8),
+      speedX: THREE.MathUtils.randFloat(0.4, 1.0),
+      speedZ: THREE.MathUtils.randFloat(0.4, 1.0),
       phaseX: Math.random() * Math.PI * 2,
       phaseZ: Math.random() * Math.PI * 2,
     };
 
-    // per-lantern pattern / palette with darker, more saturated base
-    const offColor = new THREE.Color();
-    offColor.setHSL(
-      Math.random(), // random hue
-      0.95 + Math.random() * 0.05, // saturation 0.95–1.0
-      0.35 + Math.random() * 0.08 // lightness 0.35–0.43 (darker)
-    );
-    lantern.userData.offColor = offColor;
-
-    const palette = createPaletteFromBase(offColor);
-    const patternType =
-      patternTypes[Math.floor(Math.random() * patternTypes.length)];
-    lantern.userData.pattern = {
-      type: patternType,
-      palette,
-      stripes: 8,
-      cellsY: 6,
-      cellsA: 8,
-    };
-
     lantern.userData.material = mat;
 
-    // Precompute base (unlit) vertex colors ONCE for this lantern (big perf win)
-    const baseColors = new Float32Array(vertexCount * 3);
-    for (let i = 0; i < vertexCount; i++) {
-      applyPatternColor(lantern.userData.pattern, i, tempColor);
-      const idx = i * 3;
-      baseColors[idx] = tempColor.r;
-      baseColors[idx + 1] = tempColor.g;
-      baseColors[idx + 2] = tempColor.b;
-    }
-    lantern.userData.baseColors = baseColors;
+    // Per-balloon shader uniforms: tint slot, pattern branch, seed.
+    const u = mat.userData.uniforms;
+    const hex =
+      REAL_BALLOON_PALETTE[
+        (Math.random() * REAL_BALLOON_PALETTE.length) | 0
+      ];
+    u.uBaseTint.value = new THREE.Color(hex);
+    const pr = Math.random();
+    u.uPatternType.value = pr < 0.72 ? 0 : pr < 0.92 ? 1 : 2;
+    u.uSeed.value = Math.random() * 1000.0;
+    u.uBuoyancy.value = 0;
 
-    // Track last applied brightness step (to avoid per-frame vertex writes)
-    lantern.userData.lastBrightStep = -1;
-
-    // pass isInitial flag so first spawn can use full random Y, respawns use top-only
     resetLantern(lantern, isInitial);
-
-    // Fill initial color attribute immediately (step will get applied in animate too)
-    // This ensures the lantern starts with correct pattern even before first animate.
-    {
-      const colorAttr = geo.attributes.color;
-      const colorArray = colorAttr.array;
-      for (let i = 0; i < baseColors.length; i++) colorArray[i] = baseColors[i];
-      colorAttr.needsUpdate = true;
-    }
 
     scene.add(lantern);
     lanterns.push(lantern);
@@ -687,50 +812,9 @@ function initLanternSimulation(container) {
           v.z = -Math.abs(v.z) * 0.6;
         }
 
-        // -----------------------------------------------------
-        // Vertex color update: ONLY when brightness step changes
-        // -----------------------------------------------------
-        const brightStep = (b * BRIGHTNESS_STEPS) | 0;
-        if (brightStep !== lantern.userData.lastBrightStep) {
-          lantern.userData.lastBrightStep = brightStep;
-
-          const geom = lantern.geometry;
-          const colorAttr = geom.attributes.color;
-          const colorArray = colorAttr.array;
-          const base = lantern.userData.baseColors;
-
-          const qb = brightStep / BRIGHTNESS_STEPS;
-
-          for (let i = 0; i < vertexCount; i++) {
-            const idx = i * 3;
-
-            // start from precomputed base pattern color
-            tempColor.setRGB(base[idx], base[idx + 1], base[idx + 2]);
-
-            if (qb > 0) {
-              // keep hue; brighten based on buoyancy + height gradient
-              tempColor.getHSL(tempHSL);
-
-              const h = heightFactors[i]; // 0 bottom, 1 top
-              const grad = qb * (1.0 - h); // brighter near bottom
-              const extraLight = 0.35 * grad;
-
-              tempHSL.l = Math.min(1, tempHSL.l + extraLight);
-              tempColor.setHSL(tempHSL.h, tempHSL.s, tempHSL.l);
-            }
-
-            colorArray[idx] = tempColor.r;
-            colorArray[idx + 1] = tempColor.g;
-            colorArray[idx + 2] = tempColor.b;
-          }
-
-          colorAttr.needsUpdate = true;
-        }
-
-        // emissive (cheap, per-lantern)
-        const baseEmissive = 0.1;
-        mat.emissive.setHex(orangeColorHex);
-        mat.emissiveIntensity = baseEmissive + 1.0 * b;
+        // Drive shader brightness/flame gradient via per-balloon uBuoyancy.
+        const u = mat.userData && mat.userData.uniforms;
+        if (u) u.uBuoyancy.value = b;
       }
 
       // collisions (every other frame for extra perf headroom)

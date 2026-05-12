@@ -3,199 +3,876 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <meta
     name="description"
-    content="Portfolio of Gustavo Chanchien, full-stack developer and data analyst, featuring projects like Pregunton Surveys, epidemiology visualizations, GIS mapping, and tools & scripts."
+    content="Portfolio of Gustavo Chanchien, full-stack developer and data analyst."
   />
-  <title>Gustavo Chanchien</title>
+  <title>Gustavo Chanchien — Portfolio</title>
+
+  <link rel="icon" href="favicon.ico" />
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (e) {}
+    })();
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --ink: #000;
+      --paper: #fff;
+      --rule: 1px;
+      --rule-thick: 2px;
+      --gutter: clamp(16px, 3vw, 40px);
+      --maxw: 1200px;
+    }
+
+    html[data-theme="dark"] {
+      --ink: #fff;
+      --paper: #000;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "EB Garamond", Georgia, "Times New Roman", serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid var(--ink);
+    }
+    a:hover { background: var(--ink); color: var(--paper); }
+
+    .mono {
+      font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .display {
+      font-family: "DM Serif Display", "Playfair Display", Georgia, serif;
+      font-weight: 400;
+      line-height: 0.96;
+      letter-spacing: -0.01em;
+    }
+
+    .frame {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      border-bottom: var(--rule) solid var(--ink);
+      position: sticky;
+      top: 0;
+      background: var(--paper);
+      z-index: 50;
+    }
+    .nav-inner {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      padding: 12px 0;
+      gap: 24px;
+    }
+    .nav-logo {
+      font-family: "DM Serif Display", serif;
+      font-size: 1.15rem;
+      letter-spacing: -0.01em;
+      border: none;
+    }
+    .nav-logo:hover { background: transparent; color: inherit; }
+    .nav-links {
+      display: flex;
+      gap: 0;
+    }
+    .nav-links a {
+      border: none;
+      padding: 4px 14px;
+      border-left: var(--rule) solid var(--ink);
+      font-size: 0.95rem;
+    }
+    .nav-links a:first-child { border-left: none; }
+    .nav-links a:hover { background: var(--ink); color: var(--paper); }
+
+    .theme-toggle {
+      border: var(--rule) solid var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+      padding: 6px 10px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .theme-toggle:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .theme-toggle .glyph {
+      font-family: "DM Serif Display", serif;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      border-bottom: var(--rule-thick) solid var(--ink);
+      padding: 0;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      min-height: 56vh;
+    }
+    .hero-left {
+      padding: 36px var(--gutter) 36px 0;
+      border-right: var(--rule) solid var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 32px;
+    }
+    .hero-right {
+      padding: 36px 0 36px var(--gutter);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .hero-eyebrow {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 24px;
+    }
+    .hero-title {
+      font-size: clamp(2.4rem, 6vw, 5.5rem);
+      margin: 18px 0 0;
+    }
+    .hero-title em {
+      font-style: italic;
+    }
+    .hero-rule {
+      height: var(--rule-thick);
+      background: var(--ink);
+      margin: 20px 0 14px;
+      width: 100%;
+    }
+    .hero-tagline {
+      font-size: 1.1rem;
+      max-width: 38ch;
+      margin: 0;
+    }
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: var(--rule) solid var(--ink);
+    }
+    .hero-meta > div {
+      padding: 22px 14px 0 0;
+      border-right: var(--rule) solid var(--ink);
+    }
+    .hero-meta > div + div { padding-left: 18px; }
+    .hero-meta > div:last-child { border-right: none; padding-right: 0; }
+    .hero-meta .mono { display: block; margin-bottom: 10px; }
+    .hero-meta p { margin: 0; font-size: 0.82rem; }
+
+    .hero-media {
+      position: relative;
+      border: var(--rule) solid var(--ink);
+      background: var(--paper);
+      overflow: hidden;
+      min-height: 420px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: background 0.2s ease;
+    }
+    .hero-sim-container {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .hero-media canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .hero-media-head {
+      position: relative;
+      z-index: 1;
+      padding: 14px 16px;
+      color: var(--ink);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      border-bottom: var(--rule) solid color-mix(in srgb, var(--ink) 28%, transparent);
+    }
+    .hero-media-head .mono { color: var(--ink); }
+    .hero-media-foot {
+      position: relative;
+      z-index: 1;
+      padding: 14px 16px;
+      color: var(--ink);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      border-top: var(--rule) solid color-mix(in srgb, var(--ink) 28%, transparent);
+    }
+    .hero-media-foot .caption {
+      font-family: "DM Serif Display", serif;
+      font-size: 1.2rem;
+      line-height: 1.05;
+      margin: 0;
+      max-width: 22ch;
+    }
+    .hero-sim-pause {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--ink);
+      padding: 6px 10px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+      align-self: flex-end;
+      white-space: nowrap;
+    }
+    .hero-sim-pause:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    /* ===== SECTION HEADER ===== */
+    .section {
+      border-bottom: var(--rule) solid var(--ink);
+    }
+    .section-head {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      border-bottom: var(--rule) solid var(--ink);
+    }
+    .section-head .left {
+      padding: 28px var(--gutter) 28px 0;
+      border-right: var(--rule) solid var(--ink);
+    }
+    .section-head .right {
+      padding: 28px 0 28px var(--gutter);
+    }
+    .section-num {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      display: block;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: "DM Serif Display", serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      line-height: 0.98;
+      margin: 0;
+    }
+    .section-desc {
+      font-size: 1rem;
+      max-width: 60ch;
+      margin: 0;
+    }
+
+    /* ===== TABS ===== */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      border-bottom: var(--rule) solid var(--ink);
+    }
+    .tabs--bottom {
+      border-bottom: none;
+      border-top: var(--rule) solid var(--ink);
+    }
+    .tab {
+      flex: 1 1 auto;
+      padding: 12px 18px;
+      background: var(--paper);
+      color: var(--ink);
+      border: none;
+      border-right: var(--rule) solid var(--ink);
+      font-family: "DM Serif Display", serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-align: left;
+      letter-spacing: -0.005em;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .tab-count {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      opacity: 0.7;
+    }
+    .tab:last-child { border-right: none; }
+    .tab[aria-selected="true"] {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .tab:hover:not([aria-selected="true"]) {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    /* ===== PROJECTS GRID ===== */
+    .panel { display: none; }
+    .panel[data-active] { display: block; }
+
+    .grid {
+      column-count: 2;
+      column-gap: var(--rule);
+      column-rule: var(--rule) solid var(--ink);
+    }
+    .card {
+      border-bottom: var(--rule) solid var(--ink);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--paper);
+      break-inside: avoid;
+      -webkit-column-break-inside: avoid;
+      page-break-inside: avoid;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 14px;
+    }
+    .card-num {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+    }
+    .card-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+      border: 1px solid var(--ink);
+    }
+    .card-title {
+      font-family: "DM Serif Display", serif;
+      font-size: 1.3rem;
+      line-height: 1.1;
+      margin: 0;
+    }
+    .card-body {
+      font-size: 0.92rem;
+      margin: 0;
+      max-width: 56ch;
+    }
+    .card-body a { word-break: break-all; }
+
+    .card-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+      gap: 0;
+      border: var(--rule) solid var(--ink);
+    }
+    .card-images img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-right: var(--rule) solid var(--ink);
+      cursor: zoom-in;
+      transition: opacity 0.15s ease;
+    }
+    .card-images img:hover { opacity: 0.85; }
+
+    /* ===== LIGHTBOX ===== */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: color-mix(in srgb, var(--paper) 92%, transparent);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      cursor: zoom-out;
+    }
+    .lightbox[data-open] { display: flex; }
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border: var(--rule) solid var(--ink);
+      background: var(--paper);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      background: var(--paper);
+      color: var(--ink);
+      border: var(--rule) solid var(--ink);
+      font-family: "DM Serif Display", serif;
+      font-size: 1.8rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .lightbox-close:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    @media (max-width: 700px) {
+      .lightbox { padding: 16px; }
+      .lightbox-close { top: 10px; right: 10px; width: 38px; height: 38px; font-size: 1.5rem; }
+    }
+    .card-images img:last-child { border-right: none; }
+
+    /* ===== FOOTER ===== */
+    .foot {
+      border-top: var(--rule-thick) solid var(--ink);
+    }
+    .foot-inner {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      padding: 44px 0;
+      gap: 36px;
+    }
+    .foot-title {
+      font-family: "DM Serif Display", serif;
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      line-height: 0.95;
+      margin: 0 0 16px;
+    }
+    .foot-text {
+      font-size: 1rem;
+      max-width: 40ch;
+      margin: 0;
+    }
+    .foot-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+    .foot-meta a { font-size: 0.95rem; }
+    .foot-bottom {
+      border-top: var(--rule) solid var(--ink);
+      padding: 12px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-left {
+        padding: 40px 0;
+        border-right: none;
+        border-bottom: var(--rule) solid var(--ink);
+      }
+      .hero-right { padding: 40px 0; }
+      .hero-meta { grid-template-columns: 1fr; }
+      .hero-meta > div {
+        border-right: none;
+        border-bottom: var(--rule) solid var(--ink);
+        padding: 16px 0;
+      }
+      .hero-meta > div:last-child { border-bottom: none; }
+
+      .section-head { grid-template-columns: 1fr; }
+      .section-head .left {
+        padding: 32px 0;
+        border-right: none;
+        border-bottom: var(--rule) solid var(--ink);
+      }
+      .section-head .right { padding: 32px 0; }
+
+      .grid { column-count: 1; column-rule: none; }
+      .card { padding: 28px 0; }
+
+      .foot-inner { grid-template-columns: 1fr; padding: 48px 0; }
+      .foot-bottom { flex-direction: column; gap: 8px; align-items: flex-start; }
+
+      .tabs { flex-direction: column; }
+      .tab { border-right: none; border-bottom: var(--rule) solid var(--ink); }
+      .tab:last-child { border-bottom: none; }
+    }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="navbar-shell">
-      <div class="page-width navbar-frame">
-        <div class="navbar">
-          <div class="navbar-inner">
-            <div class="nav-logo">
-              <span>Gustavo Chanchien</span>
-            </div>
-            <nav class="nav-links" aria-label="Main Navigation">
-              <a href="#about">About</a>
-              <a href="#projects">Projects</a>
-              <a href="#contact">Contact</a>
-            </nav>
-          </div>
-        </div>
-      </div>
+
+  <header class="nav">
+    <div class="frame nav-inner">
+      <a href="#" class="nav-logo">Gustavo Chanchien</a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button
+        id="theme-toggle"
+        type="button"
+        class="theme-toggle"
+        aria-label="Toggle dark mode"
+        aria-pressed="false"
+      >
+        <span class="glyph" data-theme-glyph>&#9680;</span>
+        <span data-theme-label>Dark</span>
+      </button>
     </div>
   </header>
 
   <main>
-    <div class="page-width">
-      <section class="hero" aria-labelledby="hero-heading" id="about">
-        <div class="hero-media-shell">
-            <div class="hero-media" id="hero-media">
-            <!-- Simulation background container -->
-            <div
-                id="hero-sim-container"
-                class="hero-sim-container"
-                data-hero-sim
-                data-sim="lanterns"
-            ></div>
+    <!-- HERO -->
+    <section class="hero" id="about">
+      <div class="frame hero-grid">
+        <div class="hero-left">
+          <div>
+            <div class="hero-eyebrow">
+              <span class="mono">Portfolio &nbsp;/&nbsp; 2026</span>
+              <span class="mono">Albuquerque, NM</span>
+            </div>
+            <h1 class="hero-title display">
+              Full&#8209;stack<br/>
+              developer<br/>
+              <em>&amp; data analyst.</em>
+            </h1>
+            <div class="hero-rule"></div>
+            <p class="hero-tagline">
+              Building software and visualizations that help people
+              and communities reclaim their data.
+            </p>
+          </div>
 
-            <!-- Pause button for the sim -->
-            <button
+          <div class="hero-meta">
+            <div>
+              <span class="mono">Languages</span>
+              <p>Python · JavaScript · R · SQL · Swift</p>
+            </div>
+            <div>
+              <span class="mono">Focus</span>
+              <p>Public health, epidemiology &amp; GIS</p>
+            </div>
+            <div>
+              <span class="mono">Practice</span>
+              <p>Visualization, design &amp; full&#8209;stack</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-right">
+          <div class="hero-media">
+            <div class="hero-media-head">
+              <span class="mono">Fig. 01 — Three.js</span>
+              <span class="mono">Balloon Sim</span>
+            </div>
+            <div
+              id="hero-sim-container"
+              class="hero-sim-container"
+              data-hero-sim
+              data-sim="lanterns"
+              aria-hidden="true"
+            ></div>
+            <div class="hero-media-foot">
+              <p class="caption">A drifting swarm of hot air balloons.</p>
+              <button
                 id="pauseBtn"
                 class="hero-sim-pause"
                 type="button"
                 data-sim-pause
-            >
-                Pause
-            </button>
-
-            <div class="hero-circle" aria-hidden="true">
-                <svg class="hero-circle-svg" viewBox="0 0 100 100">
-                <!-- <defs>
-                    <path id="circlePath" d="M60 16a44 44 0 1 1 0 88a44 44 0 1 1 0-88" />
-                </defs>
-                <text class="hero-circle-text-svg">
-                    <textPath href="#circlePath">
-                     •3js Balloon Simulation  
-                    </textPath>
-                </text> -->
-                </svg>
-                <img
-                    src="images/profile.png"
-                    alt=""
-                    class="hero-circle-overlay"
-                />
-            </div>
-
-            <div class="hero-media-content">
-                <h2>Welcome to my portfolio</h2>
-                <p>Please enjoy this 3js balloon simulation. Mouse over to burn.</p>
-            </div>
-            </div>
-        </div>
-
-        <div class="hero-lower">
-          <div class="hero-grid">
-            <div class="hero-copy">
-              <div class="hero-copy-eyebrow">Full-stack developer &amp; data analyst</div>
-              <h1 class="hero-title" id="hero-heading">Gustavo Chanchien</h1>
-              <p class="hero-subtitle">
-                This site is still under development! I'm Gustavo Chanchien, I'm a full-stack developer and data analyst and I've been
-                developing and coding since I was in high school. I grew up in Managua, Nicaragua and first
-                started coding with my best friend to build a cellphone app for our school's grade database
-                using Ionic. My primary motivations lie in creating software and technology that help people
-                and communities reclaim their data and take advantage of new technologies to faciliate their
-                work and improve the lives of their community.
-              </p>
-              <div class="hero-meta">
-                <span>Python · JavaScript · R · SQL</span>
-                <span>Public health, epidemiology, and GIS</span>
-                <span>Visualizations and Design</span>
-              </div>
-            </div>
-
-            <div class="carousel-shell">
-              <div
-                class="carousel"
-                data-carousel
-                role="region"
-                aria-label="Image Carousel"
-                tabindex="0"
               >
-                <div class="carousel-track" data-carousel-track>
-                  <!-- Slides injected -->
-                </div>
-
-                <button
-                  class="carousel-arrow carousel-arrow--prev"
-                  type="button"
-                  aria-label="Previous Slide"
-                  data-carousel-prev
-                >
-                  <span aria-hidden="true">&lsaquo;</span>
-                </button>
-                <button
-                  class="carousel-arrow carousel-arrow--next"
-                  type="button"
-                  aria-label="Next Slide"
-                  data-carousel-next
-                >
-                  <span aria-hidden="true">&rsaquo;</span>
-                </button>
-              </div>
+                Pause
+              </button>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- Sections -->
-      <div id="sections-root"></div>
-    </div>
-  </main>  
-
-  <footer class="site-footer" id="contact">
-    <div class="page-width site-footer-inner">
-      <div class="site-footer-main">
-        <h2 class="site-footer-title">Get in touch :)</h2>
-        <p class="site-footer-text">
-          Reach out to me if you want to collaborate on a project or build something together.
-        </p>
+        </aside>
       </div>
+    </section>
 
-      <div class="site-footer-meta">
-        <a class="footer-link" href="https://github.com/gustavochanchien/" target="_blank" rel="noreferrer">
-          GitHub
-        </a>
-        <!-- <a class="footer-link" href="mailto:gustavo.chanchien@protonmail.com">
-          gustavo.chanchien@protonmail.com
-        </a> -->
-        <span class="footer-location">Based in Albuquerque, New Mexico</span>
+    <!-- WORK -->
+    <section class="section" id="work">
+      <div class="frame">
+        <div class="section-head">
+          <div class="left">
+            <span class="section-num">§ 01 — Selected Work</span>
+            <h2 class="section-title">A catalogue of<br/><em>built things.</em></h2>
+          </div>
+          <div class="right">
+            <p class="section-desc">
+              Projects, websites, and scripts — most of them open-source,
+              all of them made in the spirit of curiosity. Filter by category below.
+            </p>
+          </div>
+        </div>
 
+        <div class="tabs" role="tablist" id="tabs" data-tabs-position="top"></div>
+        <div id="panels"></div>
+        <div class="tabs tabs--bottom" role="tablist" id="tabs-bottom" data-tabs-position="bottom"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot" id="contact">
+    <div class="frame">
+      <div class="foot-inner">
+        <div>
+          <h2 class="foot-title">Get in<br/><em>touch.</em></h2>
+          <p class="foot-text">
+            Reach out if you want to collaborate on a project
+            or build something together.
+          </p>
+        </div>
+        <div class="foot-meta">
+          <span class="mono">Links</span>
+          <a href="https://github.com/gustavochanchien/" target="_blank" rel="noreferrer">GitHub &rarr;</a>
+          <a href="https://www.linkedin.com/in/gustavochanchien/" target="_blank" rel="noreferrer">LinkedIn &rarr;</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span class="mono">© 2026 Gustavo Chanchien</span>
+        <span class="mono">Based in Albuquerque, NM</span>
       </div>
     </div>
   </footer>
 
-  <!-- Image Lightbox -->
-  <div class="image-lightbox" id="image-lightbox" aria-hidden="true">
-    <div class="image-lightbox-backdrop" data-lightbox-backdrop>
-      <div class="image-lightbox-inner" role="dialog" aria-modal="true">
-        <button
-          type="button"
-          class="image-lightbox-close"
-          aria-label="Close image"
-          data-lightbox-close
-        >
-          ×
-        </button>
-        <img
-          src=""
-          alt=""
-          class="image-lightbox-img"
-          data-lightbox-img
-        />
-      </div>
-    </div>
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true">
+    <button type="button" class="lightbox-close" aria-label="Close image" data-lightbox-close>&times;</button>
+    <img src="" alt="" class="lightbox-img" data-lightbox-img />
   </div>
 
-  <script src="projects.js"></script>
-  <script src="app.js"></script>
+  <script>
+    (function () {
+      const btn = document.getElementById("theme-toggle");
+      if (!btn) return;
+      const glyph = btn.querySelector("[data-theme-glyph]");
+      const label = btn.querySelector("[data-theme-label]");
+      const apply = (theme) => {
+        document.documentElement.setAttribute("data-theme", theme);
+        const isDark = theme === "dark";
+        btn.setAttribute("aria-pressed", String(isDark));
+        if (glyph) glyph.innerHTML = isDark ? "&#9681;" : "&#9680;";
+        if (label) label.textContent = isDark ? "Light" : "Dark";
+      };
+      apply(document.documentElement.getAttribute("data-theme") || "light");
+      btn.addEventListener("click", () => {
+        const next =
+          document.documentElement.getAttribute("data-theme") === "dark"
+            ? "light"
+            : "dark";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        apply(next);
+      });
+    })();
+  </script>
+
   <script type="module" src="simulation.js"></script>
+  <script src="projects.js"></script>
+  <script>
+    (function () {
+      const data = window.projectsData;
+      if (!data) return;
+
+      const tabsEl = document.getElementById("tabs");
+      const tabsBottomEl = document.getElementById("tabs-bottom");
+      const panelsEl = document.getElementById("panels");
+      const tabContainers = [tabsEl, tabsBottomEl].filter(Boolean);
+
+      const escape = (s) =>
+        String(s).replace(/[&<>"']/g, (c) => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        }[c]));
+
+      // Linkify bare URLs in body text
+      const linkify = (text) => {
+        const escaped = escape(text);
+        return escaped.replace(
+          /(https?:\/\/[^\s<]+)/g,
+          (url) => `<a href="${url}" target="_blank" rel="noreferrer">${url}</a>`
+        );
+      };
+
+      const sections = data.sections || [];
+
+      // Render both tab strips (top + bottom) with identical content.
+      tabContainers.forEach((container) => {
+        sections.forEach((s, i) => {
+          const btn = document.createElement("button");
+          btn.className = "tab";
+          btn.type = "button";
+          btn.setAttribute("role", "tab");
+          btn.setAttribute("aria-selected", i === 0 ? "true" : "false");
+          btn.dataset.target = s.id;
+          const count = (s.items || []).length;
+          btn.innerHTML = `
+            <span class="tab-label">${escape(s.tabLabel || s.title)}</span>
+            <span class="tab-count">${String(count).padStart(2, "0")}</span>
+          `;
+          container.appendChild(btn);
+        });
+      });
+
+      // Render panels
+      sections.forEach((s, i) => {
+        const panel = document.createElement("div");
+        panel.className = "panel";
+        panel.id = s.id;
+        if (i === 0) panel.setAttribute("data-active", "");
+
+        const grid = document.createElement("div");
+        grid.className = "grid";
+
+        (s.items || []).forEach((item, idx) => {
+          const card = document.createElement("article");
+          card.className = "card";
+
+          const num = String(idx + 1).padStart(2, "0");
+          const images = (item.images || [])
+            .slice(0, 3)
+            .map(
+              (img) =>
+                `<img src="${escape(img.url)}" alt="${escape(img.alt || "")}" loading="lazy" />`
+            )
+            .join("");
+
+          card.innerHTML = `
+            <div class="card-head">
+              <span class="card-num">N° ${num}</span>
+              <span class="card-label">${escape(item.label || "")}</span>
+            </div>
+            <h3 class="card-title">${escape(item.title || "")}</h3>
+            <div>
+              <p class="card-body">${linkify(item.body || "")}</p>
+              ${images ? `<div class="card-images" style="margin-top:20px;">${images}</div>` : ""}
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        panel.appendChild(grid);
+        panelsEl.appendChild(panel);
+      });
+
+      const selectTab = (target) => {
+        if (!target) return;
+        tabContainers.forEach((container) => {
+          container.querySelectorAll(".tab").forEach((t) =>
+            t.setAttribute(
+              "aria-selected",
+              t.dataset.target === target ? "true" : "false"
+            )
+          );
+        });
+        panelsEl.querySelectorAll(".panel").forEach((p) => {
+          if (p.id === target) p.setAttribute("data-active", "");
+          else p.removeAttribute("data-active");
+        });
+      };
+
+      tabContainers.forEach((container) => {
+        container.addEventListener("click", (e) => {
+          const btn = e.target.closest(".tab");
+          if (!btn) return;
+          selectTab(btn.dataset.target);
+        });
+      });
+
+      // Allow hash links to open the right tab
+      const openHash = () => {
+        const hash = window.location.hash.replace("#", "");
+        if (!hash) return;
+        if (sections.some((s) => s.id === hash)) selectTab(hash);
+      };
+      window.addEventListener("hashchange", openHash);
+      openHash();
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const lightbox = document.getElementById("lightbox");
+      if (!lightbox) return;
+      const imgEl = lightbox.querySelector("[data-lightbox-img]");
+      const closeBtn = lightbox.querySelector("[data-lightbox-close]");
+
+      const open = (src, alt) => {
+        imgEl.src = src;
+        imgEl.alt = alt || "";
+        lightbox.setAttribute("data-open", "");
+        lightbox.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      };
+      const close = () => {
+        lightbox.removeAttribute("data-open");
+        lightbox.setAttribute("aria-hidden", "true");
+        imgEl.src = "";
+        document.body.style.overflow = "";
+      };
+
+      document.addEventListener("click", (e) => {
+        const img = e.target.closest(".card-images img");
+        if (!img) return;
+        open(img.currentSrc || img.src, img.alt);
+      });
+
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === imgEl) return;
+        close();
+      });
+      closeBtn.addEventListener("click", close);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && lightbox.hasAttribute("data-open")) close();
+      });
+    })();
+  </script>
 </body>
 </html>
-
-</body>
-</html>
-
