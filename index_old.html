@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta
+    name="description"
+    content="Portfolio of Gustavo Chanchien, full-stack developer and data analyst, featuring projects like Pregunton Surveys, epidemiology visualizations, GIS mapping, and tools & scripts."
+  />
+  <title>Gustavo Chanchien</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="navbar-shell">
+      <div class="page-width navbar-frame">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="nav-logo">
+              <span>Gustavo Chanchien</span>
+            </div>
+            <nav class="nav-links" aria-label="Main Navigation">
+              <a href="#about">About</a>
+              <a href="#projects">Projects</a>
+              <a href="#contact">Contact</a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-width">
+      <section class="hero" aria-labelledby="hero-heading" id="about">
+        <div class="hero-media-shell">
+            <div class="hero-media" id="hero-media">
+            <!-- Simulation background container -->
+            <div
+                id="hero-sim-container"
+                class="hero-sim-container"
+                data-hero-sim
+                data-sim="lanterns"
+            ></div>
+
+            <!-- Pause button for the sim -->
+            <button
+                id="pauseBtn"
+                class="hero-sim-pause"
+                type="button"
+                data-sim-pause
+            >
+                Pause
+            </button>
+
+            <div class="hero-circle" aria-hidden="true">
+                <svg class="hero-circle-svg" viewBox="0 0 100 100">
+                <!-- <defs>
+                    <path id="circlePath" d="M60 16a44 44 0 1 1 0 88a44 44 0 1 1 0-88" />
+                </defs>
+                <text class="hero-circle-text-svg">
+                    <textPath href="#circlePath">
+                     •3js Balloon Simulation  
+                    </textPath>
+                </text> -->
+                </svg>
+                <img
+                    src="images/profile.png"
+                    alt=""
+                    class="hero-circle-overlay"
+                />
+            </div>
+
+            <div class="hero-media-content">
+                <h2>Welcome to my portfolio</h2>
+                <p>Please enjoy this 3js balloon simulation. Mouse over to burn.</p>
+            </div>
+            </div>
+        </div>
+
+        <div class="hero-lower">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <div class="hero-copy-eyebrow">Full-stack developer &amp; data analyst</div>
+              <h1 class="hero-title" id="hero-heading">Gustavo Chanchien</h1>
+              <p class="hero-subtitle">
+                This site is still under development! I'm Gustavo Chanchien, I'm a full-stack developer and data analyst and I've been
+                developing and coding since I was in high school. I grew up in Managua, Nicaragua and first
+                started coding with my best friend to build a cellphone app for our school's grade database
+                using Ionic. My primary motivations lie in creating software and technology that help people
+                and communities reclaim their data and take advantage of new technologies to faciliate their
+                work and improve the lives of their community.
+              </p>
+              <div class="hero-meta">
+                <span>Python · JavaScript · R · SQL</span>
+                <span>Public health, epidemiology, and GIS</span>
+                <span>Visualizations and Design</span>
+              </div>
+            </div>
+
+            <div class="carousel-shell">
+              <div
+                class="carousel"
+                data-carousel
+                role="region"
+                aria-label="Image Carousel"
+                tabindex="0"
+              >
+                <div class="carousel-track" data-carousel-track>
+                  <!-- Slides injected -->
+                </div>
+
+                <button
+                  class="carousel-arrow carousel-arrow--prev"
+                  type="button"
+                  aria-label="Previous Slide"
+                  data-carousel-prev
+                >
+                  <span aria-hidden="true">&lsaquo;</span>
+                </button>
+                <button
+                  class="carousel-arrow carousel-arrow--next"
+                  type="button"
+                  aria-label="Next Slide"
+                  data-carousel-next
+                >
+                  <span aria-hidden="true">&rsaquo;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sections -->
+      <div id="sections-root"></div>
+    </div>
+  </main>  
+
+  <footer class="site-footer" id="contact">
+    <div class="page-width site-footer-inner">
+      <div class="site-footer-main">
+        <h2 class="site-footer-title">Get in touch :)</h2>
+        <p class="site-footer-text">
+          Reach out to me if you want to collaborate on a project or build something together.
+        </p>
+      </div>
+
+      <div class="site-footer-meta">
+        <a class="footer-link" href="https://github.com/gustavochanchien/" target="_blank" rel="noreferrer">
+          GitHub
+        </a>
+        <!-- <a class="footer-link" href="mailto:gustavo.chanchien@protonmail.com">
+          gustavo.chanchien@protonmail.com
+        </a> -->
+        <span class="footer-location">Based in Albuquerque, New Mexico</span>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- Image Lightbox -->
+  <div class="image-lightbox" id="image-lightbox" aria-hidden="true">
+    <div class="image-lightbox-backdrop" data-lightbox-backdrop>
+      <div class="image-lightbox-inner" role="dialog" aria-modal="true">
+        <button
+          type="button"
+          class="image-lightbox-close"
+          aria-label="Close image"
+          data-lightbox-close
+        >
+          ×
+        </button>
+        <img
+          src=""
+          alt=""
+          class="image-lightbox-img"
+          data-lightbox-img
+        />
+      </div>
+    </div>
+  </div>
+
+  <script src="projects.js"></script>
+  <script src="app.js"></script>
+  <script type="module" src="simulation.js"></script>
+</body>
+</html>

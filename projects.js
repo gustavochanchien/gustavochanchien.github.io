@@ -293,6 +293,11 @@ window.projectsData = {
       description: `All the other random stuff I've made.`,
       items: [
         {
+          label: "Portfolio v1",
+          title: "The original version of this site",
+          body: `[JavaScript, Three.js, CSS] The first iteration of this portfolio — softer corners, a sky-gradient hero with a 3D lantern simulation, and a sliding project carousel. Kept around as a reference. https://gustavochanchien.github.io/index_old.html`,
+        },
+        {
           label: "VectorCardiogram and ECG Simulator",
           title: "A simulator to compare ECG and Vectorcardiogram outputs",
           body: `[JavaScript, HTML5 Canvas] Vectorcardiograms were the original way to read heart rhythms but they were phased out and now mostly used for specialty diagnostic tests. My grandpa originally learned to read vectorcardiograms and I made this simulator so he could explain it better. Not medically accurate. https://gustavochanchien.github.io/ecg-vector-simulator/`
