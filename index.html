@@ -516,17 +516,24 @@
     @media (max-width: 900px) {
       .hero-grid { grid-template-columns: 1fr; }
       .hero-left {
+        order: 2;
         padding: 40px 0;
         border-right: none;
+        border-bottom: none;
+      }
+      .hero-right {
+        order: 1;
+        padding: 40px 0;
         border-bottom: var(--rule) solid var(--ink);
       }
-      .hero-right { padding: 40px 0; }
+      .hero-media { min-height: 260px; }
       .hero-meta { grid-template-columns: 1fr; }
       .hero-meta > div {
         border-right: none;
         border-bottom: var(--rule) solid var(--ink);
         padding: 16px 0;
       }
+      .hero-meta > div + div { padding-left: 0; }
       .hero-meta > div:last-child { border-bottom: none; }
 
       .section-head { grid-template-columns: 1fr; }
@@ -589,8 +596,8 @@
             </h1>
             <div class="hero-rule"></div>
             <p class="hero-tagline">
-              Building software and visualizations that help people
-              and communities reclaim their data.
+              Software and visualizations for public health,
+              epidemiology, and community data.
             </p>
           </div>
 
@@ -624,7 +631,7 @@
               aria-hidden="true"
             ></div>
             <div class="hero-media-foot">
-              <p class="caption">A drifting swarm of hot air balloons.</p>
+              <p class="caption">Hot air balloons, drifting.</p>
               <button
                 id="pauseBtn"
                 class="hero-sim-pause"
@@ -645,12 +652,12 @@
         <div class="section-head">
           <div class="left">
             <span class="section-num">§ 01 — Selected Work</span>
-            <h2 class="section-title">A catalogue of<br/><em>built things.</em></h2>
+            <h2 class="section-title">Selected<br/><em>projects.</em></h2>
           </div>
           <div class="right">
             <p class="section-desc">
-              Projects, websites, and scripts — most of them open-source,
-              all of them made in the spirit of curiosity. Filter by category below.
+              Projects, websites, and scripts &mdash; most open-source.
+              Filter by category below.
             </p>
           </div>
         </div>
@@ -668,8 +675,8 @@
         <div>
           <h2 class="foot-title">Get in<br/><em>touch.</em></h2>
           <p class="foot-text">
-            Reach out if you want to collaborate on a project
-            or build something together.
+            Reach out if you&rsquo;d like to collaborate or
+            build something.
           </p>
         </div>
         <div class="foot-meta">
@@ -741,7 +748,21 @@
         );
       };
 
-      const sections = data.sections || [];
+      const baseSections = data.sections || [];
+      const allItems = baseSections.flatMap((s) => s.items || []);
+      const sections = [
+        {
+          id: "all",
+          tabLabel: "All",
+          title: "All",
+          items: allItems,
+        },
+        ...baseSections,
+      ];
+
+      const defaultId = sections.some((s) => s.id === "projects")
+        ? "projects"
+        : sections[0] && sections[0].id;
 
       // Render both tab strips (top + bottom) with identical content.
       tabContainers.forEach((container) => {
@@ -750,7 +771,7 @@
           btn.className = "tab";
           btn.type = "button";
           btn.setAttribute("role", "tab");
-          btn.setAttribute("aria-selected", i === 0 ? "true" : "false");
+          btn.setAttribute("aria-selected", s.id === defaultId ? "true" : "false");
           btn.dataset.target = s.id;
           const count = (s.items || []).length;
           btn.innerHTML = `
@@ -766,7 +787,7 @@
         const panel = document.createElement("div");
         panel.className = "panel";
         panel.id = s.id;
-        if (i === 0) panel.setAttribute("data-active", "");
+        if (s.id === defaultId) panel.setAttribute("data-active", "");
 
         const grid = document.createElement("div");
         grid.className = "grid";

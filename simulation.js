@@ -218,16 +218,66 @@ function initLanternSimulation(container) {
   const basketDepth = envelopeDepth * GONDOLA_DEPTH_RATIO;
   const basketHeight = envelopeHeight * GONDOLA_HEIGHT_RATIO;
 
+  // ---------------------------------------------------------
+  // Toon gradient map — a 3-tone stepped grayscale ramp sampled with
+  // NearestFilter so MeshToonMaterial produces hard comic-book bands
+  // instead of a smooth gradient.
+  // ---------------------------------------------------------
+  const toonGradientMap = (() => {
+    const data = new Uint8Array([
+      96, 96, 96, 255,
+      180, 180, 180, 255,
+      255, 255, 255, 255,
+    ]);
+    const tex = new THREE.DataTexture(data, 3, 1, THREE.RGBAFormat);
+    tex.minFilter = THREE.NearestFilter;
+    tex.magFilter = THREE.NearestFilter;
+    tex.generateMipmaps = false;
+    tex.needsUpdate = true;
+    return tex;
+  })();
+
   const basketGeo = new THREE.BoxGeometry(basketWidth, basketHeight, basketDepth);
-  const basketMat = new THREE.MeshStandardMaterial({
+  const basketMat = new THREE.MeshToonMaterial({
     color: 0x8b6b46, // wicker brown
-    metalness: 0.0,
-    roughness: 1.0,
+    gradientMap: toonGradientMap,
   });
   const gondolaLocalYOffset = lanternMinY - basketHeight * 0.75;
 
   // ---------------------------------------------------------
-  // Balloon material: MeshPhysicalMaterial + custom shader pattern.
+  // Outline shader — duplicate mesh inflated along its vertex normals,
+  // colored solid black, rendered with side=BackSide so only the inner
+  // walls of the inflated shell remain, forming a clean cartoon outline.
+  // ---------------------------------------------------------
+  const OUTLINE_VERTEX_SHADER = `
+    uniform float uThickness;
+    void main() {
+      vec3 displaced = position + normalize(normal) * uThickness;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
+    }
+  `;
+  const OUTLINE_FRAGMENT_SHADER = `
+    void main() {
+      gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+  `;
+  function createOutlineMaterial(thickness) {
+    return new THREE.ShaderMaterial({
+      uniforms: { uThickness: { value: thickness } },
+      vertexShader: OUTLINE_VERTEX_SHADER,
+      fragmentShader: OUTLINE_FRAGMENT_SHADER,
+      side: THREE.BackSide,
+    });
+  }
+  const lanternOutlineMaterial = createOutlineMaterial(
+    Math.max(envelopeWidth, envelopeHeight) * 0.025
+  );
+  const basketOutlineMaterial = createOutlineMaterial(
+    Math.min(basketWidth, basketDepth, basketHeight) * 0.08
+  );
+
+  // ---------------------------------------------------------
+  // Balloon material: MeshToonMaterial + custom shader pattern.
   // Each balloon gets its own material clone with unique uniforms
   // (tint / pattern type / seed / buoyancy). Adapted from balloon-simulator.
   // ---------------------------------------------------------
@@ -342,12 +392,9 @@ vec4 diffuseColor = vec4(basePat, 1.0);
 `;
 
   function createLanternMaterial() {
-    const mat = new THREE.MeshPhysicalMaterial({
+    const mat = new THREE.MeshToonMaterial({
       color: 0xffffff,
-      metalness: 0.0,
-      roughness: 0.48,
-      clearcoat: 0.45,
-      clearcoatRoughness: 0.48,
+      gradientMap: toonGradientMap,
       side: THREE.FrontSide,
     });
 
@@ -478,12 +525,23 @@ totalEmissiveRadiance += _glowColor * _glow;
     lantern.castShadow = true;
     lantern.receiveShadow = false;
 
+    // Black cartoon outline: inflated shell of the envelope, BackSide-rendered.
+    const lanternOutline = new THREE.Mesh(lanternGeo, lanternOutlineMaterial);
+    lanternOutline.castShadow = false;
+    lanternOutline.receiveShadow = false;
+    lantern.add(lanternOutline);
+
     // Gondola sits below the envelope.
     const basket = new THREE.Mesh(basketGeo, basketMat);
     basket.castShadow = true;
     basket.receiveShadow = false;
     basket.position.y = gondolaLocalYOffset;
     lantern.add(basket);
+
+    const basketOutline = new THREE.Mesh(basketGeo, basketOutlineMaterial);
+    basketOutline.castShadow = false;
+    basketOutline.receiveShadow = false;
+    basket.add(basketOutline);
 
     lantern.userData.velocity = new THREE.Vector3();
     lantern.userData.buoyancy = 0;
